@@ -23,6 +23,11 @@ const SearchBar = () => {
 	const [Model, setModel] = useState('')
 
 	const Router = useRouter()
+
+	const onBrandSelect = (selectedBrand: string) => {
+		setBrand(selectedBrand)
+	}
+
 	const handleSearch = (e: React.FormEvent<HTMLFormElement>) => {
 		e.preventDefault()
 
@@ -58,7 +63,11 @@ const SearchBar = () => {
 	return (
 		<form className='searchbar' onSubmit={handleSearch}>
 			<div className='searchbar__item'>
-				<SearchBrand brand={brand} setBrand={setBrand} />
+				<SearchBrand
+					brand={brand}
+					setBrand={setBrand}
+					onBrandSelect={onBrandSelect}
+				/>
 				<SearchButton otherClasses='sm:hidden' />
 			</div>
 			<div className='searchbar__item'>

@@ -2,14 +2,35 @@
 import { CarProps } from '@/types'
 import Image from 'next/image'
 import Custombutton from './Custombutton'
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import CarDetails from './CarDetails'
+import axios from 'axios'
 
 interface CarCardProps {
 	car: CarProps
+	Brand: string
 }
 
-const CarCard = ({ car }: CarCardProps) => {
+const CarCard = ({ car, Brand }: CarCardProps) => {
+	const [cars, setCars] = useState<CarProps[]>([])
+
+	useEffect(() => {
+		const fetchCarsByBrand = async () => {
+			try {
+				const response = await axios.get(
+					`http://localhost:5000/api/search?=${encodeURIComponent(Brand)}`
+				)
+				setCars(response.data.cars)
+			} catch (error) {
+				console.error('Error fetching cars:', error)
+			}
+		}
+
+		if (Brand) {
+			fetchCarsByBrand()
+		}
+	}, [Brand])
+
 	const [isOpen, setIsOpen] = useState(false)
 	const {
 		user,

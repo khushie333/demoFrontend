@@ -1,8 +1,9 @@
-// 'use client'
+'use client'
 import { CarCard, CustomFilter, Dashboard, SearchBar } from '@/components'
 import { headers } from 'next/headers'
 import Image from 'next/image'
 import { CarProps } from '@/types'
+import { useState } from 'react'
 //import axios from 'axios'
 
 export async function fetchcars() {
@@ -24,6 +25,10 @@ interface CarDetailsProps {
 }
 
 export default async function Home() {
+	const [selectedBrand, setSelectedBrand] = useState('')
+	const handleBrandSelect = (brand: string) => {
+		setSelectedBrand(brand)
+	}
 	const allCars = await fetchcars()
 	console.log(allCars)
 	const isDataEmpty = !Array.isArray(allCars) || allCars.length < 1 || !allCars
@@ -44,8 +49,8 @@ export default async function Home() {
 				{!isDataEmpty ? (
 					<section>
 						<div className='home__cars-wrapper'>
-							{allCars?.map((car: any) => (
-								<CarCard car={car} />
+							{(allCars || selectedBrand)?.map((car: any) => (
+								<CarCard car={car} Brand={selectedBrand} />
 							))}
 						</div>
 					</section>

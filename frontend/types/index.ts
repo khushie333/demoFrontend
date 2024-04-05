@@ -11,6 +11,7 @@ export interface CustombuttonProps {
 }
 export interface SearchBrandProps {
 	brand: String
+	onBrandSelect: (brand: string) => void
 	setBrand: (brand: string) => void
 }
 export interface CarProps {

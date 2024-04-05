@@ -5,7 +5,7 @@ import Image from 'next/image'
 import { Combobox, Transition } from '@headlessui/react'
 import { SearchBrandProps, Car } from '@/types'
 
-const SearchBrand = ({ brand, setBrand }: SearchBrandProps) => {
+const SearchBrand = ({ brand, setBrand, onBrandSelect }: SearchBrandProps) => {
 	const [query, setQuery] = useState('')
 	const [searchResults, setSearchResults] = useState<Car[]>([])
 
@@ -66,6 +66,7 @@ const SearchBrand = ({ brand, setBrand }: SearchBrandProps) => {
 										}`
 									}
 									value={item.brand}
+									onClick={() => onBrandSelect(item.brand)}
 								>
 									{({ selected, active }) => (
 										<>
