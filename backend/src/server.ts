@@ -39,7 +39,7 @@ const serverPort = appConfig.getServerPort()
 mongoose
 	.connect(mongoUrl)
 	.then(() => {
-		console.log('MongoDB connected successfully')
+		console.log('MongoDB connected successfully!!!')
 	})
 	.catch((error) => {
 		console.error('oops,Error connecting to MongoDB:', error)
