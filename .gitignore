@@ -1,7 +1,7 @@
-# # dependencies
-# frontend/node_modules/
-# frontend/.env*.local
+# dependencies
+frontend/node_modules/
+frontend/.env*.local
 
-# #ignoring node modules
-# backend/node_modules/
-# backend/.env
+#ignoring node modules
+backend/node_modules/
+backend/.env
