@@ -32,10 +32,10 @@ const serverPort = appConfig.getServerPort();
 mongoose_1.default
     .connect(mongoUrl)
     .then(() => {
-    console.log('MongoDB connected successfully!!!');
+    console.log('MongoDB connected successfully');
 })
     .catch((error) => {
-    console.error('oops,Error connecting to MongoDB:', error);
+    console.error('Error connecting to MongoDB:', error);
 });
 const port = process.env.PORT || serverPort;
 app.listen(port, () => {
