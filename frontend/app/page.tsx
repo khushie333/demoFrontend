@@ -2,21 +2,48 @@
 import { CarCard, CustomFilter, Dashboard, SearchBar } from '@/components'
 import { headers } from 'next/headers'
 import Image from 'next/image'
-import { CarProps } from '@/types'
+import { CarProps, filterProps } from '@/types'
 import { useState } from 'react'
 //import axios from 'axios'
 
-export async function fetchcars() {
+export async function fetchcars(filters: filterProps) {
+	const { brand, Model } = filters
 	const timestamp = new Date().getTime() // Current timestamp
-	const response = await fetch(`http://localhost:5000/api/car?_=${timestamp}`, {
-		headers: {
-			'Cache-Control': 'no-store',
-			Pragma: 'no-store',
-		},
-	})
-	const result = await response.json()
-	console.log(result)
-	return result
+
+	if (Model && brand) {
+		const response = await fetch(
+			`http://localhost:5000/api/cars?search=${encodeURIComponent(
+				brand
+			)}&Model=${encodeURIComponent(Model)}`,
+			{
+				headers: {
+					'Cache-Control': 'no-store',
+					Pragma: 'no-store',
+				},
+			}
+		)
+		if (response.ok) {
+			const result = await response.json()
+
+			console.log('HI there', result)
+			return result
+		} else {
+			console.log('no response')
+		}
+	} else {
+		const response = await fetch(
+			`http://localhost:5000/api/car?_=${timestamp}`,
+			{
+				headers: {
+					'Cache-Control': 'no-store',
+					Pragma: 'no-store',
+				},
+			}
+		)
+		const result = await response.json()
+		console.log(result)
+		return result
+	}
 }
 interface CarDetailsProps {
 	isOpen: boolean
@@ -24,13 +51,20 @@ interface CarDetailsProps {
 	car: CarProps
 }
 
-export default async function Home() {
+export default async function Home(searchParams: any) {
 	const [selectedBrand, setSelectedBrand] = useState('')
 	const handleBrandSelect = (brand: string) => {
 		setSelectedBrand(brand)
 	}
-	const allCars = await fetchcars()
-	console.log(allCars)
+	console.log(searchParams.Model, searchParams.brand)
+
+	//const allCars = await fetchcars()
+	const allCars = await fetchcars({
+		brand: searchParams.brand || '',
+		Model: searchParams.Model || '',
+	})
+
+	// console.log(allCars)
 	const isDataEmpty = !Array.isArray(allCars) || allCars.length < 1 || !allCars
 
 	return (

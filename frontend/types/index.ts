@@ -49,3 +49,6 @@ export interface CustomFilterProps {
 	title: string
 	options: optionProps[]
 }
+export type SearchParams = {
+	sortOrder?: string
+}

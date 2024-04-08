@@ -33,7 +33,7 @@ const SearchBrand = ({ brand, setBrand, onBrandSelect }: SearchBrandProps) => {
 				<div className='relative w-full'>
 					<Combobox.Button className='absolute top-[14px]'>
 						<Image
-							src='/magnifying-glass.svg'
+							src='/car-logo.svg'
 							width={25}
 							height={25}
 							className='ml-4'

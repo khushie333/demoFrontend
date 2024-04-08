@@ -235,31 +235,63 @@ class CarController {
 		}
 	}
 
-	//search car by id
+	//search car by model
+	// static search = async (req: Request, res: Response): Promise<void> => {
+	// 	try {
+	// 		const search: string | undefined = req.query.search as string | undefined
+
+	// 		if (!search) {
+	// 			res.status(400).json({ error: 'Search parameter is missing' })
+	// 			return
+	// 		}
+	// 		//console.log('Search parameter:', search)
+
+	// 		const cars = await carModel.find({
+	// 			$or: [
+	// 				{ brand: { $regex: search, $options: 'i' } },
+	// 				{ Model: { $regex: search, $options: 'i' } },
+	// 			],
+	// 		})
+	// 		console.log(cars)
+	// 		res.json({ cars: cars })
+	// 	} catch (error) {
+	// 		console.error(error)
+	// 		res.status(500).json({ error: 'Internal Server Error' })
+	// 	}
+	// }
+
 	static search = async (req: Request, res: Response): Promise<void> => {
 		try {
-			const search: string | undefined = req.query.search as string | undefined
+			const searchParam = req.query.search as string | string[] | undefined
 
-			if (!search) {
+			if (!searchParam) {
 				res.status(400).json({ error: 'Search parameter is missing' })
 				return
 			}
-			//console.log('Search parameter:', search)
+
+			let brandSearch: string | undefined
+			let modelSearch: string | undefined
+
+			if (typeof searchParam === 'string') {
+				brandSearch = searchParam
+				modelSearch = searchParam
+			} else {
+				;[brandSearch, modelSearch] = searchParam
+			}
 
 			const cars = await carModel.find({
 				$or: [
-					{ brand: { $regex: search, $options: 'i' } },
-					{ Model: { $regex: search, $options: 'i' } },
+					{ brand: { $regex: brandSearch, $options: 'i' } },
+					{ Model: { $regex: modelSearch, $options: 'i' } },
 				],
 			})
-			console.log(cars)
-			res.json({ cars: cars })
+
+			res.json({ cars })
 		} catch (error) {
 			console.error(error)
 			res.status(500).json({ error: 'Internal Server Error' })
 		}
 	}
-
 	//filter cars by baseAmount
 	static filterByBaseAmount = async (
 		req: Request,

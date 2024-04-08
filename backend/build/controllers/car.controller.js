@@ -191,23 +191,52 @@ CarController.deleteCarById = (req, res) => __awaiter(void 0, void 0, void 0, fu
         res.status(500).json({ message: 'Internal Server Error' });
     }
 });
-//search car by id
+//search car by model
+// static search = async (req: Request, res: Response): Promise<void> => {
+// 	try {
+// 		const search: string | undefined = req.query.search as string | undefined
+// 		if (!search) {
+// 			res.status(400).json({ error: 'Search parameter is missing' })
+// 			return
+// 		}
+// 		//console.log('Search parameter:', search)
+// 		const cars = await carModel.find({
+// 			$or: [
+// 				{ brand: { $regex: search, $options: 'i' } },
+// 				{ Model: { $regex: search, $options: 'i' } },
+// 			],
+// 		})
+// 		console.log(cars)
+// 		res.json({ cars: cars })
+// 	} catch (error) {
+// 		console.error(error)
+// 		res.status(500).json({ error: 'Internal Server Error' })
+// 	}
+// }
 CarController.search = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const search = req.query.search;
-        if (!search) {
+        const searchParam = req.query.search;
+        if (!searchParam) {
             res.status(400).json({ error: 'Search parameter is missing' });
             return;
         }
-        //console.log('Search parameter:', search)
+        let brandSearch;
+        let modelSearch;
+        if (typeof searchParam === 'string') {
+            brandSearch = searchParam;
+            modelSearch = searchParam;
+        }
+        else {
+            ;
+            [brandSearch, modelSearch] = searchParam;
+        }
         const cars = yield car_model_1.carModel.find({
             $or: [
-                { brand: { $regex: search, $options: 'i' } },
-                { Model: { $regex: search, $options: 'i' } },
+                { brand: { $regex: brandSearch, $options: 'i' } },
+                { Model: { $regex: modelSearch, $options: 'i' } },
             ],
         });
-        console.log(cars);
-        res.json({ cars: cars });
+        res.json({ cars });
     }
     catch (error) {
         console.error(error);

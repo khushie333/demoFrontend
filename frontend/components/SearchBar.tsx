@@ -21,6 +21,7 @@ export const SearchButton = ({ otherClasses }: { otherClasses: string }) => {
 const SearchBar = () => {
 	const [brand, setBrand] = useState('')
 	const [Model, setModel] = useState('')
+	//const [search, setSearch] = useState('')
 
 	const Router = useRouter()
 
@@ -35,29 +36,31 @@ const SearchBar = () => {
 			return alert('Please provide some input')
 		}
 
-		updateSearchParams(Model.toLowerCase(), brand.toLowerCase())
+		updateSearchParams(brand.toLowerCase(), Model.toLowerCase())
 	}
 	const updateSearchParams = (Model: string, brand: string) => {
-		// Create a new URLSearchParams object using the current URL search parameters
+		// // Create a new URLSearchParams object using the current URL search parameters
 		const searchParams = new URLSearchParams(window.location.search)
 
-		// Update or delete the 'model' search parameter based on the 'model' value
+		// // Update or delete the 'model' search parameter based on the 'model' value
 		if (Model) {
-			searchParams.set('model', Model)
+			searchParams.set('Model', Model)
 		} else {
-			searchParams.delete('model')
+			searchParams.delete('Model', Model)
 		}
 
-		// Update or delete the 'brand' search parameter based on the 'brand' value
+		// //Update or delete the 'brand' search parameter based on the 'brand' value
 		if (brand) {
 			searchParams.set('brand', brand)
 		} else {
 			searchParams.delete('brand')
 		}
 
-		// Generate the new pathname with the updated search parameters
-		const newPathname = `${window.location.pathname}?${searchParams.toString()}`
+		// // Generate the new pathname with the updated search parameters
+		// const newPathname = `${window.location.pathname}?${searchParams.toString()}`
 
+		// Router.push(newPathname)
+		const newPathname = `${window.location.pathname}?${searchParams.toString()}`
 		Router.push(newPathname)
 	}
 	return (
