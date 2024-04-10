@@ -11,9 +11,10 @@ export interface CustombuttonProps {
 }
 export interface SearchBrandProps {
 	brand: String
-	onBrandSelect: (brand: string) => void
+
 	setBrand: (brand: string) => void
 }
+
 export interface CarProps {
 	_id: string
 	user: string
@@ -25,6 +26,8 @@ export interface CarProps {
 	baseAmount: number
 	bidStartDate: Date
 	bidEndDate: Date
+	title: string
+	value: string
 }
 export interface Car {
 	_id: string
@@ -39,15 +42,19 @@ export interface Car {
 	bidEndDate: Date
 }
 export interface filterProps {
-	brand: string
-	Model: string
+	brand?: string
+	Model?: string
+}
+export interface HomeProps {
+	searchParams: filterProps
 }
 export interface optionProps {
 	title: string
+	value: string
 }
 export interface CustomFilterProps {
 	title: string
-	options: optionProps[]
+	options: CarProps[]
 }
 export type SearchParams = {
 	sortOrder?: string

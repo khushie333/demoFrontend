@@ -32,14 +32,6 @@ const CarDetails = ({ isOpen, closeModel, car }: CarDetailsProps) => {
 		'bidStartDate',
 		'bidEndDate',
 	]
-	// function formatDate(dateString: any) {
-	// 	const date = new Date(dateString)
-	// 	const day = date.getDate().toString().padStart(2, '0')
-	// 	const month = (date.getMonth() + 1).toString().padStart(2, '0') // Months are zero-based
-	// 	const year = date.getFullYear().toString().slice(-2) // Get last two digits of year
-
-	// 	return `${day}/${month}/${year}`
-	// }
 	return (
 		<>
 			<Transition appear show={isOpen} as={Fragment}>

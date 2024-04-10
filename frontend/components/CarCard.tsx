@@ -8,28 +8,10 @@ import axios from 'axios'
 
 interface CarCardProps {
 	car: CarProps
-	Brand: string
 }
 
-const CarCard = ({ car, Brand }: CarCardProps) => {
+const CarCard = ({ car }: CarCardProps) => {
 	const [cars, setCars] = useState<CarProps[]>([])
-
-	useEffect(() => {
-		const fetchCarsByBrand = async () => {
-			try {
-				const response = await axios.get(
-					`http://localhost:5000/api/search?=${encodeURIComponent(Brand)}`
-				)
-				setCars(response.data.cars)
-			} catch (error) {
-				console.error('Error fetching cars:', error)
-			}
-		}
-
-		if (Brand) {
-			fetchCarsByBrand()
-		}
-	}, [Brand])
 
 	const [isOpen, setIsOpen] = useState(false)
 	const {
@@ -46,8 +28,8 @@ const CarCard = ({ car, Brand }: CarCardProps) => {
 	function formatDate(dateString: any) {
 		const date = new Date(dateString)
 		const day = date.getDate().toString().padStart(2, '0')
-		const month = (date.getMonth() + 1).toString().padStart(2, '0') // Months are zero-based
-		const year = date.getFullYear().toString().slice(-2) // Get last two digits of year
+		const month = (date.getMonth() + 1).toString().padStart(2, '0')
+		const year = date.getFullYear().toString().slice(-2)
 
 		return `${day}/${month}/${year}`
 	}
