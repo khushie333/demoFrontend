@@ -94,7 +94,7 @@ export default async function Home({ searchParams }: HomeProps) {
 		brand: searchParams.brand || '',
 		Model: searchParams.Model || '',
 	})
-
+	const baseAmountOptions = allCars.map((car: any) => car.baseAmount)
 	const isDataEmpty = !Array.isArray(allCars) || allCars.length < 1 || !allCars
 
 	return (
@@ -110,7 +110,7 @@ export default async function Home({ searchParams }: HomeProps) {
 
 					<div className='home__filter-container'>
 						{/* {allCars?.map((car: any) => ( */}
-						<CustomFilter title='baseAmount' options={allCars} />
+						<CustomFilter title='baseAmount' options={baseAmountOptions} />
 						{/* ))} */}
 					</div>
 				</div>

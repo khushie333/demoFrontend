@@ -9,7 +9,7 @@ import { updateSearchParams } from '@/utils'
 
 const CustomFilter = ({ title, options }: CustomFilterProps) => {
 	const router = useRouter()
-	const [selected, setSelected] = useState(options[0])
+	const [selected, setSelected] = useState(options[0]?.baseAmount)
 	const handleUpdateParams = (e: any) => {
 		if (e !== undefined) {
 			const newPathname = updateSearchParams(title, e.toString())
@@ -28,7 +28,7 @@ const CustomFilter = ({ title, options }: CustomFilterProps) => {
 			>
 				<div className='relative w-fit z-10'>
 					<Listbox.Button className='custom-filter__btn'>
-						<span className='block truncate'> {selected.value}</span>
+						<span className='block truncate'> {selected}</span>
 						<Image
 							src='/chevron-up-down.svg'
 							width={20}
@@ -52,7 +52,7 @@ const CustomFilter = ({ title, options }: CustomFilterProps) => {
 											active ? 'bg-primary-blue text-white' : 'text-gray-900'
 										}`
 									}
-									value={option.baseAmount}
+									value={option}
 								>
 									{({ selected }) => (
 										<>
@@ -61,7 +61,7 @@ const CustomFilter = ({ title, options }: CustomFilterProps) => {
 													selected ? 'font-medium' : 'font-normal'
 												}`}
 											>
-												{option.baseAmount}
+												{option}
 											</span>
 										</>
 									)}
