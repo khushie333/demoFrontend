@@ -1,4 +1,5 @@
 import Image from 'next/image'
+import { useRouter } from 'next/router'
 import Link from 'next/link'
 import React from 'react'
 import Custombutton from './Custombutton'
@@ -16,11 +17,18 @@ const Navbar = () => {
 						className='object-contain'
 					></Image>
 				</Link>
-				<Custombutton
-					title='sign-in'
-					btnType='button'
-					containerStyles='text-primary-blue rounded-full bg-white min-w-[130px]'
-				/>
+
+				<Link
+					href={'/SignIn'}
+					className='flex justify-center items-center'
+					passHref
+				>
+					<Custombutton
+						title='SignIn'
+						btnType='button'
+						containerStyles='text-primary-blue rounded-full bg-white min-w-[130px]'
+					/>
+				</Link>
 			</nav>
 		</header>
 	)

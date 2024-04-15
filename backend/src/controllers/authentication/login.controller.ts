@@ -31,6 +31,10 @@ class loginController {
 							process.env.JWT_SECRET_KEY || '',
 							{ expiresIn: '30d' }
 						)
+						res.cookie('jwt', token, {
+							httpOnly: true,
+							maxAge: 24 * 60 * 60 * 1000,
+						})
 						res.status(201).send({
 							status: 'success',
 							message: 'logged in successfully',
@@ -54,6 +58,55 @@ class loginController {
 				message: 'unable to login',
 			})
 		}
+	}
+	// View loggedinuser
+	public static loggedinuser = async (
+		req: AuthenticatedRequest,
+		res: Response
+	): Promise<void> => {
+		try {
+			const cookie = req.cookies['jwt']
+			const claims = jwt.verify(cookie, process.env.JWT_SECRET_KEY || '') as
+				| { userID: string }
+				| undefined
+			if (!claims) {
+				res.status(401).send({
+					message: 'Unauthorized User',
+				})
+				return
+			}
+
+			// Find user by ID
+			//console.log(claims)
+
+			const user = await userModel.findOne({ _id: claims.userID })
+			//console.log(user)
+			if (!user) {
+				res.status(404).send({
+					message: 'User not found',
+				})
+				return
+			}
+
+			// Remove sensitive data before sending response
+			const { password, ...data } = user.toJSON()
+			res.send(data)
+		} catch (error) {
+			console.error('Error:', error)
+			res.status(500).send({
+				message: 'cookie has expired',
+			})
+		}
+	}
+	//logOUT
+	public static logoutUser = async (
+		req: AuthenticatedRequest,
+		res: Response
+	): Promise<void> => {
+		res.cookie('jwt', '', { maxAge: 0 })
+		res.send({
+			message: 'success',
+		})
 	}
 
 	// change password

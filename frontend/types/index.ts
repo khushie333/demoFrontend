@@ -44,6 +44,8 @@ export interface Car {
 export interface filterProps {
 	brand?: string
 	Model?: string
+	baseAmount?: string
+	limit?: number
 }
 export interface HomeProps {
 	searchParams: filterProps

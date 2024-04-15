@@ -7,7 +7,15 @@ import SearchBar from './SearchBar'
 import SearchBrand from './SearchBrand'
 import CarCard from './CarCard'
 import CarDetails from './CarDetails'
+import Signup from './User/Signup'
+import SignIn from './User/SignIn'
+import ToastContainer from './ToastContainer'
+import userRegisterValidation from '@/utils/UserValidation'
+import ShowMore from './ShowMore'
 
+// import userSlice from '@/store/userSlice'
+// import UserSignin from './User/UserSignin'
+// import store from '@/store/store'
 export {
 	Dashboard,
 	Custombutton,
@@ -18,4 +26,9 @@ export {
 	SearchBrand,
 	CarCard,
 	CarDetails,
+	ToastContainer,
+	Signup,
+	SignIn,
+	ShowMore,
+	userRegisterValidation,
 }

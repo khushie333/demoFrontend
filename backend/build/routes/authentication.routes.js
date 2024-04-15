@@ -11,4 +11,6 @@ const router = (0, express_1.Router)();
 // Define routes
 router.post('/login', login_controller_1.default.userLogin);
 router.post('/changepassword', authenticate_middleware_1.default, login_controller_1.default.changePassword);
+router.get('/loggedinuser', login_controller_1.default.loggedinuser);
+router.post('/logout', login_controller_1.default.logoutUser);
 exports.default = router;

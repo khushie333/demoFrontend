@@ -1,105 +1,65 @@
 'use client'
-import { CarCard, CustomFilter, Dashboard, SearchBar } from '@/components'
+import {
+	CarCard,
+	Custombutton,
+	CustomFilter,
+	Dashboard,
+	SearchBar,
+	ShowMore,
+	Signup,
+} from '@/components'
 import { headers } from 'next/headers'
 import Image from 'next/image'
 import { CarProps, filterProps, HomeProps } from '@/types'
 import { useState, useEffect } from 'react'
 import { useRouter } from 'next/router'
-//import axios from 'axios'
+import { fetchcars } from '@/utils'
 
-// export async function getServerSideProps(context: any) {
-// 	const { query } = context
+export default function Home({ searchParams }: HomeProps) {
+	const [displayedCars, setDisplayedCars] = useState<CarProps[]>([])
+	const [loading, setloading] = useState(false)
 
-// 	// Check if search parameters are present
-// 	const hasSearchParams = Object.keys(query).length !== 0
-
-// 	// If search parameters are present, redirect to the base URL without search parameters
-// 	if (hasSearchParams) {
-// 		return {
-// 			redirect: {
-// 				destination: '/',
-// 				permanent: false,
-// 			},
-// 		}
-// 	}
-// }
-
-export async function fetchcars(filters: filterProps) {
-	const { brand, Model } = filters
-	const timestamp = new Date().getTime() // Current timestamp
-
-	if (brand || Model) {
-		let url = 'http://localhost:5000/api/cars?'
-		if (brand) {
-			url += `search=${encodeURIComponent(brand)}&`
-		}
-		if (Model) {
-			url += `search=${encodeURIComponent(Model)}&`
-		}
-		const response = await fetch(url, {
-			headers: {
-				'Cache-Control': 'no-store',
-				Pragma: 'no-store',
-			},
-		})
-		if (response.ok) {
-			const result = await response.json()
-			const carsArray = result.cars || []
-			return carsArray
-		} else {
-			console.log('no response')
-		}
-	} else {
-		const response = await fetch(
-			`http://localhost:5000/api/car?_=${timestamp}`,
-			{
-				headers: {
-					'Cache-Control': 'no-store',
-					Pragma: 'no-store',
-				},
-			}
-		)
-		const result = await response.json()
-		//console.log(result)
-		return result
-	}
-}
-interface CarDetailsProps {
-	isOpen: boolean
-	closeModel: () => void
-	car: CarProps
-}
-
-export default async function Home({ searchParams }: HomeProps) {
-	// const [selectedBrand, setSelectedBrand] = useState('')
-	// const handleBrandSelect = (brand: string) => {
-	// 	setSelectedBrand(brand)
-	// }
-
+	const [isDataEmpty, setIsDataEmpty] = useState(true)
+	const [allCars, setAllCars] = useState<any[]>([])
 	useEffect(() => {
+		const fetchData = async () => {
+			const allCars = await fetchcars(
+				{
+					brand: searchParams.brand || '',
+					Model: searchParams.Model || '',
+					baseAmount: searchParams.baseAmount || ',',
+				},
+				{
+					limit: '',
+				}
+			)
+			setAllCars(allCars)
+			setDisplayedCars(allCars.slice(0, 8))
+			setIsDataEmpty(!Array.isArray(allCars) || allCars.length < 1)
+		}
+
+		fetchData()
+
 		const resetUrl = () => {
 			window.history.pushState({}, document.title, window.location.origin)
 		}
-
 		resetUrl()
 
-		// Cleanup function to reset the URL when the component is unmounted
 		return () => {
 			resetUrl()
 		}
-	}, [])
+	}, [searchParams])
 
-	//const allCars = await fetchcars()
-	const allCars = await fetchcars({
-		brand: searchParams.brand || '',
-		Model: searchParams.Model || '',
-	})
-	const baseAmountOptions = allCars.map((car: any) => car.baseAmount)
-	const isDataEmpty = !Array.isArray(allCars) || allCars.length < 1 || !allCars
+	const showMoreCars = async () => {
+		const remainingCars = allCars.slice(displayedCars.length)
+		const nextCars = remainingCars.slice(0, 8)
+		setDisplayedCars((prevCars) => [...prevCars, ...nextCars])
+	}
 
 	return (
 		<main className='overflow-hidden'>
 			<Dashboard />
+
 			<div className='mt-12 padding-x padding-y max-width' id='discover'>
 				<div className='home__text-container'>
 					<h1 className='text-4xl font-extrabold'>Cars Catalogue</h1>
@@ -110,16 +70,24 @@ export default async function Home({ searchParams }: HomeProps) {
 
 					<div className='home__filter-container'>
 						{/* {allCars?.map((car: any) => ( */}
-						<CustomFilter title='baseAmount' options={baseAmountOptions} />
+						{/* <CustomFilter title='baseAmount' options={baseAmountOptions} /> */}
 						{/* ))} */}
 					</div>
 				</div>
 				{!isDataEmpty ? (
 					<section>
 						<div className='home__cars-wrapper'>
-							{allCars?.map((car: any) => (
-								<CarCard car={car} />
+							{displayedCars?.map((car: any, index: number) => (
+								<CarCard key={index} car={car} />
 							))}
+						</div>
+						<div className='w-full flex-center gap-5 mt-10'>
+							<Custombutton
+								btnType='button'
+								title='Show More'
+								containerStyles='bg-primary-blue rounded-full text-white'
+								handleClick={showMoreCars}
+							/>
 						</div>
 					</section>
 				) : (
@@ -131,3 +99,93 @@ export default async function Home({ searchParams }: HomeProps) {
 		</main>
 	)
 }
+
+// import {
+// 	CarCard,
+// 	Custombutton,
+// 	CustomFilter,
+// 	Dashboard,
+// 	SearchBar,
+// 	ShowMore,
+// 	Signup,
+// } from '@/components'
+// import { headers } from 'next/headers'
+// import Image from 'next/image'
+// import { CarProps, filterProps, HomeProps } from '@/types'
+// import { useState, useEffect } from 'react'
+// import { useRouter } from 'next/router'
+// import { fetchcars } from '@/utils'
+
+// export default async function Home({ searchParams }: HomeProps) {
+// 	useEffect(() => {
+// 		const resetUrl = () => {
+// 			window.history.pushState({}, document.title, window.location.origin)
+// 		}
+// 		resetUrl()
+// 		return () => {
+// 			resetUrl()
+// 		}
+// 	}, [])
+
+// 	const allCars = await fetchcars(
+// 		{
+// 			brand: searchParams.brand || '',
+// 			Model: searchParams.Model || '',
+// 			baseAmount: searchParams.baseAmount || ',',
+// 		},
+// 		{
+// 			limit: '',
+// 		}
+// 	)
+// 	const [displayedCars, setDisplayedCars] = useState(allCars.slice(0, 6))
+// 	//const allCars = await fetchcars()
+
+// 	const baseAmountOptions = allCars.map((car: any) => car.baseAmount)
+// 	const isDataEmpty = !Array.isArray(allCars) || allCars.length < 1 || !allCars
+// 	const showMoreCars = () => {
+// 		const remainingCars = allCars.slice(displayedCars.length)
+// 		const nextCars = remainingCars.slice(0, 6)
+// 		setDisplayedCars((prevCars: any) => [...prevCars, ...nextCars])
+// 	}
+
+// 	return (
+// 		<main className='overflow-hidden'>
+// 			<Dashboard />
+
+// 			<div className='mt-12 padding-x padding-y max-width' id='discover'>
+// 				<div className='home__text-container'>
+// 					<h1 className='text-4xl font-extrabold'>Cars Catalogue</h1>
+// 					<p>Explore the Cars you might like</p>
+// 				</div>
+// 				<div className='home__filter'>
+// 					<SearchBar />
+
+// 					<div className='home__filter-container'>
+// 						{/* {allCars?.map((car: any) => ( */}
+// 						{/* <CustomFilter title='baseAmount' options={baseAmountOptions} /> */}
+// 						{/* ))} */}
+// 					</div>
+// 				</div>
+// 				{!isDataEmpty ? (
+// 					<section>
+// 						<div className='home__cars-wrapper'>
+// 							{displayedCars?.map((car: any, index: number) => (
+// 								<CarCard key={index} car={car} />
+// 							))}
+// 						</div>
+// 						<Custombutton
+// 							btnType='button'
+// 							title='Show More'
+// 							containerStyles='bg-primary-blue rounded-full text-white'
+// 							handleClick={showMoreCars}
+// 						/>
+// 					</section>
+// 				) : (
+// 					<div className=''>
+// 						<h2 className='text-black text-xl font-bold'>oops,no results</h2>
+// 					</div>
+// 				)}
+// 			</div>
+// 		</main>
+// 	)
+// }

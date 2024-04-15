@@ -15,6 +15,7 @@ const CustomFilter = ({ title, options }: CustomFilterProps) => {
 			const newPathname = updateSearchParams(title, e.toString())
 			router.push(newPathname, { scroll: false })
 		}
+		console.log(e)
 	}
 
 	return (

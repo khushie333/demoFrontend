@@ -8,6 +8,17 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
+var __rest = (this && this.__rest) || function (s, e) {
+    var t = {};
+    for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p) && e.indexOf(p) < 0)
+        t[p] = s[p];
+    if (s != null && typeof Object.getOwnPropertySymbols === "function")
+        for (var i = 0, p = Object.getOwnPropertySymbols(s); i < p.length; i++) {
+            if (e.indexOf(p[i]) < 0 && Object.prototype.propertyIsEnumerable.call(s, p[i]))
+                t[p[i]] = s[p[i]];
+        }
+    return t;
+};
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
@@ -29,6 +40,10 @@ loginController.userLogin = (req, res) => __awaiter(void 0, void 0, void 0, func
                 if (user.email === email && isMatching) {
                     // JWT token
                     const token = jsonwebtoken_1.default.sign({ userID: user._id }, process.env.JWT_SECRET_KEY || '', { expiresIn: '30d' });
+                    res.cookie('jwt', token, {
+                        httpOnly: true,
+                        maxAge: 24 * 60 * 60 * 1000,
+                    });
                     res.status(201).send({
                         status: 'success',
                         message: 'logged in successfully',
@@ -57,9 +72,48 @@ loginController.userLogin = (req, res) => __awaiter(void 0, void 0, void 0, func
         });
     }
 });
+// View loggedinuser
+loginController.loggedinuser = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const cookie = req.cookies['jwt'];
+        const claims = jsonwebtoken_1.default.verify(cookie, process.env.JWT_SECRET_KEY || '');
+        if (!claims) {
+            res.status(401).send({
+                message: 'Unauthorized User',
+            });
+            return;
+        }
+        // Find user by ID
+        //console.log(claims)
+        const user = yield user_model_1.default.findOne({ _id: claims.userID });
+        //console.log(user)
+        if (!user) {
+            res.status(404).send({
+                message: 'User not found',
+            });
+            return;
+        }
+        // Remove sensitive data before sending response
+        const _b = user.toJSON(), { password } = _b, data = __rest(_b, ["password"]);
+        res.send(data);
+    }
+    catch (error) {
+        console.error('Error:', error);
+        res.status(500).send({
+            message: 'cookie has expired',
+        });
+    }
+});
+//logOUT
+loginController.logoutUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    res.cookie('jwt', '', { maxAge: 0 });
+    res.send({
+        message: 'success',
+    });
+});
 // change password
 loginController.changePassword = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    var _b;
+    var _c;
     const { password, password_conf, } = req.body;
     if (password && password_conf) {
         if (password !== password_conf) {
@@ -76,7 +130,7 @@ loginController.changePassword = (req, res) => __awaiter(void 0, void 0, void 0,
             // // Mongoose findByIdAndUpdate method call
             // console.log(`Updating password for user with ID: ${req.user?._id}`)
             // find by id and update the password
-            const result = yield user_model_1.default.findByIdAndUpdate((_b = req.user) === null || _b === void 0 ? void 0 : _b._id, {
+            const result = yield user_model_1.default.findByIdAndUpdate((_c = req.user) === null || _c === void 0 ? void 0 : _c._id, {
                 $set: {
                     password: newhashPassword,
                 },

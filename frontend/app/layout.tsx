@@ -1,14 +1,13 @@
 import type { Metadata } from 'next'
-//import { Inter } from "next/font/google";
+import { Inter } from 'next/font/google'
+import { Provider } from 'react-redux'
+
 import './globals.css'
-import { Footer, Navbar } from '@/components'
+import { Footer, Navbar, ToastContainer } from '@/components'
+
+import { Providers } from '@/components/Providers'
 
 //const inter = Inter({ subsets: ["latin"] });
-
-export const metadata: Metadata = {
-	title: 'WheelDeal',
-	description: 'Discovering nice the best cars',
-}
 
 export default function RootLayout({
 	children,
@@ -18,9 +17,20 @@ export default function RootLayout({
 	return (
 		<html lang='en'>
 			<body className='relative'>
-				<Navbar />
-				{children}
-				<Footer />
+				<Providers>
+					<ToastContainer
+						position='top-right'
+						autoClose={1500}
+						hideProgressBar={false}
+						closeOnClick
+						pauseOnHover
+						draggable
+						theme='light'
+					/>
+					<Navbar />
+					{children}
+					<Footer />
+				</Providers>
 			</body>
 		</html>
 	)

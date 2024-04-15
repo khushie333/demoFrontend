@@ -2,8 +2,15 @@
 import React from 'react'
 import Image from 'next/image'
 import Custombutton from './Custombutton'
-const Dashboard = () => {
-	const handleScroll = () => {}
+import Link from 'next/link'
+const Dashboard = ({ onExploreCarsClick }: any) => {
+	const handleExploreCarsClick = () => {
+		const nextSection = document.getElementById('discover')
+
+		if (nextSection) {
+			nextSection.scrollIntoView({ behavior: 'smooth' })
+		}
+	}
 	return (
 		<div className='hero'>
 			<div className='flex-1 pt-36 padding-x'>
@@ -14,11 +21,13 @@ const Dashboard = () => {
 					Streamline your car buying experience with our effortless auction
 					process.
 				</p>
-				<Custombutton
-					title='Explore cars'
-					containerStyles='bg-primary-blue text-white text-lg font-medium rounded-full mt-10'
-					handleClick={handleScroll}
-				/>
+				<Link href='#'>
+					<Custombutton
+						title='Explore cars'
+						containerStyles='bg-primary-blue text-white text-lg font-medium rounded-full mt-10'
+						handleClick={handleExploreCarsClick}
+					/>
+				</Link>
 			</div>
 			<div className='hero__image-container'>
 				<div className='hero__image top-64'>

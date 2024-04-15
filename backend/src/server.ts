@@ -1,6 +1,7 @@
 import mongoose from 'mongoose'
 import express, { Application } from 'express'
 import cors from 'cors'
+import cookieParser from 'cookie-parser'
 //import multer from 'multer'
 
 //import bodyParser from 'body-parser'
@@ -10,6 +11,7 @@ import authenticateRoutes from './routes/authentication.routes'
 import emailRoutes from './routes/email.routes'
 import carRoutes from './routes/car.routes'
 import bidRoutes from './routes/bid.routes'
+
 import {
 	errorHandler,
 	handleError,
@@ -23,13 +25,14 @@ appConfig.initialize()
 //const app = express()
 const app: Application = express()
 app.use(express.json())
+app.use(cookieParser())
 //app.use(bodyParser.json()) // for parsing application/json
 app.use(express.urlencoded({ extended: true, limit: '10mb' }))
 //app.use(express.urlencoded({ extended: true }))
 app.use(cors())
 app.use(express.static('uploads'))
 
-app.use(cors({ origin: 'http://localhost:3000' }))
+app.use(cors({ credentials: true, origin: 'http://localhost:3000' }))
 
 const mongoUrl = appConfig.getMongoUrl()
 
