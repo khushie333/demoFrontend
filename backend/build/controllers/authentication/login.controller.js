@@ -75,7 +75,7 @@ loginController.userLogin = (req, res) => __awaiter(void 0, void 0, void 0, func
 // View loggedinuser
 loginController.loggedinuser = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const cookie = req.cookies['jwt'];
+        const cookie = req.cookies['token'];
         const claims = jsonwebtoken_1.default.verify(cookie, process.env.JWT_SECRET_KEY || '');
         if (!claims) {
             res.status(401).send({
@@ -98,7 +98,6 @@ loginController.loggedinuser = (req, res) => __awaiter(void 0, void 0, void 0, f
         res.send(data);
     }
     catch (error) {
-        console.error('Error:', error);
         res.status(500).send({
             message: 'cookie has expired',
         });
@@ -115,6 +114,8 @@ loginController.logoutUser = (req, res) => __awaiter(void 0, void 0, void 0, fun
 loginController.changePassword = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     var _c;
     const { password, password_conf, } = req.body;
+    console.log('password', password);
+    console.log('password_conf', password_conf);
     if (password && password_conf) {
         if (password !== password_conf) {
             res.send({
@@ -135,6 +136,7 @@ loginController.changePassword = (req, res) => __awaiter(void 0, void 0, void 0,
                     password: newhashPassword,
                 },
             });
+            console.log(result);
             res.status(201).send({
                 status: 'success',
                 message: 'successfully changed password',

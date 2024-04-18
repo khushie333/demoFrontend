@@ -65,10 +65,12 @@ class loginController {
 		res: Response
 	): Promise<void> => {
 		try {
-			const cookie = req.cookies['jwt']
-			const claims = jwt.verify(cookie, process.env.JWT_SECRET_KEY || '') as
-				| { userID: string }
-				| undefined
+			const cookie = req.cookies['token']
+
+			const claims = jwt.verify(cookie, process.env.JWT_SECRET_KEY || '') as {
+				userID: string
+			}
+
 			if (!claims) {
 				res.status(401).send({
 					message: 'Unauthorized User',
@@ -87,12 +89,10 @@ class loginController {
 				})
 				return
 			}
-
 			// Remove sensitive data before sending response
 			const { password, ...data } = user.toJSON()
 			res.send(data)
 		} catch (error) {
-			console.error('Error:', error)
 			res.status(500).send({
 				message: 'cookie has expired',
 			})
@@ -119,6 +119,8 @@ class loginController {
 			password,
 			password_conf,
 		}: { password: string; password_conf: string } = req.body
+		console.log('password', password)
+		console.log('password_conf', password_conf)
 		if (password && password_conf) {
 			if (password !== password_conf) {
 				res.send({
@@ -133,12 +135,14 @@ class loginController {
 
 				// // Mongoose findByIdAndUpdate method call
 				// console.log(`Updating password for user with ID: ${req.user?._id}`)
+
 				// find by id and update the password
 				const result = await userModel.findByIdAndUpdate(req.user?._id, {
 					$set: {
 						password: newhashPassword,
 					},
 				})
+				console.log(result)
 
 				res.status(201).send({
 					status: 'success',

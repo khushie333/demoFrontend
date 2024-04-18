@@ -28,9 +28,9 @@ ResetPasswordEmail.sendUserPassResetEmail = (req, res) => __awaiter(void 0, void
             if (user) {
                 const secret = user._id + process.env.JWT_SECRET_KEY;
                 const token = jsonwebtoken_1.default.sign({ userID: user._id }, secret, {
-                    expiresIn: '15m',
+                    expiresIn: 86400,
                 });
-                const link = `http://localhost:5000/api/ResetPassword/${user._id}/${token}`;
+                const link = `http://localhost:3000/reset/${user._id}/${token}`;
                 // Send email
                 const info = yield emailConf_1.default.sendMail({
                     from: process.env.EMAIL_FROM,

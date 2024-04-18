@@ -23,10 +23,10 @@ class ResetPasswordEmail {
 				if (user) {
 					const secret: string = user._id + process.env.JWT_SECRET_KEY
 					const token: string = jwt.sign({ userID: user._id }, secret, {
-						expiresIn: '15m',
+						expiresIn: 86400,
 					})
 
-					const link: string = `http://localhost:5000/api/ResetPassword/${user._id}/${token}`
+					const link: string = `http://localhost:3000/reset/${user._id}/${token}`
 
 					// Send email
 					const info = await transporter.sendMail({
@@ -65,6 +65,7 @@ class ResetPasswordEmail {
 				password,
 				password_conf,
 			}: { password: string; password_conf: string } = req.body
+
 			const { id, token }: ResetParams = req.params as any
 
 			const user: User | null = await userModel.findById(id)

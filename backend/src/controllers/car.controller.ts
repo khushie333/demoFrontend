@@ -43,12 +43,14 @@ class CarController {
 	static createCar = async (req: Request, res: Response): Promise<void> => {
 		try {
 			const authorization = req.headers.authorization
+
 			if (!authorization) {
 				res.status(401).send({ error: 'Unauthorized' })
 				return
 			}
 
 			const token = authorization.split(' ')[1]
+
 			if (!token) {
 				res.status(401).send({ error: 'Unauthorized' })
 				return
@@ -86,6 +88,7 @@ class CarController {
 				res.status(500).json({ error: 'Internal Server Error' })
 			}
 			const files = req.files as Express.Multer.File[]
+
 			const images = files.map((file) => file.originalname)
 			const carData = new carModel({
 				user: userID,
