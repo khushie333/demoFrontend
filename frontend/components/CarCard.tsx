@@ -58,13 +58,13 @@ const CarCard = ({ car }: CarCardProps) => {
 					alt='car image'
 				/>
 			</div>
-			<p className='flex mt-6 text-[32px] font-semibold'>
+			<p className='flex mt-6 text-[32px] font-semibold border-gray-400'>
 				<span className='self-start text-[18px] font-semibold'>
 					Bid end date:{formatDate(bidEndDate)}
 				</span>
 			</p>
 			<div className='relative flex w-full  mt-2'>
-				<div className='flex group-hover:invisible w-full justify-between text-gray-600'>
+				<div className='flex group-hover:invisible w-full m-5 justify-between items-center text-gray-600'>
 					<div className='flex flex-col justify-center items-center gap-2'>
 						<Image
 							src='/steering-wheel.svg'
@@ -77,7 +77,7 @@ const CarCard = ({ car }: CarCardProps) => {
 				</div>
 
 				<div className='relative flex w-full  mt-2'>
-					<div className='flex group-hover:invisible w-full justify-between text-gray-600'>
+					<div className='flex group-hover:invisible w-full justify-between items-center text-gray-600'>
 						<div className='flex flex-col justify-center items-center gap-2'>
 							<Image src='/tire.svg' width={20} height={20} alt='tire' />
 							<p className='text-[14px] leading-[17px]'>{owner}</p>

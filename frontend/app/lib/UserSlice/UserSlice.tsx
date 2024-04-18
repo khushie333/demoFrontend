@@ -51,12 +51,53 @@ export const userLogin = createAsyncThunk('userLogin', async (val: object) => {
 		throw error?.response?.data
 	}
 })
+export const addCar = createAsyncThunk(
+	'addCar',
+	async (payload: { data: object; token: string }) => {
+		try {
+			const { data, token } = payload
+			const createCar = await axios.post(`${BASE_URL}car`, data, {
+				headers: {
+					Authorization: `Bearer ${token}`,
+					'Content-Type': 'multipart/form-data',
+				},
+			})
+			ToastSuccess('Your car has been added for Auction')
+			return createCar.data
+		} catch (error: any) {
+			ToastError(error.response.data.message)
+			throw error.response.data
+		}
+	}
+)
 
+export const updateUserPassword = createAsyncThunk(
+	'updateUserPassword',
+	async (payload: { data: object; token: string }) => {
+		try {
+			const { data, token } = payload // Assuming you pass both the data and the token in the payload
+			const response = await api.post('/changepassword', data, {
+				headers: {
+					Authorization: `Bearer ${token}`,
+				},
+			})
+			const responseData = response.data
+			ToastSuccess(responseData.message)
+			return responseData
+		} catch (error: any) {
+			ToastError(error.response.data.message)
+			throw error?.response?.data
+		}
+	}
+)
 //get user information
-export const getUserProfile = createAsyncThunk('getUser', async () => {
+export const getUserProfile = createAsyncThunk('getUserProfile', async () => {
 	try {
-		const existingUser = await api.get(`/user`)
+		const existingUser = await api.get(`/loggedinuser`, {
+			withCredentials: true,
+		})
 		const data = await existingUser.data
+
 		return data.data
 	} catch (error: any) {
 		ToastError(error.response.data.message)
@@ -71,6 +112,7 @@ export const updateUserProfile = createAsyncThunk(
 		try {
 			const existingUser = await api.patch('/user/update', updatedata)
 			const data = await existingUser.data
+
 			ToastSuccess(data.message)
 			return data
 		} catch (error: any) {
@@ -81,20 +123,6 @@ export const updateUserProfile = createAsyncThunk(
 )
 
 //update user password
-export const updateUserPassword = createAsyncThunk(
-	'updateUserPassword',
-	async (payload: object) => {
-		try {
-			const existingUser = await api.post('/user/update-password', payload)
-			const data = await existingUser.data
-			ToastSuccess(data.message)
-			return data
-		} catch (error: any) {
-			ToastError(error.response.data.message)
-			throw error?.response?.data
-		}
-	}
-)
 
 //User find and View Subscription,Rented,Buy books
 export const fetchUserBook = createAsyncThunk(
@@ -132,14 +160,17 @@ export const fetchUserRentedOrBuyBook = createAsyncThunk(
 //user slice
 const UserSlice: any = createSlice({
 	name: 'user',
-	initialState,
+	initialState: {
+		isLoggedIn: false,
+	},
 	reducers: {
 		logout: (state: any, action: any) => {
-			state.userBook = null
-			state.error = null
-			state.bookLink = null
+			console.log('logoutreducer called')
 			deleteCookie('token')
-			deleteCookie('role')
+			deleteCookie('status')
+			deleteCookie('message')
+			state.isLoggedIn = false
+			console.log(state.isLoggedIn)
 		},
 	},
 	extraReducers: (builder: any) => {
@@ -155,6 +186,7 @@ const UserSlice: any = createSlice({
 			})
 			.addCase(userLogin.pending, (state: any) => {
 				state.status = 'loading'
+				state.isLoggedIn = true
 			})
 			.addCase(userLogin.fulfilled, (state: any, action: any) => {
 				state.status = 'succeeded'
@@ -218,5 +250,6 @@ const UserSlice: any = createSlice({
 	},
 })
 
-export const { logout } = UserSlice.actions
+export const { login, logout } = UserSlice.actions
+export const selectIsLoggedIn = (state: any) => state.user.isLoggedIn
 export default UserSlice.reducer

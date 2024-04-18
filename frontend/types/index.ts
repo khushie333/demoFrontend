@@ -7,6 +7,7 @@ export interface CustombuttonProps {
 	textStyles?: string
 	rightIcon?: string
 	handleClick?: MouseEventHandler<HTMLButtonElement>
+	onClick?: MouseEventHandler<HTMLButtonElement>
 	btnType?: 'button' | 'submit'
 }
 export interface SearchBrandProps {

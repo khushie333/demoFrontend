@@ -12,7 +12,11 @@ import SignIn from './User/SignIn'
 import ToastContainer from './ToastContainer'
 import userRegisterValidation from '@/utils/UserValidation'
 import ShowMore from './ShowMore'
-
+import UserHome from './User/UserHome'
+import FormPassReset from './User/FormPassReset'
+import FormCreateCar from '@/app/FormCreateCar/page'
+import LoginButton from './LoginButton'
+import LogoutButton from './LogoutButton'
 // import userSlice from '@/store/userSlice'
 // import UserSignin from './User/UserSignin'
 // import store from '@/store/store'
@@ -31,4 +35,9 @@ export {
 	SignIn,
 	ShowMore,
 	userRegisterValidation,
+	UserHome,
+	FormPassReset,
+	FormCreateCar,
+	LoginButton,
+	LogoutButton,
 }

@@ -33,7 +33,7 @@ export const Signup = () => {
 			const rsp = await dispatch(userRegister(val))
 			if (rsp.payload !== undefined) {
 				setTimeout(async () => {
-					router.replace('/SignIn')
+					router.replace('/')
 				}, 200)
 			}
 		} catch (error) {
@@ -57,8 +57,8 @@ export const Signup = () => {
 	})
 
 	return (
-		<div className='relative flex flex-col justify-center min-h-screen overflow-hidden'>
-			<div className='w-full p-6 m-auto bg-white rounded-md shadow-xl  shadow-blue-300 ring-2 ring-blue-700 lg:max-w-xl'>
+		<div className=' flex flex-col justify-center min-h-screen overflow-hidden'>
+			<div className='w-full p-6 m-auto bg-white rounded-md shadow-xl mb-10 shadow-blue-300 ring-2 ring-blue-700 lg:max-w-xl'>
 				<h1 className='text-3xl font-semibold text-center text-blue-700  underline uppercase '>
 					Sign UP
 				</h1>

@@ -4,11 +4,7 @@ import { Footer, Navbar, Signup } from '@/components'
 const index = () => {
 	return (
 		<>
-			<Navbar />
-
 			<Signup />
-
-			<Footer />
 		</>
 	)
 }
