@@ -12,7 +12,7 @@ export const LoginButton = () => {
 			<Custombutton
 				title='Sign In'
 				btnType='button'
-				containerStyles='text-primary-blue rounded-full bg-gray-200 min-w-[130px]'
+				containerStyles='text-primary-blue rounded-full bg-gray-200 min-w-[130px] transition ease-in-out duration-500'
 			/>
 		</Link>
 	)

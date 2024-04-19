@@ -26,17 +26,20 @@ const Navbar = () => {
 					></Image>
 				</Link>
 				{isLoggedIn ? <LogoutButton /> : <LoginButton />}
-				<Link
-					href={'/UserHome'}
-					className='flex justify-center items-center'
-					passHref
-				>
-					<Custombutton
-						title='👤MyProfile'
-						btnType='button'
-						containerStyles='text-primary-blue rounded-full bg-white min-w-[130px]'
-					/>
-				</Link>
+
+				{isLoggedIn && (
+					<Link
+						href={'/UserHome'}
+						className='flex justify-center items-center'
+						passHref
+					>
+						<Custombutton
+							title='👤MyProfile'
+							btnType='button'
+							containerStyles='text-primary-blue rounded-full bg-white min-w-[130px]'
+						/>
+					</Link>
+				)}
 			</nav>
 		</header>
 	)
