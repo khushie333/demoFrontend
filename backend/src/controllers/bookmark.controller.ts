@@ -19,6 +19,7 @@ export const bookmarkCar = async (
 ): Promise<void> => {
 	try {
 		const { authorization } = req.headers
+
 		const token = authorization?.split(' ')[1]
 
 		if (!token) {
@@ -55,14 +56,42 @@ export const bookmarkCar = async (
 		res.status(500).json({ error: 'Internal Server Error' })
 	}
 }
+// get all bookmarks
+export const getBookmarks = async (
+	req: Request,
+	res: Response
+): Promise<void> => {
+	try {
+		// Fetch all bookmarks from the collection
+		const bookmarks: Bookmark[] = await bookmarkModel.find()
 
-//get all bookmark
+		// Send the bookmarks as a JSON response
+		res.json({ bookmarks })
+	} catch (error) {
+		// Handle any errors that occur during the process
+		console.error(error)
+		res.status(500).json({ error: 'Internal Server Error' })
+	}
+}
+//get all bookmark by user
 export const getBookmarkedCarsByUser = async (
 	req: Request,
 	res: Response
 ): Promise<void> => {
 	try {
-		const { userId } = req.params
+		const { authorization } = req.headers
+
+		const token = authorization?.split(' ')[1]
+
+		if (!token) {
+			res.status(401).json({ error: 'Unauthorized' })
+			return
+		}
+
+		const decodedToken: any = jwt.verify(token, process.env.JWT_SECRET_KEY)
+
+		// Extract user ID from decoded token
+		const userId: string = decodedToken.userID
 
 		// Find all bookmarks for the specified user
 		const bookmarks: Bookmark[] = await bookmarkModel.find({ user: userId })

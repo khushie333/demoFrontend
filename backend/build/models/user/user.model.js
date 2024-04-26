@@ -56,7 +56,7 @@ const userSchema = new mongoose_1.Schema({
     },
     active: {
         type: Boolean,
-        default: false, // Set default value to false
+        default: true, // Set default value to false
     },
 });
 // Define and export user model

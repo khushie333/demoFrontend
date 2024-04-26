@@ -10,10 +10,13 @@ const router = express_1.default.Router();
 // Define routes
 router.get('/user', user_controller_1.getUsers);
 router.post('/user', user_controller_1.userReg);
+router.put('/user/profile', user_controller_1.updateUserProfile);
+router.get('/user/viewCarsOfUser', user_controller_1.viewCarsOfUser);
 //user operations
 //bookmark car
 router.post('/bookmarks/:carId', bookmark_controller_1.bookmarkCar);
-router.get('/bookmarks/:userId', bookmark_controller_1.getBookmarkedCarsByUser);
+router.get('/bookmarks/user', bookmark_controller_1.getBookmarkedCarsByUser);
 router.delete('/bookmarks/:carId', bookmark_controller_1.removeBookmark);
+router.get('/bookmarks', bookmark_controller_1.getBookmarks);
 // Export the router
 exports.default = router;

@@ -59,6 +59,10 @@ const carSchema = new mongoose_1.Schema({
         type: Date,
         required: true,
     },
+    deleted: {
+        type: Boolean,
+        default: false, // Initially, cars are not deleted
+    },
 });
 exports.carModel = mongoose_1.default.model('car', carSchema);
 exports.default = exports.carModel;

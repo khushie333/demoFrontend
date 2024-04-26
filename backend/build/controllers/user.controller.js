@@ -12,10 +12,11 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.userReg = exports.getUsers = void 0;
+exports.viewCarsOfUser = exports.updateUserProfile = exports.userReg = exports.getUsers = void 0;
 const bcrypt_1 = __importDefault(require("bcrypt"));
 const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
 const user_model_1 = require("../models/user/user.model");
+const car_model_1 = __importDefault(require("../models/car/car.model"));
 function getUsers(req, res) {
     return __awaiter(this, void 0, void 0, function* () {
         try {
@@ -65,7 +66,7 @@ function userReg(req, res) {
                     const token = jsonwebtoken_1.default.sign({ userID: savedUser._id }, process.env.JWT_SECRET_KEY || '', { expiresIn: '30d' });
                     res.status(201).json({
                         status: 'success',
-                        message: 'Records inserted successfully',
+                        message: 'Registered successfully',
                         token,
                     });
                 }
@@ -89,3 +90,73 @@ function userReg(req, res) {
     });
 }
 exports.userReg = userReg;
+function updateUserProfile(req, res) {
+    return __awaiter(this, void 0, void 0, function* () {
+        const { authorization } = req.headers;
+        const token = authorization === null || authorization === void 0 ? void 0 : authorization.split(' ')[1];
+        if (!token) {
+            res.status(401).json({ status: 'failed', message: 'No token provided' });
+            return;
+        }
+        const decodedToken = jsonwebtoken_1.default.verify(token, process.env.JWT_SECRET_KEY);
+        // Extract user ID from decoded token
+        const userId = decodedToken.userID;
+        const { name, email, phone, address } = req.body;
+        try {
+            const user = yield user_model_1.UserModel.findById(userId);
+            if (!user) {
+                res.status(404).json({ status: 'failed', message: 'User not found' });
+                return;
+            }
+            // Conditional updates based on provided fields
+            if (name)
+                user.name = name;
+            if (phone)
+                user.phone = phone;
+            if (address)
+                user.address = address;
+            // Check if new email is provided and it's different from current
+            if (email && user.email !== email) {
+                const emailExists = yield user_model_1.UserModel.findOne({ email });
+                if (emailExists) {
+                    res
+                        .status(400)
+                        .json({ status: 'failed', message: 'Email already in use' });
+                    return;
+                }
+                user.email = email;
+            }
+            yield user.save();
+            res
+                .status(200)
+                .json({ status: 'success', message: 'Profile updated successfully' });
+        }
+        catch (error) {
+            res
+                .status(500)
+                .json({ status: 'failed', message: 'Error updating profile', error });
+        }
+    });
+}
+exports.updateUserProfile = updateUserProfile;
+function viewCarsOfUser(req, res) {
+    return __awaiter(this, void 0, void 0, function* () {
+        const { authorization } = req.headers;
+        const token = authorization === null || authorization === void 0 ? void 0 : authorization.split(' ')[1];
+        if (!token) {
+            res.status(401).json({ status: 'failed', message: 'No token provided' });
+            return;
+        }
+        const decodedToken = jsonwebtoken_1.default.verify(token, process.env.JWT_SECRET_KEY);
+        const userId = decodedToken.userID;
+        try {
+            const cars = yield car_model_1.default.find({ user: userId });
+            res.json(cars);
+        }
+        catch (error) {
+            console.error(error);
+            res.status(500).json({ message: 'Internal server error' });
+        }
+    });
+}
+exports.viewCarsOfUser = viewCarsOfUser;

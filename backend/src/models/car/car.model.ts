@@ -10,6 +10,7 @@ export interface ICar extends Document {
 	baseAmount: number
 	bidStartDate: Date
 	bidEndDate: Date
+	deleted: boolean
 }
 
 const carSchema: Schema<ICar> = new Schema<ICar>({
@@ -47,6 +48,10 @@ const carSchema: Schema<ICar> = new Schema<ICar>({
 	bidEndDate: {
 		type: Date,
 		required: true,
+	},
+	deleted: {
+		type: Boolean,
+		default: false, // Initially, cars are not deleted
 	},
 })
 

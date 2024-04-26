@@ -40,7 +40,7 @@ const userSchema: Schema<User> = new Schema<User>({
 	},
 	active: {
 		type: Boolean,
-		default: false, // Set default value to false
+		default: true, // Set default value to false
 	},
 })
 

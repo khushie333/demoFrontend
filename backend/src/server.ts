@@ -2,6 +2,8 @@ import mongoose from 'mongoose'
 import express, { Application } from 'express'
 import cors from 'cors'
 import cookieParser from 'cookie-parser'
+import path from 'path'
+
 //import multer from 'multer'
 
 //import bodyParser from 'body-parser'
@@ -33,6 +35,7 @@ app.use(cors())
 app.use(express.static('uploads'))
 app.use(cookieParser())
 app.use(cors({ origin: 'http://localhost:3000', credentials: true }))
+app.use('/images', express.static(path.join(__dirname, 'public')))
 
 const mongoUrl = appConfig.getMongoUrl()
 

@@ -12,7 +12,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.removeBookmark = exports.getBookmarkedCarsByUser = exports.bookmarkCar = void 0;
+exports.removeBookmark = exports.getBookmarkedCarsByUser = exports.getBookmarks = exports.bookmarkCar = void 0;
 const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
 const bookmark_model_1 = __importDefault(require("../models/bookmarks/bookmark.model"));
 //create bookmark
@@ -50,10 +50,33 @@ const bookmarkCar = (req, res) => __awaiter(void 0, void 0, void 0, function* ()
     }
 });
 exports.bookmarkCar = bookmarkCar;
-//get all bookmark
+// get all bookmarks
+const getBookmarks = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        // Fetch all bookmarks from the collection
+        const bookmarks = yield bookmark_model_1.default.find();
+        // Send the bookmarks as a JSON response
+        res.json({ bookmarks });
+    }
+    catch (error) {
+        // Handle any errors that occur during the process
+        console.error(error);
+        res.status(500).json({ error: 'Internal Server Error' });
+    }
+});
+exports.getBookmarks = getBookmarks;
+//get all bookmark by user
 const getBookmarkedCarsByUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const { userId } = req.params;
+        const { authorization } = req.headers;
+        const token = authorization === null || authorization === void 0 ? void 0 : authorization.split(' ')[1];
+        if (!token) {
+            res.status(401).json({ error: 'Unauthorized' });
+            return;
+        }
+        const decodedToken = jsonwebtoken_1.default.verify(token, process.env.JWT_SECRET_KEY);
+        // Extract user ID from decoded token
+        const userId = decodedToken.userID;
         // Find all bookmarks for the specified user
         const bookmarks = yield bookmark_model_1.default.find({ user: userId });
         res.json({ bookmarks });

@@ -36,7 +36,8 @@ bidController.addBid = (req, res) => __awaiter(void 0, void 0, void 0, function*
     }
     catch (error) {
         console.error(error);
-        res.status(500).json({ error: 'Internal Server Error' });
+        res.status(500).json({ error: error });
+        console.log(error);
     }
 });
 //get all bids on specific car

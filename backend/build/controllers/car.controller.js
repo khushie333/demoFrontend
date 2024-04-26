@@ -23,9 +23,6 @@ const storage = multer_1.default.diskStorage({
         cb(null, 'uploads/'); // Destination directory for uploaded files
     },
     filename: (req, file, callback) => {
-        // const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1e9)
-        // const ext = extname(file.originalname)
-        // const filename = ``
         callback(null, file.originalname);
     },
 });
@@ -140,10 +137,11 @@ CarController.updateCarById = (req, res) => __awaiter(void 0, void 0, void 0, fu
         }
         //console.log(req.body)
         let updatedImageData = {};
-        if (req.file) {
+        const files = req.files;
+        if (files) {
             // Handle image upload and update image path
-            const imagePath = req.file.originalname;
-            updatedImageData = Object.assign(Object.assign({}, req.body), { images: imagePath });
+            const images = files.map((file) => file.originalname);
+            updatedImageData = Object.assign(Object.assign({}, req.body), { images: images });
         }
         else {
             // No new image file, update other fields only
@@ -158,9 +156,46 @@ CarController.updateCarById = (req, res) => __awaiter(void 0, void 0, void 0, fu
     }
 });
 // delete car by id
+// static deleteCarById = async (req: Request, res: Response): Promise<void> => {
+// 	try {
+// 		const authorization = req.headers.authorization
+// 		if (!authorization) {
+// 			res.status(401).json({ message: 'Unauthorized user' })
+// 			return
+// 		}
+// 		const token = authorization.split(' ')[1]
+// 		if (!token) {
+// 			res.status(401).json({ message: 'Unauthorized user' })
+// 			return
+// 		}
+// 		const decodedToken = jwt.verify(
+// 			token,
+// 			process.env.JWT_SECRET_KEY
+// 		) as Jwt & JwtPayload
+// 		const userID = decodedToken.userID as string
+// 		const car = await carModel.findById(req.params.id)
+// 		if (!car) {
+// 			res.status(404).json({ message: 'Car not found' })
+// 			return
+// 		}
+// 		if (String(car.user) !== userID) {
+// 			res.status(403).json({ message: 'Unauthorized user' })
+// 			return
+// 		}
+// 		const result = await carModel.findByIdAndDelete(req.params.id)
+// 		res
+// 			.status(200)
+// 			.json({ success: true, message: 'Car deleted successfully' })
+// 	} catch (error) {
+// 		console.error(error)
+// 		res.status(500).json({ message: 'Internal Server Error' })
+// 	}
+// }
 CarController.deleteCarById = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
+        console.log('hii');
         const authorization = req.headers.authorization;
+        console.log(authorization);
         if (!authorization) {
             res.status(401).json({ message: 'Unauthorized user' });
             return;
@@ -170,21 +205,31 @@ CarController.deleteCarById = (req, res) => __awaiter(void 0, void 0, void 0, fu
             res.status(401).json({ message: 'Unauthorized user' });
             return;
         }
+        console.log('token:', token);
         const decodedToken = jsonwebtoken_1.default.verify(token, process.env.JWT_SECRET_KEY);
         const userID = decodedToken.userID;
+        console.log('userID:', userID);
         const car = yield car_model_1.carModel.findById(req.params.id);
         if (!car) {
             res.status(404).json({ message: 'Car not found' });
             return;
         }
+        console.log(String(car.user));
         if (String(car.user) !== userID) {
             res.status(403).json({ message: 'Unauthorized user' });
             return;
         }
-        const result = yield car_model_1.carModel.findByIdAndDelete(req.params.id);
+        // Update the car document to mark it as deleted
+        const result = yield car_model_1.carModel.findByIdAndUpdate(req.params.id, {
+            deleted: true,
+        });
+        if (!result) {
+            res.status(500).json({ message: 'Failed to mark car as deleted' });
+            return;
+        }
         res
             .status(200)
-            .json({ success: true, message: 'Car deleted successfully' });
+            .json({ success: true, message: 'Car marked as deleted successfully' });
     }
     catch (error) {
         console.error(error);

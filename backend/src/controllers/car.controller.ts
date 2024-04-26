@@ -14,9 +14,6 @@ const storage = multer.diskStorage({
 		cb(null, 'uploads/') // Destination directory for uploaded files
 	},
 	filename: (req, file, callback) => {
-		// const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1e9)
-		// const ext = extname(file.originalname)
-		// const filename = ``
 		callback(null, file.originalname)
 	},
 })
@@ -175,10 +172,12 @@ class CarController {
 			}
 			//console.log(req.body)
 			let updatedImageData = {}
-			if (req.file) {
+			const files = req.files as Express.Multer.File[]
+
+			if (files) {
 				// Handle image upload and update image path
-				const imagePath = req.file.originalname
-				updatedImageData = { ...req.body, images: imagePath }
+				const images = files.map((file) => file.originalname)
+				updatedImageData = { ...req.body, images: images }
 			} else {
 				// No new image file, update other fields only
 				updatedImageData = req.body
@@ -189,6 +188,7 @@ class CarController {
 				updatedImageData,
 				{ new: true }
 			)
+
 			res.status(200).send(result)
 		} catch (error) {
 			console.error(error)
@@ -197,9 +197,51 @@ class CarController {
 	}
 
 	// delete car by id
+	// static deleteCarById = async (req: Request, res: Response): Promise<void> => {
+	// 	try {
+	// 		const authorization = req.headers.authorization
+	// 		if (!authorization) {
+	// 			res.status(401).json({ message: 'Unauthorized user' })
+	// 			return
+	// 		}
+
+	// 		const token = authorization.split(' ')[1]
+	// 		if (!token) {
+	// 			res.status(401).json({ message: 'Unauthorized user' })
+	// 			return
+	// 		}
+
+	// 		const decodedToken = jwt.verify(
+	// 			token,
+	// 			process.env.JWT_SECRET_KEY
+	// 		) as Jwt & JwtPayload
+	// 		const userID = decodedToken.userID as string
+
+	// 		const car = await carModel.findById(req.params.id)
+	// 		if (!car) {
+	// 			res.status(404).json({ message: 'Car not found' })
+	// 			return
+	// 		}
+
+	// 		if (String(car.user) !== userID) {
+	// 			res.status(403).json({ message: 'Unauthorized user' })
+	// 			return
+	// 		}
+
+	// 		const result = await carModel.findByIdAndDelete(req.params.id)
+	// 		res
+	// 			.status(200)
+	// 			.json({ success: true, message: 'Car deleted successfully' })
+	// 	} catch (error) {
+	// 		console.error(error)
+	// 		res.status(500).json({ message: 'Internal Server Error' })
+	// 	}
+	// }
 	static deleteCarById = async (req: Request, res: Response): Promise<void> => {
 		try {
+			console.log('hii')
 			const authorization = req.headers.authorization
+			console.log(authorization)
 			if (!authorization) {
 				res.status(401).json({ message: 'Unauthorized user' })
 				return
@@ -210,28 +252,38 @@ class CarController {
 				res.status(401).json({ message: 'Unauthorized user' })
 				return
 			}
+			console.log('token:', token)
 
 			const decodedToken = jwt.verify(
 				token,
 				process.env.JWT_SECRET_KEY
 			) as Jwt & JwtPayload
 			const userID = decodedToken.userID as string
+			console.log('userID:', userID)
 
 			const car = await carModel.findById(req.params.id)
 			if (!car) {
 				res.status(404).json({ message: 'Car not found' })
 				return
 			}
-
+			console.log(String(car.user))
 			if (String(car.user) !== userID) {
 				res.status(403).json({ message: 'Unauthorized user' })
 				return
 			}
 
-			const result = await carModel.findByIdAndDelete(req.params.id)
+			// Update the car document to mark it as deleted
+			const result = await carModel.findByIdAndUpdate(req.params.id, {
+				deleted: true,
+			})
+			if (!result) {
+				res.status(500).json({ message: 'Failed to mark car as deleted' })
+				return
+			}
+
 			res
 				.status(200)
-				.json({ success: true, message: 'Car deleted successfully' })
+				.json({ success: true, message: 'Car marked as deleted successfully' })
 		} catch (error) {
 			console.error(error)
 			res.status(500).json({ message: 'Internal Server Error' })
