@@ -1,14 +1,9 @@
 'use client'
 import React, { useState } from 'react'
-import { useFormik } from 'formik'
 import { updateUserPassword } from '@/app/lib/UserSlice/UserSlice'
 import { useDispatch } from 'react-redux'
-import { ToastContainer } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
 import { useRouter } from 'next/navigation'
-import SignIn from './SignIn'
-import Link from 'next/link'
-import userRegisterValidation from '@/utils/UserValidation'
 import { ThunkDispatch } from '@reduxjs/toolkit'
 import { getCookie } from 'cookies-next'
 
@@ -48,13 +43,13 @@ const FormPassReset = () => {
 	}
 	return (
 		<div>
-			<form className='mt-6' method='post' onSubmit={handleSubmit}>
-				<div className='mb-4'>
+			<form method='post' onSubmit={handleSubmit}>
+				<div>
 					<label
 						htmlFor='password'
 						className='block text-sm font-semibold text-gray-800'
 					>
-						Password
+						New Password
 					</label>
 					<input
 						type='password'
@@ -72,7 +67,7 @@ const FormPassReset = () => {
 					<input
 						type='password_conf'
 						name='password_conf'
-						className='block px-4 py-2 mt-2 text-indigo-700 bg-white border rounded-md focus:border-indigo-400 focus:ring-indigo-300 focus:outline-none focus:ring focus:ring-opacity-40'
+						className='block w-full px-4 py-2 mt-2 text-indigo-700 bg-white border rounded-md focus:border-indigo-400 focus:ring-indigo-300 focus:outline-none focus:ring focus:ring-opacity-40'
 					/>
 				</div>
 				<button

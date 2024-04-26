@@ -1,8 +1,23 @@
 'use client'
 import store from '@/app/lib/store/page'
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import { Provider } from 'react-redux'
-
+import contextFun from '@/utils/Context'
+import { getCookie } from 'cookies-next'
 export function Providers({ children }: any) {
-	return <Provider store={store}>{children}</Provider>
+	const [jwt, setJwt] = useState<any>('')
+	const [content, setContent] = useState({})
+	useEffect(() => {
+		const token = getCookie('token') as string
+		if (token) {
+			setJwt(token)
+		}
+	}, [])
+	const myContext = { jwt }
+
+	return (
+		<Provider store={store}>
+			<contextFun.Provider value={{ jwt }}>{children}</contextFun.Provider>
+		</Provider>
+	)
 }

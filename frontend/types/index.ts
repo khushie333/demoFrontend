@@ -29,6 +29,7 @@ export interface CarProps {
 	bidEndDate: Date
 	title: string
 	value: string
+	deleted: boolean
 }
 export interface Car {
 	_id: string

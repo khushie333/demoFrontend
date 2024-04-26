@@ -18,35 +18,6 @@
       "static/css/app/UserHome/page.css",
       "static/chunks/app/UserHome/page.js"
     ],
-    "/FormCreateCar/page": [
-      "static/chunks/webpack.js",
-      "static/chunks/main-app.js",
-      "static/css/app/FormCreateCar/page.css",
-      "static/chunks/app/FormCreateCar/page.js"
-    ],
-    "/SignIn/page": [
-      "static/chunks/webpack.js",
-      "static/chunks/main-app.js",
-      "static/css/app/SignIn/page.css",
-      "static/chunks/app/SignIn/page.js"
-    ],
-    "/Signup/page": [
-      "static/chunks/webpack.js",
-      "static/chunks/main-app.js",
-      "static/css/app/Signup/page.css",
-      "static/chunks/app/Signup/page.js"
-    ],
-    "/ResetPassword/page": [
-      "static/chunks/webpack.js",
-      "static/chunks/main-app.js",
-      "static/css/app/ResetPassword/page.css",
-      "static/chunks/app/ResetPassword/page.js"
-    ],
-    "/reset/[id]/[token]/page": [
-      "static/chunks/webpack.js",
-      "static/chunks/main-app.js",
-      "static/chunks/app/reset/[id]/[token]/page.js"
-    ],
     "/not-found": [
       "static/chunks/webpack.js",
       "static/chunks/main-app.js",

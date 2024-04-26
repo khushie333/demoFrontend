@@ -17,9 +17,10 @@ import FormPassReset from './User/FormPassReset'
 import FormCreateCar from '@/app/FormCreateCar/page'
 import LoginButton from './LoginButton'
 import LogoutButton from './LogoutButton'
-// import userSlice from '@/store/userSlice'
-// import UserSignin from './User/UserSignin'
-// import store from '@/store/store'
+import UpdateProfile from './User/UpdateProfile'
+import HandleNotLoggedIn from './HandleNotLoggedIn'
+import ViewBookmarks from './User/ViewBookmarks'
+//import UpdateCarData from './User/UpdateCarData'
 export {
 	Dashboard,
 	Custombutton,
@@ -40,4 +41,7 @@ export {
 	FormCreateCar,
 	LoginButton,
 	LogoutButton,
+	UpdateProfile,
+	HandleNotLoggedIn,
+	ViewBookmarks,
 }

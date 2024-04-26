@@ -1,7 +1,6 @@
 import Image from 'next/image'
 import Link from 'next/link'
 import React from 'react'
-import Custombutton from './Custombutton'
 import { footerLinks } from '@/constants'
 
 const Footer = () => {

@@ -11,9 +11,8 @@ const BASE_URL = process.env.NEXT_PUBLIC_BACKEND_URL
 //user initial state
 const initialState = {
 	user: [],
-	userBook: [],
-	bookLink: [],
 	error: null,
+	isLoggedIn: false,
 }
 interface formValue {
 	email: string
@@ -108,13 +107,37 @@ export const getUserProfile = createAsyncThunk('getUserProfile', async () => {
 //update user profile
 export const updateUserProfile = createAsyncThunk(
 	'updateUserProfile',
-	async (updatedata: object) => {
+	async (payload: { data: object; token: string }) => {
 		try {
-			const existingUser = await api.patch('/user/update', updatedata)
-			const data = await existingUser.data
-
-			ToastSuccess(data.message)
-			return data
+			const { data, token } = payload
+			const response = await api.put('/user/profile', data, {
+				headers: {
+					Authorization: `Bearer ${token}`,
+				},
+			})
+			const responseData = response.data
+			ToastSuccess(responseData.message)
+			return responseData
+		} catch (error: any) {
+			ToastError(error.response.data.message)
+			throw error?.response?.data
+		}
+	}
+)
+export const updateCar = createAsyncThunk(
+	'updateCar',
+	async (payload: { carID: any; data: object; token: any }) => {
+		try {
+			const { carID, data, token } = payload
+			const response = await api.put(`/car/${carID}`, data, {
+				headers: {
+					Authorization: `Bearer ${token}`,
+					'Content-Type': 'multipart/form-data',
+				},
+			})
+			const responseData = response.data
+			ToastSuccess(responseData.message)
+			return responseData
 		} catch (error: any) {
 			ToastError(error.response.data.message)
 			throw error?.response?.data
@@ -122,48 +145,14 @@ export const updateUserProfile = createAsyncThunk(
 	}
 )
 
-//update user password
-
-//User find and View Subscription,Rented,Buy books
-export const fetchUserBook = createAsyncThunk(
-	'fetchUserBook',
-	async (id: string) => {
-		try {
-			const getPackage = await api.get(`/book/user-book/${id}`)
-			ToastSuccess(getPackage.data.message)
-
-			return getPackage.data
-		} catch (error: any) {
-			ToastError(error.response.data.message)
-
-			throw error.response.data
-		}
-	}
-)
-
-//get all user rented book
-export const fetchUserRentedOrBuyBook = createAsyncThunk(
-	'fetchUserRentedBook',
-	async () => {
-		try {
-			const getPackage = await api.get('/book/user-book')
-			const getData = await getPackage.data
-			ToastSuccess(getPackage.data.message)
-			return getData.data
-		} catch (error: any) {
-			ToastError(error.response.data.message)
-			throw error.response.data
-		}
-	}
-)
-
 //user slice
 const UserSlice: any = createSlice({
 	name: 'user',
-	initialState: {
-		isLoggedIn: false,
-	},
+	initialState,
 	reducers: {
+		login(state) {
+			state.isLoggedIn = true
+		},
 		logout: (state: any, action: any) => {
 			console.log('logoutreducer called')
 			deleteCookie('token')
@@ -190,6 +179,7 @@ const UserSlice: any = createSlice({
 			})
 			.addCase(userLogin.fulfilled, (state: any, action: any) => {
 				state.status = 'succeeded'
+				state.isLoggedIn = true
 				// state.user = action.payload.data
 			})
 			.addCase(userLogin.rejected, (state: any, action: any) => {
@@ -221,31 +211,6 @@ const UserSlice: any = createSlice({
 			})
 			.addCase(updateUserPassword.rejected, (state: any, action: any) => {
 				state.status = 'failed'
-			})
-			.addCase(fetchUserBook.pending, (state: any) => {
-				state.status = 'loading'
-			})
-			.addCase(fetchUserBook.fulfilled, (state: any, action: any) => {
-				state.status = 'succeeded'
-				state.bookLink = action.payload
-			})
-			.addCase(fetchUserBook.rejected, (state: any, action: any) => {
-				state.status = 'failed'
-				state.error = action.error.message
-			})
-			.addCase(fetchUserRentedOrBuyBook.pending, (state: any) => {
-				state.status = 'loading'
-			})
-			.addCase(
-				fetchUserRentedOrBuyBook.fulfilled,
-				(state: any, action: any) => {
-					state.status = 'succeeded'
-					state.userBook = action.payload
-				}
-			)
-			.addCase(fetchUserRentedOrBuyBook.rejected, (state: any, action: any) => {
-				state.status = 'failed'
-				state.error = action.error.message
 			})
 	},
 })

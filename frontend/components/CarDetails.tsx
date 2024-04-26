@@ -1,17 +1,40 @@
 'use client'
 import { CarProps } from '@/types'
-import { Fragment } from 'react'
+import { Fragment, useState } from 'react'
 import Image from 'next/image'
+import { ChevronDownIcon } from '@heroicons/react/20/solid'
+import { Dialog, Transition, Disclosure } from '@headlessui/react'
 
-import { Dialog, Transition } from '@headlessui/react'
 import React from 'react'
+import Custombutton from './Custombutton'
+
+import Link from 'next/link'
+import axios from 'axios'
+import { getCookie } from 'cookies-next'
+import { ToastError, ToastSuccess } from './ToastContainer'
 interface CarDetailsProps {
 	isOpen: boolean
 	closeModel: () => void
 	car: CarProps
 }
+const token = getCookie('token')
 
+const config = {
+	headers: {
+		Authorization: `Bearer ${token}`,
+	},
+}
 const CarDetails = ({ isOpen, closeModel, car }: CarDetailsProps) => {
+	let [isOpenDialog, setIsOpenDialog] = useState(true)
+	const [isConfirmationOpen, setIsConfirmationOpen] = useState(false)
+	const [bidAmount, setBidAmount] = useState(car.baseAmount)
+	function closeModal() {
+		setIsOpenDialog(false)
+	}
+
+	function openModal() {
+		setIsOpenDialog(true)
+	}
 	const {
 		user,
 		brand,
@@ -23,6 +46,7 @@ const CarDetails = ({ isOpen, closeModel, car }: CarDetailsProps) => {
 		bidStartDate,
 		bidEndDate,
 	} = car
+
 	const displayKeys = [
 		'brand',
 		'Model',
@@ -32,6 +56,36 @@ const CarDetails = ({ isOpen, closeModel, car }: CarDetailsProps) => {
 		'bidStartDate',
 		'bidEndDate',
 	]
+
+	const handleBidAmountChange = (event: any) => {
+		setBidAmount(event.target.value)
+	}
+	const handleSubmit = async (event: any) => {
+		event.preventDefault()
+		setIsConfirmationOpen(true) // Open confirmation dialog
+	}
+	const handleConfirmBid = async () => {
+		try {
+			const response = await axios.post(
+				`http://localhost:5000/api/bids/${car._id}`,
+				{ amount: bidAmount },
+				config
+			)
+			ToastSuccess('Your Bid has been added successfully')
+			setIsConfirmationOpen(false) // Close confirmation dialog
+		} catch (error) {
+			ToastError('Error placing bid')
+			setIsConfirmationOpen(false) // Close confirmation dialog
+		}
+	}
+	const openConfirmation = () => {
+		setIsConfirmationOpen(true)
+	}
+
+	// Function to close the confirmation dialog
+	const closeConfirmation = () => {
+		setIsConfirmationOpen(false)
+	}
 	return (
 		<>
 			<Transition appear show={isOpen} as={Fragment}>
@@ -59,7 +113,7 @@ const CarDetails = ({ isOpen, closeModel, car }: CarDetailsProps) => {
 								leaveFrom='opacity-100 scale-100'
 								leaveTo='opacity-0 scale-95'
 							>
-								<Dialog.Panel className='relative w-full max-w-lg max-h-[90vh] overflow-y-auto transform rounded-2xl bg-white p-6 text-left shadow-xl transition-all flex flex-col gap-5'>
+								<Dialog.Panel className='relative w-full max-w-lg max-h-fit overflow-y-auto transform rounded-2xl bg-white p-6 text-left shadow-xl transition-all flex flex-col gap-5'>
 									<button
 										type='button'
 										className='absolute top-2 right-2 z-10 w-fit p-2 bg-primary-blue-100 rounded-full'
@@ -118,7 +172,7 @@ const CarDetails = ({ isOpen, closeModel, car }: CarDetailsProps) => {
 																className='flex justify-between gap-5 w-full text-right'
 																key={key}
 															>
-																<h4 className='text-grey capitalize'>
+																<h4 className='text-gray-700 font-semibold capitalize'>
 																	{key.split('_').join(' ')}
 																</h4>
 																<p className='text-black-100 font-semibold'>
@@ -128,25 +182,117 @@ const CarDetails = ({ isOpen, closeModel, car }: CarDetailsProps) => {
 														)
 													}
 													return (
-														<div
-															className='flex justify-between gap-5 w-full text-right'
-															key={key}
-														>
-															<h4 className='text-grey capitalize'>
-																{key.split('_').join(' ')}
-															</h4>
-															<p className='text-black-100 font-semibold'>
-																{value}
-															</p>
-														</div>
+														<>
+															<div
+																className='flex justify-between gap-5 w-full text-right'
+																key={key}
+															>
+																<h4 className='text-gray-700 font-semibold capitalize'>
+																	{key.split('_').join(' ')}
+																</h4>
+																<p className='text-black-100 font-semibold'>
+																	{value}
+																</p>
+															</div>
+														</>
 													)
 												})}
 										</div>
+										<Disclosure>
+											{({ open }) => (
+												<>
+													<Disclosure.Button className='flex w-full items-center justify-between rounded-lg bg-blue-700 px-4 py-2 font-bold text-lg text-white hover:bg-indigo-600 focus:outline-none focus-visible:ring focus-visible:ring-blue-500/75'>
+														<span>Add bid</span>
+														<ChevronDownIcon
+															className={`${
+																open ? 'rotate-180 transform' : ''
+															} h-10 w-10 text-white`}
+														/>
+													</Disclosure.Button>
+													<Disclosure.Panel className='px-4 pb-2 pt-4 text-black-100 font-bold text-lg'>
+														<form className='mt-1' onSubmit={handleSubmit}>
+															<input
+																type='number'
+																value={bidAmount}
+																onChange={handleBidAmountChange}
+																name='bidAmount'
+																placeholder='Enter your bid amount'
+																className='w-full p-2 border border-gray-300 rounded'
+																required
+															/>
+															<button
+																type='submit'
+																onClick={openModal}
+																className='mt-2 w-full bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded'
+															>
+																Submit Bid
+															</button>
+														</form>
+													</Disclosure.Panel>
+												</>
+											)}
+										</Disclosure>
 									</div>
 								</Dialog.Panel>
 							</Transition.Child>
 						</div>
 					</div>
+				</Dialog>
+			</Transition>
+
+			<Transition show={isConfirmationOpen} as={React.Fragment}>
+				<Dialog
+					as='div'
+					className='fixed z-10 inset-0 overflow-y-auto'
+					onClose={closeConfirmation}
+				>
+					<Transition.Child
+						as={React.Fragment}
+						enter='ease-out duration-300'
+						enterFrom='opacity-0'
+						enterTo='opacity-100'
+						leave='ease-in duration-200'
+						leaveFrom='opacity-100'
+						leaveTo='opacity-0'
+					>
+						<Dialog.Overlay className='inset-0 bg-black bg-opacity-15' />
+					</Transition.Child>
+
+					<Transition.Child
+						as={React.Fragment}
+						enter='ease-out duration-300'
+						enterFrom='opacity-0 scale-95'
+						enterTo='opacity-100 scale-100'
+						leave='ease-in duration-200'
+						leaveFrom='opacity-100 scale-100'
+						leaveTo='opacity-0 scale-95'
+					>
+						<div className='flex items-center justify-center min-h-screen'>
+							<div className='bg-white p-8 rounded-lg shadow-md'>
+								<Dialog.Title>
+									<b>Confirm Bid</b>
+								</Dialog.Title>
+								<Dialog.Description>
+									Are you sure you want to add your bid?
+								</Dialog.Description>
+
+								<div className='mt-4 flex justify-between'>
+									<button
+										className='px-4 py-2 bg-green-500 text-white font-semibold rounded hover:bg-green-600'
+										onClick={handleConfirmBid}
+									>
+										Yes, I'm sure
+									</button>
+									<button
+										className='px-4 py-2 bg-gray-200 text-gray-800 font-semibold rounded hover:bg-gray-300'
+										onClick={() => setIsConfirmationOpen(false)}
+									>
+										Cancel
+									</button>
+								</div>
+							</div>
+						</div>
+					</Transition.Child>
 				</Dialog>
 			</Transition>
 		</>

@@ -3,10 +3,8 @@ import React, { useState } from 'react'
 import { useFormik } from 'formik'
 import { userRegister } from '@/app/lib/UserSlice/UserSlice'
 import { useDispatch } from 'react-redux'
-import { ToastContainer } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
 import { useRouter } from 'next/navigation'
-import SignIn from './SignIn'
 import Link from 'next/link'
 import userRegisterValidation from '@/utils/UserValidation'
 import { ThunkDispatch } from '@reduxjs/toolkit'
@@ -33,7 +31,7 @@ export const Signup = () => {
 			const rsp = await dispatch(userRegister(val))
 			if (rsp.payload !== undefined) {
 				setTimeout(async () => {
-					router.replace('/')
+					router.replace('/SignIn')
 				}, 200)
 			}
 		} catch (error) {
@@ -134,8 +132,7 @@ export const Signup = () => {
 						>
 							Address
 						</label>
-						<input
-							type='address'
+						<textarea
 							name='address'
 							onChange={(val) => {
 								formik.handleChange(val)

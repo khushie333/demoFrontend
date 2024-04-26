@@ -1,9 +1,5 @@
 {
   "/not-found": "app/not-found.js",
-  "/UserHome/page": "app/UserHome/page.js",
-  "/ResetPassword/page": "app/ResetPassword/page.js",
   "/page": "app/page.js",
-  "/SignIn/page": "app/SignIn/page.js",
-  "/reset/[id]/[token]/page": "app/reset/[id]/[token]/page.js",
-  "/favicon.ico/route": "app/favicon.ico/route.js"
+  "/UserHome/page": "app/UserHome/page.js"
 }

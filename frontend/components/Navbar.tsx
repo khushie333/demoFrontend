@@ -1,18 +1,25 @@
 'use client'
 import Image from 'next/image'
-import { useRouter } from 'next/router'
 import Link from 'next/link'
-import React, { useState, useEffect } from 'react'
+import React, { useEffect } from 'react'
 import Custombutton from './Custombutton'
 import LoginButton from './LoginButton'
 import LogoutButton from './LogoutButton'
 import { getCookie } from 'cookies-next'
-import { useSelector } from 'react-redux'
-import { selectIsLoggedIn } from '@/app/lib/UserSlice/UserSlice'
+import { useSelector, useDispatch } from 'react-redux'
+import { selectIsLoggedIn, login } from '@/app/lib/UserSlice/UserSlice'
+import { ThunkDispatch } from '@reduxjs/toolkit'
+
 const Navbar = () => {
 	const isLoggedIn = useSelector(selectIsLoggedIn)
-	console.log('fromm navbar:', isLoggedIn)
-
+	const token = getCookie('token')
+	const dispatch = useDispatch<ThunkDispatch<any, any, any>>()
+	useEffect(() => {
+		// Check token existence and dispatch login or logout actions accordingly
+		if (token) {
+			dispatch(login({ token }))
+		}
+	}, [token, dispatch])
 	return (
 		<header className='w-full absolute z-10'>
 			<nav className='max-w-[1440px] mx-auto flex justify-between items-center sm:px-16 px-6 py-4'>
