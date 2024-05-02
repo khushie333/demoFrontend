@@ -81,22 +81,42 @@ export const getBookmarkedCarsByUser = async (
 	try {
 		const { authorization } = req.headers
 
-		const token = authorization?.split(' ')[1]
-
-		if (!token) {
+		if (!authorization) {
 			res.status(401).json({ error: 'Unauthorized' })
 			return
 		}
 
+		// Expecting "Bearer [token]"
+		const parts = authorization.split(' ')
+		if (parts.length !== 2 || parts[0] !== 'Bearer') {
+			res.status(401).json({ error: 'Unauthorized: Invalid token format' })
+			return
+		}
+
+		const token = parts[1]
+
 		const decodedToken: any = jwt.verify(token, process.env.JWT_SECRET_KEY)
-
-		// Extract user ID from decoded token
 		const userId: string = decodedToken.userID
-
-		// Find all bookmarks for the specified user
 		const bookmarks: Bookmark[] = await bookmarkModel.find({ user: userId })
-
 		res.json({ bookmarks })
+		// const { authorization } = req.headers
+
+		// const token = authorization
+
+		// if (!token) {
+		// 	res.status(401).json({ error: 'Unauthorized' })
+		// 	return
+		// }
+
+		// const decodedToken: any = jwt.verify(token, process.env.JWT_SECRET_KEY)
+
+		// // Extract user ID from decoded token
+		// const userId: string = decodedToken.userID
+
+		// // Find all bookmarks for the specified user
+		// const bookmarks: Bookmark[] = await bookmarkModel.find({ user: userId })
+
+		// res.json({ bookmarks })
 	} catch (error) {
 		console.error(error)
 		res.status(500).json({ error: 'Internal Server Error' })

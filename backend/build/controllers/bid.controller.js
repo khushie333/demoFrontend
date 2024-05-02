@@ -15,6 +15,8 @@ var _a;
 Object.defineProperty(exports, "__esModule", { value: true });
 const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
 const bid_model_1 = require("../models/bid/bid.model");
+const car_model_1 = __importDefault(require("../models/car/car.model"));
+const noti_model_1 = __importDefault(require("../models/notification/noti.model"));
 class bidController {
 }
 _a = bidController;
@@ -23,16 +25,43 @@ bidController.addBid = (req, res) => __awaiter(void 0, void 0, void 0, function*
     try {
         const { authorization } = req.headers;
         const token = authorization.split(' ')[1];
-        const { userID } = jsonwebtoken_1.default.verify(token, process.env.JWT_SECRET_KEY);
-        const { carId } = req.params;
-        const { amount } = req.body;
-        const bid = new bid_model_1.bidModel({
-            car: carId,
-            user: userID,
-            amount,
-        });
-        yield bid.save();
-        res.status(201).json(bid);
+        if (token.length !== 0) {
+            const { userID } = jsonwebtoken_1.default.verify(token, process.env.JWT_SECRET_KEY);
+            const { carId } = req.params;
+            if (carId) {
+                const car = yield car_model_1.default.findById(carId);
+                const baseamount = car === null || car === void 0 ? void 0 : car.baseAmount;
+                const { amount } = req.body;
+                if (baseamount && amount > baseamount) {
+                    const bid = new bid_model_1.bidModel({
+                        car: carId,
+                        user: userID,
+                        amount,
+                    });
+                    yield bid.save();
+                    yield noti_model_1.default.create({
+                        car: car._id,
+                        user: car.user,
+                        message: `New bid added on your car: ${car.brand} ${car.Model}`,
+                        isread: false,
+                    });
+                    res.status(201).json(bid);
+                }
+                else {
+                    res
+                        .status(500)
+                        .send({ error: 'bid amount should be greater than baseAmount' });
+                    console.log('baseamount error');
+                }
+            }
+            else {
+                console.log('error');
+            }
+        }
+        else {
+            res.send('Please LogIn first');
+            console.log('token not provided');
+        }
     }
     catch (error) {
         console.error(error);
@@ -62,9 +91,11 @@ bidController.getMaxBid = (req, res) => __awaiter(void 0, void 0, void 0, functi
             .sort({ amount: -1 })
             .limit(1);
         if (!maxBid) {
-            res
-                .status(404)
-                .json({ message: 'No bids found for the specified car.' });
+            // Respond with a custom status (200 OK) and a message indicating no bids found
+            res.status(200).json({
+                maxBidAmount: null,
+                message: 'No bids found for the specified car.',
+            });
             return;
         }
         res.json({ maxBidAmount: maxBid.amount });

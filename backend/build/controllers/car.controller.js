@@ -18,6 +18,7 @@ const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
 const multer_1 = __importDefault(require("multer"));
 const car_model_1 = require("../models/car/car.model");
 //import { upload } from '../middlewares/multer.middleware'
+const noti_model_1 = __importDefault(require("../models/notification/noti.model"));
 const storage = multer_1.default.diskStorage({
     destination: (req, file, cb) => {
         cb(null, 'uploads/'); // Destination directory for uploaded files
@@ -135,19 +136,36 @@ CarController.updateCarById = (req, res) => __awaiter(void 0, void 0, void 0, fu
             res.status(403).json({ message: 'Unauthorized user' });
             return;
         }
-        //console.log(req.body)
+        // Check if bidEndDate is updated
+        const isBidEndDateUpdated = req.body.bidEndDate &&
+            new Date(req.body.bidEndDate).getTime() !==
+                new Date(car.bidEndDate).getTime();
         let updatedImageData = {};
         const files = req.files;
-        if (files) {
-            // Handle image upload and update image path
-            const images = files.map((file) => file.originalname);
-            updatedImageData = Object.assign(Object.assign({}, req.body), { images: images });
+        // if (files) {
+        // 	const images = files.map((file) => file.originalname)
+        // 	updatedImageData = { ...req.body, images: images }
+        // } else {
+        // 	updatedImageData = req.body
+        // }
+        if (files.length !== 0) {
+            console.log('car chhe');
+            files.forEach((file) => {
+                car.images.push(file.originalname);
+            });
+            updatedImageData = Object.assign(Object.assign({}, req.body), { images: car.images });
         }
         else {
-            // No new image file, update other fields only
-            updatedImageData = req.body;
+            console.log('car nthi');
+            // If no new images are provided, retain the existing images
+            updatedImageData = Object.assign(Object.assign({}, req.body), { images: car.images });
         }
         const result = yield car_model_1.carModel.findByIdAndUpdate(req.params.id, updatedImageData, { new: true });
+        if (isBidEndDateUpdated) {
+            yield noti_model_1.default.deleteOne({ car: car._id });
+            // Optionally, emit a message to update any live UI elements that the notification has been removed
+            //io.emit('notificationRemoved', { carId: car._id });
+        }
         res.status(200).send(result);
     }
     catch (error) {
@@ -219,6 +237,7 @@ CarController.deleteCarById = (req, res) => __awaiter(void 0, void 0, void 0, fu
             res.status(403).json({ message: 'Unauthorized user' });
             return;
         }
+        yield noti_model_1.default.deleteMany({ car: req.params.id });
         // Update the car document to mark it as deleted
         const result = yield car_model_1.carModel.findByIdAndUpdate(req.params.id, {
             deleted: true,

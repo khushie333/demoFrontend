@@ -1,6 +1,9 @@
 import { Request, Response } from 'express'
 import jwt, { Jwt, JwtPayload } from 'jsonwebtoken'
 import { bidModel } from '../models/bid/bid.model'
+import carModel from '../models/car/car.model'
+import notificationmodel from '../models/notification/noti.model'
+import { Server as SocketIOServer } from 'socket.io'
 
 interface ProcessEnv {
 	[key: string]: string
@@ -15,22 +18,49 @@ class bidController {
 		try {
 			const { authorization } = req.headers as { authorization: string }
 			const token: string = authorization.split(' ')[1]
-			const { userID } = jwt.verify(token, process.env.JWT_SECRET_KEY) as {
-				userID: string
+
+			if (token.length !== 0) {
+				const { userID } = jwt.verify(token, process.env.JWT_SECRET_KEY) as {
+					userID: string
+				}
+
+				const { carId } = req.params
+				if (carId) {
+					const car = await carModel.findById(carId)
+
+					const baseamount = car?.baseAmount
+					const { amount }: { amount: number } = req.body
+
+					if (baseamount && amount > baseamount) {
+						const bid = new bidModel({
+							car: carId,
+							user: userID,
+							amount,
+						})
+
+						await bid.save()
+
+						await notificationmodel.create({
+							car: car._id,
+							user: car.user,
+							message: `New bid added on your car: ${car.brand} ${car.Model}`,
+							isread: false,
+						})
+
+						res.status(201).json(bid)
+					} else {
+						res
+							.status(500)
+							.send({ error: 'bid amount should be greater than baseAmount' })
+						console.log('baseamount error')
+					}
+				} else {
+					console.log('error')
+				}
+			} else {
+				res.send('Please LogIn first')
+				console.log('token not provided')
 			}
-
-			const { carId } = req.params
-
-			const { amount }: { amount: number } = req.body
-
-			const bid = new bidModel({
-				car: carId,
-				user: userID,
-				amount,
-			})
-
-			await bid.save()
-			res.status(201).json(bid)
 		} catch (error) {
 			console.error(error)
 			res.status(500).json({ error: error })
@@ -57,15 +87,18 @@ class bidController {
 			const { carId } = req.params
 
 			// Find the maximum bid for the specified car
+
 			const maxBid = await bidModel
 				.findOne({ car: carId })
 				.sort({ amount: -1 })
 				.limit(1)
 
 			if (!maxBid) {
-				res
-					.status(404)
-					.json({ message: 'No bids found for the specified car.' })
+				// Respond with a custom status (200 OK) and a message indicating no bids found
+				res.status(200).json({
+					maxBidAmount: null,
+					message: 'No bids found for the specified car.',
+				})
 				return
 			}
 

@@ -69,17 +69,33 @@ exports.getBookmarks = getBookmarks;
 const getBookmarkedCarsByUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const { authorization } = req.headers;
-        const token = authorization === null || authorization === void 0 ? void 0 : authorization.split(' ')[1];
-        if (!token) {
+        if (!authorization) {
             res.status(401).json({ error: 'Unauthorized' });
             return;
         }
+        // Expecting "Bearer [token]"
+        const parts = authorization.split(' ');
+        if (parts.length !== 2 || parts[0] !== 'Bearer') {
+            res.status(401).json({ error: 'Unauthorized: Invalid token format' });
+            return;
+        }
+        const token = parts[1];
         const decodedToken = jsonwebtoken_1.default.verify(token, process.env.JWT_SECRET_KEY);
-        // Extract user ID from decoded token
         const userId = decodedToken.userID;
-        // Find all bookmarks for the specified user
         const bookmarks = yield bookmark_model_1.default.find({ user: userId });
         res.json({ bookmarks });
+        // const { authorization } = req.headers
+        // const token = authorization
+        // if (!token) {
+        // 	res.status(401).json({ error: 'Unauthorized' })
+        // 	return
+        // }
+        // const decodedToken: any = jwt.verify(token, process.env.JWT_SECRET_KEY)
+        // // Extract user ID from decoded token
+        // const userId: string = decodedToken.userID
+        // // Find all bookmarks for the specified user
+        // const bookmarks: Bookmark[] = await bookmarkModel.find({ user: userId })
+        // res.json({ bookmarks })
     }
     catch (error) {
         console.error(error);

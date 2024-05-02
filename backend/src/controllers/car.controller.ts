@@ -8,7 +8,9 @@ import { ParsedQs } from 'qs'
 
 import { carModel } from '../models/car/car.model'
 //import { upload } from '../middlewares/multer.middleware'
-
+import notificationmodel, {
+	notification,
+} from '../models/notification/noti.model'
 const storage = multer.diskStorage({
 	destination: (req, file, cb) => {
 		cb(null, 'uploads/') // Destination directory for uploaded files
@@ -170,17 +172,30 @@ class CarController {
 				res.status(403).json({ message: 'Unauthorized user' })
 				return
 			}
-			//console.log(req.body)
+			// Check if bidEndDate is updated
+			const isBidEndDateUpdated =
+				req.body.bidEndDate &&
+				new Date(req.body.bidEndDate).getTime() !==
+					new Date(car.bidEndDate).getTime()
 			let updatedImageData = {}
 			const files = req.files as Express.Multer.File[]
 
-			if (files) {
-				// Handle image upload and update image path
-				const images = files.map((file) => file.originalname)
-				updatedImageData = { ...req.body, images: images }
+			// if (files) {
+			// 	const images = files.map((file) => file.originalname)
+			// 	updatedImageData = { ...req.body, images: images }
+			// } else {
+			// 	updatedImageData = req.body
+			// }
+			if (files.length !== 0) {
+				console.log('car chhe')
+				files.forEach((file) => {
+					car.images.push(file.originalname)
+				})
+				updatedImageData = { ...req.body, images: car.images }
 			} else {
-				// No new image file, update other fields only
-				updatedImageData = req.body
+				console.log('car nthi')
+				// If no new images are provided, retain the existing images
+				updatedImageData = { ...req.body, images: car.images }
 			}
 
 			const result = await carModel.findByIdAndUpdate(
@@ -188,7 +203,11 @@ class CarController {
 				updatedImageData,
 				{ new: true }
 			)
-
+			if (isBidEndDateUpdated) {
+				await notificationmodel.deleteOne({ car: car._id })
+				// Optionally, emit a message to update any live UI elements that the notification has been removed
+				//io.emit('notificationRemoved', { carId: car._id });
+			}
 			res.status(200).send(result)
 		} catch (error) {
 			console.error(error)
@@ -271,7 +290,7 @@ class CarController {
 				res.status(403).json({ message: 'Unauthorized user' })
 				return
 			}
-
+			await notificationmodel.deleteMany({ car: req.params.id })
 			// Update the car document to mark it as deleted
 			const result = await carModel.findByIdAndUpdate(req.params.id, {
 				deleted: true,
