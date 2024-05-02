@@ -1,4 +1,10 @@
 import { CarProps, filterProps, HomeProps } from '@/types'
+import axios from 'axios'
+import { useState } from 'react'
+interface CarCardProps {
+	car: CarProps
+}
+const BASE_URL = process.env.NEXT_PUBLIC_BACKEND_URL
 
 export async function fetchcars(filters: filterProps, params: any) {
 	const { brand, Model, baseAmount } = filters
@@ -6,7 +12,7 @@ export async function fetchcars(filters: filterProps, params: any) {
 	const timestamp = new Date().getTime() // Current timestamp
 
 	if (brand || Model) {
-		let url = 'http://localhost:5000/api/cars?'
+		let url = `${BASE_URL}/cars?`
 		if (brand) {
 			url += `search=${encodeURIComponent(brand)}&`
 		}
@@ -27,15 +33,12 @@ export async function fetchcars(filters: filterProps, params: any) {
 			console.log('no response')
 		}
 	} else {
-		const response = await fetch(
-			`http://localhost:5000/api/car?limit=${limit}`,
-			{
-				headers: {
-					'Cache-Control': 'no-store',
-					Pragma: 'no-store',
-				},
-			}
-		)
+		const response = await fetch(`${BASE_URL}/car?limit=${limit}`, {
+			headers: {
+				'Cache-Control': 'no-store',
+				Pragma: 'no-store',
+			},
+		})
 		const result = await response.json()
 		//console.log(result)
 		return result
@@ -57,4 +60,17 @@ export const updateSearchParams = (type: string, value: string) => {
 	const newPathname = `${window.location.pathname}?${searchParams.toString()}`
 
 	return newPathname
+}
+export const fetchMaxBid = async ({ car }: CarCardProps) => {
+	// const [maxBid, setMaxBid] = useState(null)
+
+	try {
+		const response = await axios.get(`${BASE_URL}/bids/getMaxBid/${car._id}`)
+		// setMaxBid(response.data.maxBidAmount)
+		if (response.data.maxBidAmount !== null) {
+			return response
+		}
+	} catch (error) {
+		console.error('Error fetching max bid:', error)
+	}
 }

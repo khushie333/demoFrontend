@@ -1,6 +1,6 @@
 'use client'
 import { CarProps } from '@/types'
-import { Fragment, useState } from 'react'
+import { Fragment, useEffect, useState } from 'react'
 import Image from 'next/image'
 import { ChevronDownIcon } from '@heroicons/react/20/solid'
 import { Dialog, Transition, Disclosure } from '@headlessui/react'
@@ -12,6 +12,8 @@ import Link from 'next/link'
 import axios from 'axios'
 import { getCookie } from 'cookies-next'
 import { ToastError, ToastSuccess } from './ToastContainer'
+import { fetchMaxBid } from '@/utils'
+
 interface CarDetailsProps {
 	isOpen: boolean
 	closeModel: () => void
@@ -25,16 +27,32 @@ const config = {
 	},
 }
 const CarDetails = ({ isOpen, closeModel, car }: CarDetailsProps) => {
+	const BASE_URL = process.env.NEXT_PUBLIC_BACKEND_URL
+
 	let [isOpenDialog, setIsOpenDialog] = useState(true)
 	const [isConfirmationOpen, setIsConfirmationOpen] = useState(false)
-	const [bidAmount, setBidAmount] = useState(car.baseAmount)
-	function closeModal() {
-		setIsOpenDialog(false)
-	}
+	const [maxBid, setMaxBid] = useState<number | null>(null)
+	const [maxBidchange, setMaxBidAmountchange] = useState<number | null>(
+		maxBid ?? 0
+	)
 
+	const [bidAmount, setBidAmount] = useState(car.baseAmount)
+	useEffect(() => {
+		const interval = setInterval(() => {
+			fetchMaxBid({ car }).then((data) => {
+				if (data && data.data.maxBidAmount !== maxBid) {
+					setMaxBid(data.data.maxBidAmount)
+				}
+			})
+		}, 2000) // Poll every 2000 milliseconds (2 seconds)
+
+		setMaxBidAmountchange(maxBid)
+		return () => clearInterval(interval)
+	}, [car, maxBid])
 	function openModal() {
 		setIsOpenDialog(true)
 	}
+
 	const {
 		user,
 		brand,
@@ -58,25 +76,40 @@ const CarDetails = ({ isOpen, closeModel, car }: CarDetailsProps) => {
 	]
 
 	const handleBidAmountChange = (event: any) => {
-		setBidAmount(event.target.value)
+		setMaxBidAmountchange(event.target.value)
 	}
 	const handleSubmit = async (event: any) => {
 		event.preventDefault()
-		setIsConfirmationOpen(true) // Open confirmation dialog
+		const newBid = Number(maxBidchange ?? 0)
+		const currentMaxBid = Number(maxBid ?? 0)
+		const minimumBid = Math.max(currentMaxBid, car.baseAmount)
+
+		if (newBid > minimumBid) {
+			setIsConfirmationOpen(true) // Open confirmation dialog
+		} else {
+			ToastError(
+				`Your bid must be greater than the current highest bid of ${minimumBid}.`
+			)
+		}
 	}
 	const handleConfirmBid = async () => {
 		try {
 			const response = await axios.post(
-				`http://localhost:5000/api/bids/${car._id}`,
-				{ amount: bidAmount },
+				`${BASE_URL}/bids/${car._id}`,
+				{ amount: maxBidchange },
 				config
 			)
-			ToastSuccess('Your Bid has been added successfully')
-			setIsConfirmationOpen(false) // Close confirmation dialog
+			if (response.status) {
+				ToastSuccess('Your Bid has been added successfully')
+				setIsConfirmationOpen(false)
+			}
 		} catch (error) {
-			ToastError('Error placing bid')
+			ToastError(
+				'Error placing bid! Your bid amount should be greater than baseamount'
+			)
 			setIsConfirmationOpen(false) // Close confirmation dialog
 		}
+		setBidAmount(maxBidchange ?? 0)
 	}
 	const openConfirmation = () => {
 		setIsConfirmationOpen(true)
@@ -86,6 +119,7 @@ const CarDetails = ({ isOpen, closeModel, car }: CarDetailsProps) => {
 	const closeConfirmation = () => {
 		setIsConfirmationOpen(false)
 	}
+
 	return (
 		<>
 			<Transition appear show={isOpen} as={Fragment}>
@@ -161,6 +195,11 @@ const CarDetails = ({ isOpen, closeModel, car }: CarDetailsProps) => {
 										<h2 className='font-semibold text-xl capitalize'>
 											{car.brand} {car.Model}
 										</h2>
+										{maxBid !== null && (
+											<h2 className='font-semibold text-xl capitalize'>
+												Maximum bid uptill Now: {maxBid} rs
+											</h2>
+										)}
 
 										<div className='mt-3 flex flex-wrap gap-4'>
 											{Object.entries(car)
@@ -213,7 +252,9 @@ const CarDetails = ({ isOpen, closeModel, car }: CarDetailsProps) => {
 														<form className='mt-1' onSubmit={handleSubmit}>
 															<input
 																type='number'
-																value={bidAmount}
+																value={
+																	maxBidchange !== null ? maxBidchange : ''
+																}
 																onChange={handleBidAmountChange}
 																name='bidAmount'
 																placeholder='Enter your bid amount'

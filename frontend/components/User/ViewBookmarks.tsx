@@ -25,14 +25,19 @@ function generate(element: React.ReactElement) {
 const Demo = styled('div')(({ theme }) => ({
 	backgroundColor: theme.palette.background.paper,
 }))
-const ViewBookmarks = () => {
+const ViewBookmarks = ({ setOpen }: any) => {
+	const BASE_URL = process.env.NEXT_PUBLIC_BACKEND_URL
+
 	const [bookmarkedCars, setBookmarkedCars] = useState<CarProps[]>([])
 	const [selectedCar, setSelectedCar] = useState<CarProps | null>(null)
 	const [dense, setDense] = React.useState(false)
 	const [isOpen, setIsOpen] = useState(false)
 	const token = getCookie('token')
+
 	useEffect(() => {
-		fetchBookmarkedCars()
+		if (token) {
+			fetchBookmarkedCars()
+		}
 	}, [])
 	const config = {
 		headers: {
@@ -41,15 +46,10 @@ const ViewBookmarks = () => {
 	}
 	const fetchBookmarkedCars = async () => {
 		try {
-			const allCarsResponse = await axios.get<CarProps[]>(
-				`http://localhost:5000/api/car`
-			)
+			const allCarsResponse = await axios.get<CarProps[]>(`${BASE_URL}/car`)
 			const allCars: CarProps[] = allCarsResponse.data
 
-			const response = await axios.get(
-				`http://localhost:5000/api/bookmarks/user`,
-				config
-			)
+			const response = await axios.get(`${BASE_URL}/bookmarks/user`, config)
 			const bookmarks = response.data
 
 			const bookmarkArray = bookmarks.bookmarks
@@ -69,10 +69,7 @@ const ViewBookmarks = () => {
 	}
 	const handleDeleteBookmark = async (bookmarkId: string) => {
 		try {
-			await axios.delete(
-				`http://localhost:5000/api/bookmarks/${bookmarkId}`,
-				config
-			)
+			await axios.delete(`${BASE_URL}/bookmarks/${bookmarkId}`, config)
 			setBookmarkedCars((prevBookmarkedCars) =>
 				prevBookmarkedCars.filter((car) => car._id !== bookmarkId)
 			)
@@ -82,12 +79,12 @@ const ViewBookmarks = () => {
 	}
 	const handleCarClick = (car: CarProps) => {
 		setSelectedCar(car)
+		setOpen(false)
 		setIsOpen(true) // Open the modal when car is clicked
 	}
 
 	const handleCloseCarDetails = () => {
 		setIsOpen(false) // Close the modal
-		setSelectedCar(null)
 	}
 	return (
 		<Grid item xs={12} md={6}>
@@ -128,10 +125,10 @@ const ViewBookmarks = () => {
 						</ListItem>
 					))}
 				</List>
-				{selectedCar && (
+				{isOpen && selectedCar && (
 					<CarDetails
 						isOpen={isOpen}
-						closeModel={handleCloseCarDetails}
+						closeModel={() => setIsOpen(false)}
 						car={selectedCar}
 					/>
 				)}

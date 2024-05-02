@@ -20,6 +20,8 @@ import { format } from 'date-fns'
 import { RiEdit2Line } from 'react-icons/ri'
 import { IoEye } from 'react-icons/io5'
 import Link from 'next/link'
+import Router from 'next/navigation'
+import { useRouter } from 'next/navigation'
 // import BorderColorIcon from '@material-ui/icons/BorderColor'
 
 interface Car {
@@ -39,7 +41,8 @@ const ViewCars = () => {
 	const [jwt, setjwt] = useState('')
 	const [open, setOpen] = React.useState(false)
 	const [isDataEmpty, setIsDataEmpty] = useState(true)
-
+	const BASE_URL = process.env.NEXT_PUBLIC_BACKEND_URL
+	const router = useRouter()
 	const token = getCookie('token')
 	useEffect(() => {
 		if (token) {
@@ -47,14 +50,11 @@ const ViewCars = () => {
 		}
 		const fetchCars = async () => {
 			try {
-				const response = await axios.get(
-					'http://localhost:5000/api/user/viewCarsOfUser',
-					{
-						headers: {
-							Authorization: `Bearer ${token}`,
-						},
-					}
-				)
+				const response = await axios.get(`${BASE_URL}/user/viewCarsOfUser`, {
+					headers: {
+						Authorization: `Bearer ${token}`,
+					},
+				})
 				setCars(response.data)
 
 				setIsDataEmpty(false)
@@ -93,6 +93,9 @@ const ViewCars = () => {
 	}
 
 	const filteredCars = cars.filter((car) => !car.deleted)
+	const handleViewCars = (carID: any) => {
+		router.push(`/ViewBids/${carID}`)
+	}
 	return (
 		<div className=' flex flex-col justify-center min-h-screen overflow-hidden'>
 			<br />
@@ -184,7 +187,12 @@ const ViewCars = () => {
 											{format(new Date(car.bidEndDate), 'PPP')}
 										</TableCell>
 										<TableCell align='right'>
-											<button className=' px-4 py-2 tracking-wide text-black transition-colors duration-200 transhtmlForm bg-white rounded-md hover:bg-slate-400 focus:outline-none'>
+											<button
+												onClick={() => {
+													handleViewCars(car._id)
+												}}
+												className=' px-4 py-2 tracking-wide text-black transition-colors duration-200 transhtmlForm bg-white rounded-md hover:bg-slate-400 focus:outline-none'
+											>
 												<IoEye style={{ fontSize: '1.5rem' }} />
 											</button>
 										</TableCell>

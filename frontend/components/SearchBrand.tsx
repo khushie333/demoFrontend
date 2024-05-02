@@ -6,15 +6,14 @@ import { Combobox, Transition } from '@headlessui/react'
 import { SearchBrandProps, Car } from '@/types'
 
 const SearchBrand = ({ brand, setBrand }: SearchBrandProps) => {
+	const BASE_URL = process.env.NEXT_PUBLIC_BACKEND_URL
 	const [query, setQuery] = useState('')
 	const [searchResults, setSearchResults] = useState<Car[]>([])
 
 	useEffect(() => {
 		if (query !== '') {
 			axios
-				.get(
-					`http://localhost:5000/api/cars?search=${encodeURIComponent(query)}`
-				)
+				.get(`${BASE_URL}/cars?search=${encodeURIComponent(query)}`)
 				.then((response) => {
 					setSearchResults(response.data.cars)
 				})

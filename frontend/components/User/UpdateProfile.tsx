@@ -16,6 +16,7 @@ interface FormValues {
 }
 
 const UpdateUserProfile = () => {
+	const BASE_URL = process.env.NEXT_PUBLIC_BACKEND_URL
 	const dispatch = useDispatch<ThunkDispatch<any, any, any>>()
 	const router = useRouter()
 	const [submitting, setSubmitting] = useState(false)
@@ -23,7 +24,7 @@ const UpdateUserProfile = () => {
 	useEffect(() => {
 		;(async () => {
 			try {
-				const response = await fetch('http://localhost:5000/api/loggedinuser', {
+				const response = await fetch(`${BASE_URL}/loggedinuser`, {
 					credentials: 'include',
 				})
 				const content = await response.json()

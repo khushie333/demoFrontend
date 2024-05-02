@@ -24,7 +24,6 @@ import { getCookie } from 'cookies-next'
 import HandleNotLoggedIn from '../HandleNotLoggedIn'
 import ViewBookmarks from './ViewBookmarks'
 import { CarProps } from '@/types'
-import CarDetails from '../CarDetails'
 
 const BootstrapDialog = styled(Dialog)(({ theme }) => ({
 	'& .MuiDialogContent-root': {
@@ -69,9 +68,11 @@ const AccordionDetails = styled(MuiAccordionDetails)(({ theme }) => ({
 	borderTop: '1px solid rgba(0, 0, 0, .125)',
 }))
 export default function UserHome() {
+	const BASE_URL = process.env.NEXT_PUBLIC_BACKEND_URL
+
 	const [jwt, setjwt] = useState('')
 	const [message, setMessage] = useState('')
-	const [open, setOpen] = React.useState(false)
+	const [open, setOpen] = React.useState(true)
 
 	const [expanded, setExpanded] = React.useState<string | false>('')
 	const handleChange =
@@ -87,7 +88,7 @@ export default function UserHome() {
 	useEffect(() => {
 		;(async () => {
 			try {
-				const response = await fetch('http://localhost:5000/api/loggedinuser', {
+				const response = await fetch(`${BASE_URL}/loggedinuser`, {
 					credentials: 'include',
 				})
 				const content = await response.json()
@@ -184,7 +185,7 @@ export default function UserHome() {
 									View Bookmarks
 								</AccordionSummary>
 								<AccordionDetails>
-									<ViewBookmarks />
+									<ViewBookmarks setOpen={setOpen} />
 								</AccordionDetails>
 							</Accordion>
 						</DialogContent>

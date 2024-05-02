@@ -4,6 +4,8 @@ import React, { useState, useEffect } from 'react'
 import axios from 'axios'
 
 const ResetPassword = () => {
+	const BASE_URL = process.env.NEXT_PUBLIC_BACKEND_URL
+
 	const parts = window.location.href.split('/')
 	const id = parts[4]
 	const token = parts[5]
@@ -29,7 +31,7 @@ const ResetPassword = () => {
 
 		try {
 			const response = await axios.post(
-				`http://localhost:5000/api/ResetPassword/${id}/${token}`,
+				`${BASE_URL}/ResetPassword/${id}/${token}`,
 				{ password, password_conf: password_conf }
 			)
 			setMessage('Password has been reset successfully!')

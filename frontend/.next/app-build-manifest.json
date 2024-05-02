@@ -1,22 +1,45 @@
 {
   "pages": {
-    "/page": [
-      "static/chunks/webpack.js",
-      "static/chunks/main-app.js",
-      "static/css/app/page.css",
-      "static/chunks/app/page.js"
-    ],
     "/layout": [
       "static/chunks/webpack.js",
       "static/chunks/main-app.js",
       "static/css/app/layout.css",
       "static/chunks/app/layout.js"
     ],
+    "/SignIn/page": [
+      "static/chunks/webpack.js",
+      "static/chunks/main-app.js",
+      "static/css/app/SignIn/page.css",
+      "static/chunks/app/SignIn/page.js"
+    ],
+    "/page": [
+      "static/chunks/webpack.js",
+      "static/chunks/main-app.js",
+      "static/css/app/page.css",
+      "static/chunks/app/page.js"
+    ],
     "/UserHome/page": [
       "static/chunks/webpack.js",
       "static/chunks/main-app.js",
       "static/css/app/UserHome/page.css",
       "static/chunks/app/UserHome/page.js"
+    ],
+    "/ViewCars/page": [
+      "static/chunks/webpack.js",
+      "static/chunks/main-app.js",
+      "static/chunks/app/ViewCars/page.js"
+    ],
+    "/FormCreateCar/page": [
+      "static/chunks/webpack.js",
+      "static/chunks/main-app.js",
+      "static/css/app/FormCreateCar/page.css",
+      "static/chunks/app/FormCreateCar/page.js"
+    ],
+    "/UpdateCarData/[carID]/page": [
+      "static/chunks/webpack.js",
+      "static/chunks/main-app.js",
+      "static/css/app/UpdateCarData/[carID]/page.css",
+      "static/chunks/app/UpdateCarData/[carID]/page.js"
     ],
     "/not-found": [
       "static/chunks/webpack.js",

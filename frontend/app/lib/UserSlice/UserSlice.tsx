@@ -4,6 +4,7 @@ import ToastContainer from '@/components/ToastContainer'
 import { deleteCookie, setCookie } from 'cookies-next'
 import api from '../axiosinterceptor/page'
 import { ToastError, ToastSuccess } from '@/components/ToastContainer'
+import { useRouter } from 'next/navigation'
 
 //base url for backend
 const BASE_URL = process.env.NEXT_PUBLIC_BACKEND_URL
@@ -55,7 +56,7 @@ export const addCar = createAsyncThunk(
 	async (payload: { data: object; token: string }) => {
 		try {
 			const { data, token } = payload
-			const createCar = await axios.post(`${BASE_URL}car`, data, {
+			const createCar = await axios.post(`${BASE_URL}/car`, data, {
 				headers: {
 					Authorization: `Bearer ${token}`,
 					'Content-Type': 'multipart/form-data',
@@ -159,7 +160,6 @@ const UserSlice: any = createSlice({
 			deleteCookie('status')
 			deleteCookie('message')
 			state.isLoggedIn = false
-			console.log(state.isLoggedIn)
 		},
 	},
 	extraReducers: (builder: any) => {

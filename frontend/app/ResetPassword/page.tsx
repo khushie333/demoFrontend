@@ -4,16 +4,17 @@ import axios from 'axios'
 import { ToastSuccess } from '@/components/ToastContainer'
 
 const RequestReset = () => {
+	const BASE_URL = process.env.NEXT_PUBLIC_BACKEND_URL
+
 	const [email, setEmail] = useState('')
 	const [message, setMessage] = useState('')
 
 	const handleSubmit = async (event: any) => {
 		event.preventDefault()
 		try {
-			const response = await axios.post(
-				'http://localhost:5000/api/sendResetPassword',
-				{ email }
-			)
+			const response = await axios.post(`${BASE_URL}/sendResetPassword`, {
+				email,
+			})
 			ToastSuccess(response.data.message)
 		} catch (error) {
 			console.error('Reset email error:', error)

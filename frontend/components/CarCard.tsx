@@ -8,14 +8,18 @@ import axios from 'axios'
 import BookmarkBorderIcon from '@mui/icons-material/BookmarkBorder'
 import BookmarkIcon from '@mui/icons-material/Bookmark'
 import { getCookie } from 'cookies-next'
+import { fetchMaxBid } from '@/utils'
 interface CarCardProps {
 	car: CarProps
 }
 
 const CarCard = ({ car }: CarCardProps) => {
+	const BASE_URL = process.env.NEXT_PUBLIC_BACKEND_URL
+	const [maxBid, setMaxBid] = useState(null)
 	const [cars, setCars] = useState<CarProps[]>([])
 	const [bookmarkedcar, setbookmarkedcar] = useState([])
 	const [isBookmarked, setIsBookmarked] = useState(false)
+
 	const token = getCookie('token')
 	const config = {
 		headers: {
@@ -25,16 +29,53 @@ const CarCard = ({ car }: CarCardProps) => {
 	// const handleClick = () => {
 	// 	setIsClicked(!isClicked)
 	// }
+	// useEffect(() => {
+	// 	const interval = setInterval(() => {
+	// 		fetchMaxBid({ car }).then((data) => {
+	// 			if (data && data.data.maxBidAmount !== maxBid) {
+	// 				setMaxBid(data.data.maxBidAmount)
+	// 			}
+	// 		})
+	// 		if (token) {
+	// 			checkIsBookmarked()
+	// 		} else {
+	// 			console.log('no token')
+	// 		}
+	// 		return () => clearInterval(interval)
+	// 	}, 2000) // Poll every 5000 milliseconds (5 seconds)
+	// }, [car])
 	useEffect(() => {
-		checkIsBookmarked()
-	}, [])
+		const fetchData = async () => {
+			try {
+				// Fetch max bid
+				const maxBidData = await fetchMaxBid({ car })
+				if (maxBidData && maxBidData.data.maxBidAmount !== maxBid) {
+					setMaxBid(maxBidData.data.maxBidAmount)
+				}
+
+				// Fetch bookmarks
+				if (token) {
+					checkIsBookmarked()
+					// Update state with bookmark data
+				} else {
+					console.log('No token, skipping bookmark fetching')
+				}
+			} catch (error) {
+				console.error('Error fetching data:', error)
+			}
+		}
+
+		const interval = setInterval(fetchData, 2000) // Poll every 2000 milliseconds (2 seconds)
+
+		// Cleanup function to clear the interval when the component unmounts
+		return () => clearInterval(interval)
+	}, [car, maxBid])
+
 	const checkIsBookmarked = async () => {
 		try {
 			// Send a request to check if the car is bookmarked
-			const response = await axios.get(
-				`http://localhost:5000/api/bookmarks/user`,
-				config
-			)
+
+			const response = await axios.get(`${BASE_URL}/bookmarks/user`, config)
 			const bookmarkedCars = response.data.bookmarks
 
 			// Check if the current car exists in the list of bookmarked cars
@@ -52,17 +93,10 @@ const CarCard = ({ car }: CarCardProps) => {
 		try {
 			// Send a request to toggle the bookmark status
 			if (isBookmarked) {
-				await axios.delete(
-					`http://localhost:5000/api/bookmarks/${car._id}`,
-					config
-				)
+				await axios.delete(`${BASE_URL}/bookmarks/${car._id}`, config)
 				setIsBookmarked(false)
 			} else {
-				await axios.post(
-					`http://localhost:5000/api/bookmarks/${car._id}`,
-					{},
-					config
-				)
+				await axios.post(`${BASE_URL}/bookmarks/${car._id}`, {}, config)
 				setIsBookmarked(true)
 			}
 		} catch (error) {
@@ -117,7 +151,7 @@ const CarCard = ({ car }: CarCardProps) => {
 				{baseAmount}
 				<span className='self-end text-[14px] font-medium'> rs</span>
 			</p>
-			<div className='relative w-full h-50 my-3 object-cont'>
+			<div className='relative my-3 object-cont'>
 				<Image
 					src={`http://localhost:5000/${images[0]}`}
 					height={200}
@@ -127,6 +161,18 @@ const CarCard = ({ car }: CarCardProps) => {
 					alt='car image'
 				/>
 			</div>
+			<p className='flex mt-6 text-[32px] font-semibold border-gray-400'>
+				{maxBid ? (
+					<span className='self-start text-[18px] font-semibold'>
+						Max Bid: {maxBid} rs
+					</span>
+				) : (
+					<span className='self-start text-[18px] font-semibold'>
+						{' '}
+						No bids yet
+					</span>
+				)}
+			</p>
 			<p className='flex mt-6 text-[32px] font-semibold border-gray-400'>
 				<span className='self-start text-[18px] font-semibold'>
 					Bid end date:{formatDate(bidEndDate)}

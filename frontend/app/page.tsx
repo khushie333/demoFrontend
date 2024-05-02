@@ -50,7 +50,7 @@ export default function Home({ searchParams }: HomeProps) {
 		<main className='overflow-hidden'>
 			<Dashboard />
 
-			<div className='mt-10 padding-x padding-y max-width' id='discover'>
+			<div className='mt-10 padding-x padding-y max-width ml' id='discover'>
 				<div className='home__text-container'>
 					<h1 className='text-4xl font-extrabold'>Cars Catalogue</h1>
 					<p>Explore the Cars you might like</p>

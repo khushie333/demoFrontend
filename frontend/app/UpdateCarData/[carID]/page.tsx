@@ -118,7 +118,6 @@ const UpdateCarData = () => {
 					encType='multipart/form-data'
 				>
 					<div className='mb-2'>
-						y
 						<label
 							htmlFor='brand'
 							className='block text-sm font-semibold text-gray-800'
@@ -126,6 +125,7 @@ const UpdateCarData = () => {
 							brand
 						</label>
 						<input
+							required
 							name='brand'
 							type='text'
 							onChange={formik.handleChange}
@@ -142,6 +142,7 @@ const UpdateCarData = () => {
 							Model
 						</label>
 						<input
+							required
 							name='Model'
 							type='text'
 							onChange={formik.handleChange}
@@ -157,6 +158,7 @@ const UpdateCarData = () => {
 							Discription
 						</label>
 						<input
+							required
 							type='text'
 							name='desc'
 							onChange={formik.handleChange}
@@ -172,6 +174,7 @@ const UpdateCarData = () => {
 							owner
 						</label>
 						<input
+							required
 							type='text'
 							name='owner'
 							onChange={formik.handleChange}
@@ -202,6 +205,7 @@ const UpdateCarData = () => {
 							baseAmount
 						</label>
 						<input
+							required
 							type='number'
 							name='baseAmount'
 							onChange={formik.handleChange}
@@ -217,6 +221,7 @@ const UpdateCarData = () => {
 							bid Start Date
 						</label>
 						<input
+							required
 							type='date'
 							name='bidStartDate'
 							onChange={formik.handleChange}
@@ -232,6 +237,7 @@ const UpdateCarData = () => {
 							bid End Date
 						</label>
 						<input
+							required
 							type='date'
 							name='bidEndDate'
 							onChange={formik.handleChange}

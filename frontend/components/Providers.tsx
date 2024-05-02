@@ -4,20 +4,13 @@ import React, { useEffect, useState } from 'react'
 import { Provider } from 'react-redux'
 import contextFun from '@/utils/Context'
 import { getCookie } from 'cookies-next'
+import io from 'socket.io-client'
+import { ToastError, ToastSuccess } from './ToastContainer'
 export function Providers({ children }: any) {
-	const [jwt, setJwt] = useState<any>('')
-	const [content, setContent] = useState({})
-	useEffect(() => {
-		const token = getCookie('token') as string
-		if (token) {
-			setJwt(token)
-		}
-	}, [])
-	const myContext = { jwt }
-
-	return (
-		<Provider store={store}>
-			<contextFun.Provider value={{ jwt }}>{children}</contextFun.Provider>
-		</Provider>
-	)
+	// const socket = io('http://localhost:5000')
+	// socket.on('notifyUpdate', (data) => {
+	// 	console.log(data)
+	// 	ToastError(data.message) // Or use a more sophisticated method to show notifications
+	// })
+	return <Provider store={store}>{children}</Provider>
 }
