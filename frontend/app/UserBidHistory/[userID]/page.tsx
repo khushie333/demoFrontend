@@ -16,15 +16,13 @@ import { ToastSuccess } from '@/components/ToastContainer'
 const Page = () => {
 	// State to store bid history data
 	const BASE_URL = process.env.NEXT_PUBLIC_BACKEND_URL
-
 	const [bidHistory, setBidHistory] = useState<any>([])
-	// const parts = window.location.href.split('/')
 	const [userID, setuserID] = useState<any>()
 	const token = getCookie('token')
 
 	useEffect(() => {
 		const parts = window.location.href.split('/')
-		const extractedUserID = parts[parts.length - 1]
+		const extractedUserID = parts[4]
 		if (extractedUserID) {
 			setuserID(extractedUserID)
 			if (token) {
@@ -40,27 +38,29 @@ const Page = () => {
 	// Function to fetch bid history data from the API
 	const fetchBidHistory = async () => {
 		try {
-			console.log('userID:', userID)
-			const response = await axios.get(
-				`${BASE_URL}/bids/userBidHistory/${userID}`,
-				config
-			)
-			const bidData = response.data.bids
-			const bidsWithCarData = await Promise.all(
-				bidData.map(async (bid: any) => {
-					// Make API request to fetch car details using car ID
-					const carResponse = await axios.get(`${BASE_URL}/car/${bid.car}`)
-					const carData = carResponse.data
+			if (userID) {
+				const response = await axios.get(
+					`${BASE_URL}/bids/userBidHistory/${userID}`,
+					config
+				)
 
-					// Combine car data with bid data
-					return {
-						...bid,
-						carData: carData, // Assuming carData is the field where you store car details
-					}
-				})
-			)
+				const bidData = response.data.bids
+				const bidsWithCarData = await Promise.all(
+					bidData.map(async (bid: any) => {
+						// Make API request to fetch car details using car ID
+						const carResponse = await axios.get(`${BASE_URL}/car/${bid.car}`)
+						const carData = carResponse.data
 
-			setBidHistory(bidsWithCarData)
+						// Combine car data with bid data
+						return {
+							...bid,
+							carData: carData, // Assuming carData is the field where you store car details
+						}
+					})
+				)
+
+				setBidHistory(bidsWithCarData)
+			}
 			//console.log(bidsWithCarData)
 			//setBidHistory(response.data.bids)
 		} catch (error) {

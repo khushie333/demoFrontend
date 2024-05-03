@@ -12,12 +12,6 @@
       "static/css/app/layout.css",
       "static/chunks/app/layout.js"
     ],
-    "/SignIn/page": [
-      "static/chunks/webpack.js",
-      "static/chunks/main-app.js",
-      "static/css/app/SignIn/page.css",
-      "static/chunks/app/SignIn/page.js"
-    ],
     "/UserHome/page": [
       "static/chunks/webpack.js",
       "static/chunks/main-app.js",
@@ -30,10 +24,10 @@
       "static/css/app/UserBidHistory/[userID]/page.css",
       "static/chunks/app/UserBidHistory/[userID]/page.js"
     ],
-    "/not-found": [
+    "/ViewCars/page": [
       "static/chunks/webpack.js",
       "static/chunks/main-app.js",
-      "static/chunks/app/not-found.js"
+      "static/chunks/app/ViewCars/page.js"
     ]
   }
 }

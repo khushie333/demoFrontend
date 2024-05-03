@@ -14,6 +14,7 @@ import Paper from '@mui/material/Paper'
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown'
 import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp'
 import axios from 'axios'
+import { format } from 'date-fns'
 
 function Row({ row, row2, username }: any) {
 	const [open, setOpen] = React.useState(false)
@@ -72,7 +73,7 @@ function Row({ row, row2, username }: any) {
 												{bid?.amount}
 											</TableCell>
 											<TableCell align='right' style={{ fontSize: '1rem' }}>
-												{bid?.createdAt}
+												{format(new Date(bid.createdAt), 'PPP')}
 											</TableCell>
 										</TableRow>
 									))}

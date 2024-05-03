@@ -190,10 +190,7 @@ export default function UserHome() {
 									<ViewBookmarks setOpen={setOpen} />
 								</AccordionDetails>
 							</Accordion>
-							<Accordion
-								expanded={expanded === 'panel3'}
-								onChange={handleChange('panel3')}
-							>
+							<Accordion>
 								<AccordionSummary
 									aria-controls='panel2d-content'
 									id='panel2d-header'
