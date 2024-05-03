@@ -4,7 +4,8 @@ import { bidModel } from '../models/bid/bid.model'
 import carModel from '../models/car/car.model'
 import notificationmodel from '../models/notification/noti.model'
 import { Server as SocketIOServer } from 'socket.io'
-
+import { io } from '../server'
+import UserModel from '../models/user/user.model'
 interface ProcessEnv {
 	[key: string]: string
 }
@@ -40,11 +41,19 @@ class bidController {
 
 						await bid.save()
 
+						//io.emit('newBid', { bid: amount, carId, userID })
+						io.emit('bidReceived', {
+							message: `New bid of ${amount} placed on your car ${car.brand} ${car.Model} by user ${userID}`,
+							bidAmount: amount,
+							carId,
+							bidderId: userID,
+						})
+
 						await notificationmodel.create({
-							car: car._id,
 							user: car.user,
-							message: `New bid added on your car: ${car.brand} ${car.Model}`,
-							isread: false,
+							car: carId,
+							message: `New bid of ${amount} on your car ${car.brand} ${car.Model}`,
+							isRead: false,
 						})
 
 						res.status(201).json(bid)
@@ -73,8 +82,40 @@ class bidController {
 		try {
 			const { carId } = req.params
 			const bids = await bidModel.find({ car: carId })
-
 			res.json({ bids })
+		} catch (error) {
+			console.error(error)
+			res.status(500).json({ error: 'Internal Server Error' })
+		}
+	}
+
+	static deleteBid = async (req: Request, res: Response): Promise<void> => {
+		try {
+			const { authorization } = req.headers as { authorization: string }
+			const token: string = authorization.split(' ')[1]
+
+			if (token.length !== 0) {
+				const { userID } = jwt.verify(token, process.env.JWT_SECRET_KEY) as {
+					userID: string
+				}
+				const { bidId } = req.params
+
+				// Delete the bid
+				const bid = await bidModel.findById(bidId)
+				if (bid?.user.toString() === userID) {
+					const deleteBid = await bidModel.findByIdAndDelete(bidId)
+
+					if (!deleteBid) {
+						res.status(404).json({ error: 'Bid not found' })
+						return
+					}
+				}
+
+				res.json({ message: 'Bid deleted successfully' })
+			} else {
+				res.send('Please LogIn first')
+				console.log('token not provided')
+			}
 		} catch (error) {
 			console.error(error)
 			res.status(500).json({ error: 'Internal Server Error' })

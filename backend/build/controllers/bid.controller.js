@@ -17,6 +17,7 @@ const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
 const bid_model_1 = require("../models/bid/bid.model");
 const car_model_1 = __importDefault(require("../models/car/car.model"));
 const noti_model_1 = __importDefault(require("../models/notification/noti.model"));
+const server_1 = require("../server");
 class bidController {
 }
 _a = bidController;
@@ -39,11 +40,18 @@ bidController.addBid = (req, res) => __awaiter(void 0, void 0, void 0, function*
                         amount,
                     });
                     yield bid.save();
+                    //io.emit('newBid', { bid: amount, carId, userID })
+                    server_1.io.emit('bidReceived', {
+                        message: `New bid of ${amount} placed on your car ${car.brand} ${car.Model} by user ${userID}`,
+                        bidAmount: amount,
+                        carId,
+                        bidderId: userID,
+                    });
                     yield noti_model_1.default.create({
-                        car: car._id,
                         user: car.user,
-                        message: `New bid added on your car: ${car.brand} ${car.Model}`,
-                        isread: false,
+                        car: carId,
+                        message: `New bid of ${amount} on your car ${car.brand} ${car.Model}`,
+                        isRead: false,
                     });
                     res.status(201).json(bid);
                 }
@@ -75,6 +83,34 @@ bidController.getAllBids = (req, res) => __awaiter(void 0, void 0, void 0, funct
         const { carId } = req.params;
         const bids = yield bid_model_1.bidModel.find({ car: carId });
         res.json({ bids });
+    }
+    catch (error) {
+        console.error(error);
+        res.status(500).json({ error: 'Internal Server Error' });
+    }
+});
+bidController.deleteBid = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const { authorization } = req.headers;
+        const token = authorization.split(' ')[1];
+        if (token.length !== 0) {
+            const { userID } = jsonwebtoken_1.default.verify(token, process.env.JWT_SECRET_KEY);
+            const { bidId } = req.params;
+            // Delete the bid
+            const bid = yield bid_model_1.bidModel.findById(bidId);
+            if ((bid === null || bid === void 0 ? void 0 : bid.user.toString()) === userID) {
+                const deleteBid = yield bid_model_1.bidModel.findByIdAndDelete(bidId);
+                if (!deleteBid) {
+                    res.status(404).json({ error: 'Bid not found' });
+                    return;
+                }
+            }
+            res.json({ message: 'Bid deleted successfully' });
+        }
+        else {
+            res.send('Please LogIn first');
+            console.log('token not provided');
+        }
     }
     catch (error) {
         console.error(error);

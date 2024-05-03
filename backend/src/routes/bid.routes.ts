@@ -7,5 +7,6 @@ router.post('/bids/:carId', bidRoutes.addBid)
 router.get('/bids/:carId', bidRoutes.getAllBids)
 router.get('/bids/getMaxBid/:carId', bidRoutes.getMaxBid)
 router.get('/bids/userBidHistory/:userId', bidRoutes.userBidHistory)
+router.delete('/bids/:bidId', bidRoutes.deleteBid)
 
 export default router

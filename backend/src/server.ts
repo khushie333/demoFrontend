@@ -19,7 +19,6 @@ import {
 } from './middlewares/errorHandling.middleware'
 import { AppConfig } from './config/connectDB'
 import notificationmodel from './models/notification/noti.model'
-//import bidModel from './models/bid/bid.model'
 
 interface Bid extends Document {
 	amount: number
@@ -51,7 +50,7 @@ mongoose
 
 // Replace the normal listen with http server for socket.io
 const httpServer = new http.Server(app)
-const io = new SocketIOServer(httpServer, {
+export const io = new SocketIOServer(httpServer, {
 	cors: {
 		origin: 'http://localhost:3000',
 		methods: ['GET', 'POST', 'DELETE', 'PATCH', 'PUT'],
@@ -59,10 +58,10 @@ const io = new SocketIOServer(httpServer, {
 })
 
 io.on('connection', (socket) => {
-	// console.log('user connected')
 	socket.on('register', (userId) => {
 		socket.join(userId.toString()) // Users join a room based on their user ID
 	})
+	console.log('User connected')
 })
 
 cron.schedule('*/1 * * * *', async () => {
@@ -76,9 +75,6 @@ cron.schedule('*/1 * * * *', async () => {
 		bidEndDate: { $lt: bufferedDate },
 		deleted: false,
 	})
-	console.log(`Found ${expiredCars.length} expired cars`)
-	console.log('expiredCars:', expiredCars)
-	console.log('inside cron')
 	for (const car of expiredCars) {
 		// Check if a notification already exists for this car ID
 		const existingNotification = await notificationmodel.findOne({

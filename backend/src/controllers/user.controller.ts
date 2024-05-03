@@ -24,7 +24,22 @@ export async function getUsers(req: Request, res: Response): Promise<void> {
 		res.status(500).json({ message: 'Error fetching users', error })
 	}
 }
+export async function getUsersById(req: Request, res: Response): Promise<void> {
+	const userId = req.params.userId
 
+	try {
+		const user = await UserModel.findById(userId)
+
+		if (!user) {
+			res.status(404).json({ message: 'User not found' })
+			return
+		}
+
+		res.status(200).json(user)
+	} catch (error) {
+		res.status(500).json({ message: 'Error fetching user', error })
+	}
+}
 export async function userReg(req: Request, res: Response): Promise<void> {
 	const { name, email, phone, address, password, password_conf, active } =
 		req.body

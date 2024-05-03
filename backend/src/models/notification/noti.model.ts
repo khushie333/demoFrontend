@@ -20,6 +20,7 @@ const notifications: Schema<notification> = new Schema(
 			ref: 'User',
 			required: true,
 		},
+
 		message: {
 			type: String,
 			required: true,

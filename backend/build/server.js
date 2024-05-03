@@ -12,15 +12,16 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.io = void 0;
 const mongoose_1 = __importDefault(require("mongoose"));
 const express_1 = __importDefault(require("express"));
 const cors_1 = __importDefault(require("cors"));
 const cookie_parser_1 = __importDefault(require("cookie-parser"));
 const path_1 = __importDefault(require("path"));
-const http_1 = __importDefault(require("http")); // Import Node's http module
+const http_1 = __importDefault(require("http"));
 const socket_io_1 = require("socket.io");
-const node_cron_1 = __importDefault(require("node-cron")); // Ensure you've installed node-cron
-const car_model_1 = __importDefault(require("./models/car/car.model")); // Update with correct path
+const node_cron_1 = __importDefault(require("node-cron"));
+const car_model_1 = __importDefault(require("./models/car/car.model"));
 const user_routes_1 = __importDefault(require("./routes/user.routes"));
 const authentication_routes_1 = __importDefault(require("./routes/authentication.routes"));
 const email_routes_1 = __importDefault(require("./routes/email.routes"));
@@ -46,17 +47,17 @@ mongoose_1.default
     .catch((error) => console.error('oops, Error connecting to MongoDB:', error));
 // Replace the normal listen with http server for socket.io
 const httpServer = new http_1.default.Server(app);
-const io = new socket_io_1.Server(httpServer, {
+exports.io = new socket_io_1.Server(httpServer, {
     cors: {
         origin: 'http://localhost:3000',
         methods: ['GET', 'POST', 'DELETE', 'PATCH', 'PUT'],
     },
 });
-io.on('connection', (socket) => {
-    // console.log('user connected')
+exports.io.on('connection', (socket) => {
     socket.on('register', (userId) => {
         socket.join(userId.toString()); // Users join a room based on their user ID
     });
+    console.log('User connected');
 });
 node_cron_1.default.schedule('*/1 * * * *', () => __awaiter(void 0, void 0, void 0, function* () {
     const bufferTime = 5 * 60 * 1000; // 5 minutes buffer
@@ -68,9 +69,6 @@ node_cron_1.default.schedule('*/1 * * * *', () => __awaiter(void 0, void 0, void
         bidEndDate: { $lt: bufferedDate },
         deleted: false,
     });
-    console.log(`Found ${expiredCars.length} expired cars`);
-    console.log('expiredCars:', expiredCars);
-    console.log('inside cron');
     for (const car of expiredCars) {
         // Check if a notification already exists for this car ID
         const existingNotification = yield noti_model_1.default.findOne({
@@ -78,7 +76,7 @@ node_cron_1.default.schedule('*/1 * * * *', () => __awaiter(void 0, void 0, void
         });
         if (!existingNotification) {
             // If no existing notification, emit a new one
-            io.emit('notifyUpdate', {
+            exports.io.emit('notifyUpdate', {
                 message: `Update Bid ending date or remove a car : ${car.brand} ${car.Model}`,
                 carId: car._id,
             });

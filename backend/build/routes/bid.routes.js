@@ -10,4 +10,5 @@ router.post('/bids/:carId', bid_controller_1.default.addBid);
 router.get('/bids/:carId', bid_controller_1.default.getAllBids);
 router.get('/bids/getMaxBid/:carId', bid_controller_1.default.getMaxBid);
 router.get('/bids/userBidHistory/:userId', bid_controller_1.default.userBidHistory);
+router.delete('/bids/:bidId', bid_controller_1.default.deleteBid);
 exports.default = router;

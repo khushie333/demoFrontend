@@ -4,6 +4,7 @@ import {
 	userReg,
 	updateUserProfile,
 	viewCarsOfUser,
+	getUsersById,
 } from '../controllers/user.controller'
 import {
 	bookmarkCar,
@@ -19,6 +20,7 @@ router.get('/user', getUsers)
 router.post('/user', userReg)
 router.put('/user/profile', updateUserProfile)
 router.get('/user/viewCarsOfUser', viewCarsOfUser)
+router.get('/user/:userId', getUsersById)
 //user operations
 //bookmark car
 router.post('/bookmarks/:carId', bookmarkCar)
