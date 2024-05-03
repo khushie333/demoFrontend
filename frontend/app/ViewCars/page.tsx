@@ -69,7 +69,7 @@ const ViewCars = () => {
 		try {
 			// Make an HTTP request to the backend API to mark the car as deleted
 			const response = await axios.patch(
-				`http://localhost:5000/api/car/${carId}`,
+				`${BASE_URL}/car/${carId}`,
 				{ deleted: true },
 				{
 					headers: {

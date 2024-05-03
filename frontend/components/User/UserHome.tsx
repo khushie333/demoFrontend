@@ -73,7 +73,7 @@ export default function UserHome() {
 	const [jwt, setjwt] = useState('')
 	const [message, setMessage] = useState('')
 	const [open, setOpen] = React.useState(true)
-
+	const [userID, setuserID] = React.useState('')
 	const [expanded, setExpanded] = React.useState<string | false>('')
 	const handleChange =
 		(panel: string) => (event: React.SyntheticEvent, newExpanded: boolean) => {
@@ -94,6 +94,8 @@ export default function UserHome() {
 				const content = await response.json()
 
 				setMessage(`Hi ${content.name}`)
+				setuserID(content._id)
+				console.log(userID)
 			} catch (e) {
 				setMessage('You are not logged in')
 			}
@@ -187,6 +189,24 @@ export default function UserHome() {
 								<AccordionDetails>
 									<ViewBookmarks setOpen={setOpen} />
 								</AccordionDetails>
+							</Accordion>
+							<Accordion
+								expanded={expanded === 'panel3'}
+								onChange={handleChange('panel3')}
+							>
+								<AccordionSummary
+									aria-controls='panel2d-content'
+									id='panel2d-header'
+								>
+									{' '}
+									<Link
+										href={`/UserBidHistory/${userID}`}
+										className='text-blue-600'
+									>
+										{' '}
+										MY BIDDING HISTORY
+									</Link>
+								</AccordionSummary>
 							</Accordion>
 						</DialogContent>
 

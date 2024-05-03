@@ -1,8 +1,6 @@
 {
   "/not-found": "app/not-found.js",
   "/page": "app/page.js",
-  "/UserHome/page": "app/UserHome/page.js",
-  "/ViewCars/page": "app/ViewCars/page.js",
-  "/FormCreateCar/page": "app/FormCreateCar/page.js",
-  "/UpdateCarData/[carID]/page": "app/UpdateCarData/[carID]/page.js"
+  "/SignIn/page": "app/SignIn/page.js",
+  "/UserBidHistory/[userID]/page": "app/UserBidHistory/[userID]/page.js"
 }

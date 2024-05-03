@@ -15,7 +15,7 @@ import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown'
 import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp'
 import axios from 'axios'
 
-function Row({ row, row2 }: any) {
+function Row({ row, row2, username }: any) {
 	const [open, setOpen] = React.useState(false)
 
 	return (
@@ -63,10 +63,10 @@ function Row({ row, row2 }: any) {
 									</TableRow>
 								</TableHead>
 								<TableBody>
-									{row2?.map((bid: any) => (
+									{row2?.map((bid: any, index: number) => (
 										<TableRow key={bid?._id}>
 											<TableCell style={{ fontSize: '1rem' }}>
-												{bid?.user}
+												{username[index + 1]}
 											</TableCell>
 											<TableCell align='right' style={{ fontSize: '1rem' }}>
 												{bid?.amount}
@@ -91,6 +91,10 @@ export default function CollapsibleTable() {
 	const [bids, setBids] = useState()
 	const [carID, setcarId] = useState('')
 
+	const [usernames, setUsernames] = useState<string[]>([])
+	const [isUserLoading, setIsUserLoading] = useState(false)
+	const userIds = ['']
+
 	const BASE_URL = process.env.NEXT_PUBLIC_BACKEND_URL
 
 	const [isLoading, setIsLoading] = useState(false)
@@ -105,7 +109,7 @@ export default function CollapsibleTable() {
 					// Check if carID is available before fetching data
 					const response = await axios.get(`${BASE_URL}/car/${carID}`)
 					const data = response.data
-					console.log(data)
+
 					setCarDetails(data)
 				}
 			} catch (error) {
@@ -119,18 +123,48 @@ export default function CollapsibleTable() {
 					// Check if carID is available before fetching data
 					const response = await axios.get(`${BASE_URL}/bids/${carID}`)
 					const data = response.data
+
 					if (data) {
 						setBids(data.bids)
+						console.log(data.bids)
+						const userids: string[] = data.bids.map((bid: any) => bid.user)
+						console.log(userids)
+						///	console.log(userIds)
+						userids?.forEach((id) => {
+							userIds.push(id)
+						})
+						console.log(userIds)
 					}
 				}
 			} catch (error) {
 				console.error('Error fetching bids:', error)
 			}
 		}
+		const fetchUserData = async () => {
+			try {
+				setIsUserLoading(true)
 
+				const userNames = []
+
+				for (const userId of userIds) {
+					const response = await axios.get(`${BASE_URL}/user/${userId}`)
+
+					userNames.push(response.data.name)
+				}
+				console.log('usernames:', userNames)
+				// Set the usernames in the state
+				setUsernames(userNames)
+
+				setIsUserLoading(false)
+			} catch (error) {
+				console.error('Error fetching user:', error)
+				setIsUserLoading(false)
+			}
+		}
 		if (carID) {
 			fetchCarDetails()
 			fetchBids()
+			fetchUserData()
 		}
 	}, [carID])
 
@@ -152,7 +186,7 @@ export default function CollapsibleTable() {
 								<Table aria-label='collapsible table'>
 									<TableHead>
 										<TableRow>
-											<TableCell />
+											<TableCell style={{ fontSize: '1rem' }}>Bids</TableCell>
 											<TableCell style={{ fontSize: '1rem' }}>brand</TableCell>
 											<TableCell align='right' style={{ fontSize: '1rem' }}>
 												Model
@@ -166,7 +200,7 @@ export default function CollapsibleTable() {
 										</TableRow>
 									</TableHead>
 									<TableBody>
-										<Row row={carDetails} row2={bids} />
+										<Row row={carDetails} row2={bids} username={usernames} />
 									</TableBody>
 								</Table>
 							</TableContainer>

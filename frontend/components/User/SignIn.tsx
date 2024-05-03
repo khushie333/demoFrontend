@@ -44,7 +44,6 @@ const SignIn = () => {
 		} catch (error: any) {
 			console.error('Login error:', error.message)
 		}
-		console.log('value: ', val)
 	}
 
 	return (

@@ -253,7 +253,9 @@ const CarDetails = ({ isOpen, closeModel, car }: CarDetailsProps) => {
 															<input
 																type='number'
 																value={
-																	maxBidchange !== null ? maxBidchange : ''
+																	maxBidchange !== null
+																		? maxBidchange
+																		: baseAmount
 																}
 																onChange={handleBidAmountChange}
 																name='bidAmount'

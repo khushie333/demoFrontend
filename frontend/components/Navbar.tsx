@@ -23,8 +23,8 @@ import { io } from 'socket.io-client'
 const socket = io('http://localhost:5000')
 interface Notification {
 	_id: string
-	car: string
-	user: string
+	car?: string
+	user?: string
 	message: string
 	isread: boolean
 }
@@ -51,8 +51,23 @@ const Navbar = () => {
 			console.log('Received notification update:', data)
 			setNotifications((prevNotifications) => [...prevNotifications, data])
 		})
+		socket.on('bidReceived', (notification) => {
+			// console.log('New bid received:', notification)
+			setNotifications((prevNotifications) => [
+				...prevNotifications,
+				notification,
+			])
+		})
+
+		return () => {
+			socket.off('newBid') // Cleanup listener on component unmount
+		}
 	}, [socket])
 
+	// useEffect(() => {
+	// 	// Listening for new bid notifications
+
+	// }, [socket])
 	const handleClose = () => {
 		setOpen(false) // Close the Popover
 		setAnchorEl(null)
@@ -145,7 +160,7 @@ const Navbar = () => {
 						</Link>
 						<Badge
 							badgeContent={
-								notifications.length !== 0 ? notifications.length : '0'
+								notifications.length !== 0 ? notifications.length - 1 : '0'
 							}
 							color='error'
 							onClick={handleClick}
@@ -199,6 +214,13 @@ const Navbar = () => {
 														</button>
 													</div>
 												))}
+											{notifications.length === 0 && (
+												<Typography variant='h3'>
+													<div className='flex flex-row'>
+														<ListItemText primary='No Notifications yet' />
+													</div>
+												</Typography>
+											)}
 											<Divider />
 										</List>
 									</Box>
