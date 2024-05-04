@@ -59,7 +59,7 @@ exports.io.on('connection', (socket) => {
     });
     console.log('User connected');
 });
-node_cron_1.default.schedule('*/1 * * * *', () => __awaiter(void 0, void 0, void 0, function* () {
+node_cron_1.default.schedule('0 * * * *', () => __awaiter(void 0, void 0, void 0, function* () {
     const bufferTime = 5 * 60 * 1000; // 5 minutes buffer
     const now = new Date();
     const oneMinutesAgo = new Date(now.getTime() - 1 * 60 * 1000);

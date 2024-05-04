@@ -10,5 +10,7 @@ router.get('/car/:id', carRoutes.getSingleCarById)
 router.patch('/car/:id', carRoutes.deleteCarById)
 router.put('/car/:id', upload, carRoutes.updateCarById)
 router.get('/cars', carRoutes.search)
+router.get('/cars/globalSearch', carRoutes.globalSearch)
+
 router.get('/carFilter', carRoutes.filterByBaseAmount)
 export default router

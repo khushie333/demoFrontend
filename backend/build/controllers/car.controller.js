@@ -286,24 +286,48 @@ CarController.search = (req, res) => __awaiter(void 0, void 0, void 0, function*
         }
         let brandSearch;
         let modelSearch;
+        let descSearch;
         if (typeof searchParam === 'string') {
             brandSearch = searchParam;
             modelSearch = searchParam;
+            descSearch = searchParam;
         }
         else {
             ;
-            [brandSearch, modelSearch] = searchParam;
+            [brandSearch, modelSearch, descSearch] = searchParam;
         }
         const cars = yield car_model_1.carModel.find({
             $or: [
                 { brand: { $regex: brandSearch, $options: 'i' } },
                 { Model: { $regex: modelSearch, $options: 'i' } },
+                { desc: { $regex: descSearch, $options: 'i' } },
             ],
         });
         res.json({ cars });
     }
     catch (error) {
         console.error(error);
+        res.status(500).json({ error: 'Internal Server Error' });
+    }
+});
+CarController.globalSearch = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const { query } = req.body;
+        // Define search criteria
+        const searchCriteria = {
+            $or: [
+                { brand: { $regex: new RegExp(query, 'i') } }, // Case-insensitive brand matching
+                { Model: { $regex: new RegExp(query, 'i') } },
+                { desc: { $regex: new RegExp(query, 'i') } }, // Case-insensitive model matching
+            ],
+            deleted: false, // Ensure only non-deleted cars are included in search results
+        };
+        // Perform search query
+        const searchResults = yield car_model_1.carModel.find(searchCriteria);
+        res.json(searchResults);
+    }
+    catch (error) {
+        console.error('Error searching for cars:', error);
         res.status(500).json({ error: 'Internal Server Error' });
     }
 });

@@ -19,6 +19,7 @@ import {
 } from './middlewares/errorHandling.middleware'
 import { AppConfig } from './config/connectDB'
 import notificationmodel from './models/notification/noti.model'
+//import bidModel from './models/bid/bid.model'
 
 interface Bid extends Document {
 	amount: number
@@ -64,7 +65,7 @@ io.on('connection', (socket) => {
 	console.log('User connected')
 })
 
-cron.schedule('*/1 * * * *', async () => {
+cron.schedule('0 * * * *', async () => {
 	const bufferTime = 5 * 60 * 1000 // 5 minutes buffer
 
 	const now = new Date()
@@ -75,6 +76,7 @@ cron.schedule('*/1 * * * *', async () => {
 		bidEndDate: { $lt: bufferedDate },
 		deleted: false,
 	})
+
 	for (const car of expiredCars) {
 		// Check if a notification already exists for this car ID
 		const existingNotification = await notificationmodel.findOne({
