@@ -30,18 +30,14 @@ interface Notification {
 }
 
 const Navbar = () => {
-	const [isConnected, setIsConnected] = React.useState(false)
-	const [transport, setTransport] = React.useState('N/A')
 	const [open, setOpen] = React.useState(false)
 	const [anchorEl, setAnchorEl] = React.useState<HTMLElement | null>(null)
-	const [selectedIndex, setSelectedIndex] = React.useState(1)
 	const [notifications, setNotifications] = React.useState<Notification[]>([])
 	const isLoggedIn = useSelector(selectIsLoggedIn)
 	const token = getCookie('token')
 	const dispatch = useDispatch<ThunkDispatch<any, any, any>>()
 	const BASE_URL = process.env.NEXT_PUBLIC_BACKEND_URL
 	useEffect(() => {
-		// Check token existence and dispatch login or logout actions accordingly
 		if (token) {
 			dispatch(login({ token }))
 		}
@@ -64,22 +60,11 @@ const Navbar = () => {
 		}
 	}, [socket])
 
-	// useEffect(() => {
-	// 	// Listening for new bid notifications
-
-	// }, [socket])
 	const handleClose = () => {
 		setOpen(false) // Close the Popover
 		setAnchorEl(null)
 	}
 	const id = open ? 'simple-popover' : undefined
-
-	const handleListItemClick = (
-		event: React.MouseEvent<HTMLDivElement, MouseEvent>,
-		index: number
-	) => {
-		setSelectedIndex(index)
-	}
 	const handleClick = async (event: React.MouseEvent<HTMLElement>) => {
 		setOpen(!open) // Toggle the state of the Popover
 		setAnchorEl(event.currentTarget)

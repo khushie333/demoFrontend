@@ -11,8 +11,8 @@ const SearchBrand = ({ brand, setBrand }: SearchBrandProps) => {
 	const [searchResults, setSearchResults] = useState<Car[]>([])
 
 	const handleSelect = (selectedBrand: string) => {
-		setBrand(selectedBrand) // Update the selected brand
-		setQuery(selectedBrand) // Update the query with the selected brand
+		setBrand(selectedBrand)
+		setQuery(selectedBrand)
 	}
 
 	useEffect(() => {

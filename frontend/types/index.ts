@@ -48,6 +48,8 @@ export interface filterProps {
 	Model?: string
 	baseAmount?: string
 	limit?: number
+	minPrice?: number
+	maxPrice?: number
 }
 export interface HomeProps {
 	searchParams: filterProps

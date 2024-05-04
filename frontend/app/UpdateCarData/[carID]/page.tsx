@@ -6,9 +6,9 @@ import { useFormik } from 'formik'
 import { useRouter } from 'next/navigation'
 import { ThunkDispatch } from '@reduxjs/toolkit'
 import { useDispatch } from 'react-redux'
-import { addCar, updateCar } from '@/app/lib/UserSlice/UserSlice'
+import { updateCar } from '@/app/lib/UserSlice/UserSlice'
 import { getCookie } from 'cookies-next'
-import HandleNotLoggedIn from '@/components/HandleNotLoggedIn'
+
 interface Car {
 	_id: string
 	images: File
@@ -85,7 +85,6 @@ const UpdateCarData = () => {
 					formData.append('images', files[i])
 				}
 			}
-
 			try {
 				const rsp = await dispatch(updateCar({ carID, data: formData, token }))
 

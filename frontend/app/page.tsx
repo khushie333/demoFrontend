@@ -1,19 +1,26 @@
 'use client'
-import { CarCard, Custombutton, Dashboard, SearchBar } from '@/components'
+import {
+	CarCard,
+	Custombutton,
+	Dashboard,
+	Filter,
+	SearchBar,
+} from '@/components'
 import { CarProps, HomeProps } from '@/types'
 import { useState, useEffect } from 'react'
 import { fetchcars } from '@/utils'
-import { trio } from 'ldrs'
+import { quantum } from 'ldrs'
 
 export default function Home({ searchParams }: HomeProps) {
 	const [displayedCars, setDisplayedCars] = useState<CarProps[]>([])
 	const [isLoading, setIsLoading] = useState(true)
 	const [isClient, setIsClient] = useState(false)
+	const [minPriceFromFilter, setMinPriceFromFilter] = useState('')
+	const [maxPriceFromFilter, setMaxPriceFromFilter] = useState('')
 	useEffect(() => {
-		// Set isClient to true only on the client side
 		setIsClient(typeof window !== 'undefined')
 	}, [])
-	trio.register()
+	quantum.register()
 	const [isDataEmpty, setIsDataEmpty] = useState(true)
 	const [allCars, setAllCars] = useState<any[]>([])
 	useEffect(() => {
@@ -23,19 +30,19 @@ export default function Home({ searchParams }: HomeProps) {
 				{
 					brand: searchParams.brand || '',
 					Model: searchParams.Model || '',
-					baseAmount: searchParams.baseAmount || ',',
+					minPrice: searchParams.minPrice,
+					maxPrice: searchParams.maxPrice,
 				},
 				{
 					limit: '',
 				}
 			)
-
 			setTimeout(() => {
 				setAllCars(allCars)
 				setDisplayedCars(allCars.slice(0, 8))
 				setIsDataEmpty(!Array.isArray(allCars) || allCars.length < 1)
 				setIsLoading(false)
-			}, 1300)
+			}, 1000)
 		}
 
 		fetchData()
@@ -49,7 +56,27 @@ export default function Home({ searchParams }: HomeProps) {
 			resetUrl()
 		}
 	}, [searchParams])
-
+	useEffect(() => {
+		filterCarsByPrice()
+	}, [minPriceFromFilter, maxPriceFromFilter, allCars])
+	const filterCarsByPrice = () => {
+		let filteredCars = allCars
+		if (minPriceFromFilter) {
+			filteredCars = filteredCars.filter(
+				(car) => car.baseAmount >= parseFloat(minPriceFromFilter)
+			)
+		}
+		if (maxPriceFromFilter) {
+			filteredCars = filteredCars.filter(
+				(car) => car.baseAmount <= parseFloat(maxPriceFromFilter)
+			)
+		}
+		setDisplayedCars(filteredCars.slice(0, 8))
+	}
+	const handlePriceChange = (minPrice: string, maxPrice: string) => {
+		setMinPriceFromFilter(minPrice)
+		setMaxPriceFromFilter(maxPrice)
+	}
 	const showMoreCars = async () => {
 		const remainingCars = allCars.slice(displayedCars.length)
 		const nextCars = remainingCars.slice(0, 8)
@@ -61,14 +88,16 @@ export default function Home({ searchParams }: HomeProps) {
 		<main className='overflow-hidden'>
 			{isClient && isLoading ? (
 				<div
+					className='fixed w-full h-full backdrop-blur-3xl bg-opacity-100 flex justify-center items-center'
 					style={{
 						display: 'flex',
 						justifyContent: 'space-evenly',
 						alignItems: 'center',
 						height: '100vh',
+						zIndex: 9999,
 					}}
 				>
-					<l-trio></l-trio>
+					<l-quantum size={90} speed={2.2}></l-quantum>
 				</div>
 			) : (
 				<>
@@ -78,8 +107,9 @@ export default function Home({ searchParams }: HomeProps) {
 							<h1 className='text-4xl font-extrabold'>Cars Catalogue</h1>
 							<p>Explore the Cars you might like</p>
 						</div>
-						<div className='home__filter'>
+						<div className='home__filter flex flex-row'>
 							<SearchBar />
+							<Filter onPriceChange={handlePriceChange} />
 
 							<div className='home__filter-container'>
 								{/* {allCars?.map((car: any) => ( */}

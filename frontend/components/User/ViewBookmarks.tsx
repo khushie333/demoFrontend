@@ -125,14 +125,14 @@ const ViewBookmarks = ({ setOpen }: any) => {
 						</ListItem>
 					))}
 				</List>
-				{isOpen && selectedCar && (
-					<CarDetails
-						isOpen={isOpen}
-						closeModel={() => setIsOpen(false)}
-						car={selectedCar}
-					/>
-				)}
 			</Demo>
+			{isOpen && selectedCar && (
+				<CarDetails
+					isOpen={isOpen}
+					closeModel={() => setIsOpen(false)}
+					car={selectedCar}
+				/>
+			)}
 		</Grid>
 	)
 }

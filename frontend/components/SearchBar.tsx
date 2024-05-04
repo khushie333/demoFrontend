@@ -3,6 +3,7 @@ import React, { useState } from 'react'
 import SearchBrand from './SearchBrand'
 import Image from 'next/image'
 import { useRouter, useSearchParams } from 'next/navigation'
+import Filter from './Filter'
 
 export const SearchButton = ({ otherClasses }: { otherClasses: string }) => {
 	return (
@@ -47,9 +48,6 @@ const SearchBar = () => {
 		} else {
 			searchParams.delete('Model')
 		}
-		// const newPathname = `${window.location.pathname}?${searchParams.toString()}`
-
-		// Router.push(newPathname)
 		const newPathname = `${window.location.pathname}?${searchParams.toString()}`
 		Router.push(newPathname, { scroll: false })
 	}
@@ -57,7 +55,6 @@ const SearchBar = () => {
 		<form className='searchbar' onSubmit={handleSearch}>
 			<div className='searchbar__item'>
 				<SearchBrand brand={brand} setBrand={setBrand} />
-				<SearchButton otherClasses='sm:hidden' />
 			</div>
 		</form>
 	)

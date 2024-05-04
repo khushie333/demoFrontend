@@ -1,6 +1,6 @@
 'use client'
 import React from 'react'
-import Image from 'next/image'
+
 import Custombutton from './Custombutton'
 import Link from 'next/link'
 const Dashboard = ({ onExploreCarsClick }: any) => {

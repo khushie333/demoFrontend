@@ -7,7 +7,7 @@ interface CarCardProps {
 const BASE_URL = process.env.NEXT_PUBLIC_BACKEND_URL
 
 export async function fetchcars(filters: filterProps, params: any) {
-	const { brand, Model, baseAmount } = filters
+	const { brand, Model, maxPrice, minPrice } = filters
 	const { limit } = params
 	const timestamp = new Date().getTime() // Current timestamp
 
@@ -18,6 +18,27 @@ export async function fetchcars(filters: filterProps, params: any) {
 		}
 		if (Model) {
 			url += `search=${encodeURIComponent(Model)}&`
+		}
+		const response = await fetch(url, {
+			headers: {
+				'Cache-Control': 'no-store',
+				Pragma: 'no-store',
+			},
+		})
+		if (response.ok) {
+			const result = await response.json()
+			const carsArray = result.cars || []
+			return carsArray
+		} else {
+			console.log('no response')
+		}
+	} else if (minPrice || maxPrice) {
+		let url = `${BASE_URL}/carFilter?`
+		if (minPrice) {
+			url += `minPrice=${encodeURIComponent(minPrice)}&`
+		}
+		if (maxPrice) {
+			url += `maxPrice=${encodeURIComponent(maxPrice)}&`
 		}
 		const response = await fetch(url, {
 			headers: {

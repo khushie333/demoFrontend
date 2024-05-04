@@ -1,16 +1,9 @@
 'use client'
-import type { Metadata } from 'next'
-import { Inter } from 'next/font/google'
-import { Provider } from 'react-redux'
 
 import './globals.css'
 import { Footer, Navbar, ToastContainer } from '@/components'
 
 import { Providers } from '@/components/Providers'
-import { useContext } from 'react'
-
-//const inter = Inter({ subsets: ["latin"] });
-
 export default function RootLayout({
 	children,
 }: {

@@ -1,5 +1,12 @@
 import React from 'react'
-import { Footer, Navbar, Signup, UserHome } from '@/components'
+import {
+	CarCard,
+	CarDetails,
+	Footer,
+	Navbar,
+	Signup,
+	UserHome,
+} from '@/components'
 
 const index = () => {
 	return (
