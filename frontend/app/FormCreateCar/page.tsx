@@ -61,6 +61,7 @@ const FormCreateCar = (event: React.FormEvent<HTMLFormElement>) => {
 			if (rsp.payload) {
 				setTimeout(() => {
 					router.replace('/')
+					alert('Your car will be added for auction when Admin approves it!')
 				}, 200)
 			} else {
 				throw new Error('Invalid authentication')
@@ -102,6 +103,7 @@ const FormCreateCar = (event: React.FormEvent<HTMLFormElement>) => {
 									name='brand'
 									type='text'
 									className='block w-full px-4 py-2 mt-2 text-indigo-700 bg-white border rounded-md focus:border-indigo-400 focus:ring-indigo-300 focus:outline-none focus:ring focus:ring-opacity-40'
+									required
 								/>
 							</div>
 
@@ -116,6 +118,7 @@ const FormCreateCar = (event: React.FormEvent<HTMLFormElement>) => {
 									name='Model'
 									type='text'
 									className='block w-full px-4 py-2 mt-2 text-indigo-700 bg-white border rounded-md focus:border-indigo-400 focus:ring-indigo-300 focus:outline-none focus:ring focus:ring-opacity-40'
+									required
 								/>
 							</div>
 							<div className='mb-2'>
@@ -129,6 +132,7 @@ const FormCreateCar = (event: React.FormEvent<HTMLFormElement>) => {
 									type='text'
 									name='desc'
 									className='block w-full px-4 py-2 mt-2 text-indigo-700 bg-white border rounded-md focus:border-indigo-400 focus:ring-indigo-300 focus:outline-none focus:ring focus:ring-opacity-40'
+									required
 								/>
 							</div>
 							<div className='mb-2'>
@@ -142,6 +146,7 @@ const FormCreateCar = (event: React.FormEvent<HTMLFormElement>) => {
 									type='text'
 									name='owner'
 									className='block w-full px-4 py-2 mt-2 text-indigo-700 bg-white border rounded-md focus:border-indigo-400 focus:ring-indigo-300 focus:outline-none focus:ring focus:ring-opacity-40'
+									required
 								/>
 							</div>
 							<div className='mb-2'>
@@ -157,6 +162,7 @@ const FormCreateCar = (event: React.FormEvent<HTMLFormElement>) => {
 									onChange={handleFileChange}
 									className='block w-full px-4 py-2 mt-2 text-indigo-700 bg-white border rounded-md focus:border-indigo-400 focus:ring-indigo-300 focus:outline-none focus:ring focus:ring-opacity-40'
 									multiple
+									required
 								/>
 							</div>
 							<div className='mb-2'>
@@ -170,6 +176,7 @@ const FormCreateCar = (event: React.FormEvent<HTMLFormElement>) => {
 									type='number'
 									name='baseAmount'
 									className='block w-full px-4 py-2 mt-2 text-indigo-700 bg-white border rounded-md focus:border-indigo-400 focus:ring-indigo-300 focus:outline-none focus:ring focus:ring-opacity-40'
+									required
 								/>
 							</div>
 							<div className='mb-2'>
@@ -196,6 +203,7 @@ const FormCreateCar = (event: React.FormEvent<HTMLFormElement>) => {
 									type='date'
 									name='bidEndDate'
 									className='block w-full px-4 py-2 mt-2 text-indigo-700 bg-white border rounded-md focus:border-indigo-400 focus:ring-indigo-300 focus:outline-none focus:ring focus:ring-opacity-40'
+									required
 								/>
 							</div>
 							<div className='mt-6'>

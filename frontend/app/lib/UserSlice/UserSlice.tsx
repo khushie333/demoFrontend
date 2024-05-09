@@ -44,6 +44,7 @@ export const userLogin = createAsyncThunk('userLogin', async (val: object) => {
 		setCookie('token', data?.token)
 		setCookie('status', data?.status)
 		setCookie('message', data?.message)
+
 		//setCookie('hello', 'hello')
 		return data
 	} catch (error: any) {

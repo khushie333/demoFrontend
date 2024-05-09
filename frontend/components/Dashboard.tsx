@@ -3,7 +3,7 @@ import React from 'react'
 
 import Custombutton from './Custombutton'
 import Link from 'next/link'
-const Dashboard = ({ onExploreCarsClick }: any) => {
+const Dashboard = () => {
 	const handleExploreCarsClick = () => {
 		const nextSection = document.getElementById('discover')
 

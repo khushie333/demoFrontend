@@ -19,13 +19,7 @@ interface CarDetailsProps {
 	closeModel: () => void
 	car: CarProps
 }
-const token = getCookie('token')
 
-const config = {
-	headers: {
-		Authorization: `Bearer ${token}`,
-	},
-}
 const CarDetails = ({ isOpen, closeModel, car }: CarDetailsProps) => {
 	const BASE_URL = process.env.NEXT_PUBLIC_BACKEND_URL
 
@@ -36,7 +30,17 @@ const CarDetails = ({ isOpen, closeModel, car }: CarDetailsProps) => {
 		maxBid ?? 0
 	)
 
+	const [token, settoken] = useState<any>()
 	const [bidAmount, setBidAmount] = useState(car.baseAmount)
+	useEffect(() => {
+		const jwt = getCookie('token')
+		settoken(jwt)
+	}, [token])
+	const config = {
+		headers: {
+			Authorization: `Bearer ${token}`,
+		},
+	}
 	useEffect(() => {
 		const interval = setInterval(() => {
 			fetchMaxBid({ car }).then((data) => {
@@ -44,7 +48,7 @@ const CarDetails = ({ isOpen, closeModel, car }: CarDetailsProps) => {
 					setMaxBid(data.data.maxBidAmount)
 				}
 			})
-		}, 2000) // Poll every 2000 milliseconds (2 seconds)
+		}, 5000)
 
 		setMaxBidAmountchange(maxBid)
 		return () => clearInterval(interval)
@@ -104,9 +108,7 @@ const CarDetails = ({ isOpen, closeModel, car }: CarDetailsProps) => {
 				setIsConfirmationOpen(false)
 			}
 		} catch (error) {
-			ToastError(
-				'Error placing bid! Your bid amount should be greater than baseamount'
-			)
+			ToastError('Please sign in first')
 			setIsConfirmationOpen(false) // Close confirmation dialog
 		}
 		setBidAmount(maxBidchange ?? 0)

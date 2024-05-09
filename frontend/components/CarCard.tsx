@@ -65,8 +65,7 @@ const CarCard = ({ car }: CarCardProps) => {
 			}
 		}
 
-		const interval = setInterval(fetchData, 2000) // Poll every 2000 milliseconds (2 seconds)
-
+		const interval = setInterval(fetchData, 5000)
 		// Cleanup function to clear the interval when the component unmounts
 		return () => clearInterval(interval)
 	}, [car, maxBid])

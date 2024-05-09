@@ -18,6 +18,7 @@ const SignIn = () => {
 	// const dispatch = useDispatch()
 	const dispatch = useDispatch<ThunkDispatch<any, any, any>>()
 	const router = useRouter()
+	const BASE_URL = process.env.NEXT_PUBLIC_BACKEND_URL
 
 	const handleSubmit: React.FormEventHandler<HTMLFormElement> = async (
 		event
@@ -35,9 +36,25 @@ const SignIn = () => {
 				const message = getCookie('message')
 				const status = getCookie('status')
 
-				setTimeout(() => {
-					router.replace('/')
-				}, 200)
+				const response = await fetch(`${BASE_URL}/user/getUserDatafromid`, {
+					headers: {
+						Authorization: `Bearer ${token}`,
+					},
+				})
+
+				if (response.ok) {
+					const userData = await response.json()
+
+					if (userData?.isAdmin) {
+						// Redirect to admin dashboard
+						router.replace('/Admin')
+					} else {
+						// Redirect to regular user dashboard
+						router.replace('/')
+					}
+				} else {
+					console.error('Failed to fetch user data')
+				}
 			} else {
 				throw new Error('Invalid authentication')
 			}

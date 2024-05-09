@@ -13,12 +13,86 @@ import Typography from '@mui/material/Typography'
 import Paper from '@mui/material/Paper'
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown'
 import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp'
+import Dialog from '@mui/material/Dialog'
+import DialogActions from '@mui/material/DialogActions'
+import DialogContent from '@mui/material/DialogContent'
+import DialogContentText from '@mui/material/DialogContentText'
+import DialogTitle from '@mui/material/DialogTitle'
+import Button from '@mui/material/Button'
 import axios from 'axios'
 import { format } from 'date-fns'
-
-function Row({ row, row2, username }: any) {
+import { toast } from 'react-toastify'
+interface FinalizedBids {
+	[carID: string]: boolean
+}
+function Row({
+	row,
+	row2,
+	username,
+	email,
+	ownerEmail,
+	ownerPhone,
+	carID,
+}: any) {
+	const BASE_URL = process.env.NEXT_PUBLIC_BACKEND_URL
+	console.log(ownerEmail, ownerPhone)
 	const [open, setOpen] = React.useState(false)
+	const [openDialog, setOpenDialog] = React.useState(false)
+	const [finalizedBids, setFinalizedBids] = React.useState<FinalizedBids>({})
 
+	const [dialogData, setDialogData] = React.useState({
+		email: '',
+		bidAmount: 0,
+		Model: '',
+		brand: '',
+		ownerEmail: '',
+		ownerPhone: '',
+		carID: '',
+	})
+	const handleSend = async (
+		email: string,
+		bidAmount: number,
+		Model: string,
+		brand: string,
+		ownerEmail: string,
+		ownerPhone: string,
+		carID: string
+	) => {
+		try {
+			const response = await axios.post(
+				`${BASE_URL}/bids/sendBidFinalizeEmail`,
+				dialogData
+			)
+
+			if (response) {
+				setOpenDialog(false)
+				setFinalizedBids((prev) => ({ ...prev, [dialogData.carID]: true }))
+				toast.success('Bid finalized successfully!')
+			} // Close the dialog
+		} catch (error) {
+			console.error('Error sending bid finalization:', error)
+		}
+	}
+	const handleOpenDialog = (
+		email: string,
+		bidAmount: number,
+		Model: string,
+		brand: string,
+		ownerEmail: string,
+		ownerPhone: string,
+		carID: string
+	) => {
+		setDialogData({
+			email,
+			bidAmount,
+			Model,
+			brand,
+			ownerEmail,
+			ownerPhone,
+			carID,
+		})
+		setOpenDialog(true)
+	}
 	return (
 		<>
 			<TableRow sx={{ '& > *': { borderBottom: 'unset' } }}>
@@ -55,11 +129,16 @@ function Row({ row, row2, username }: any) {
 								<TableHead>
 									<TableRow>
 										<TableCell style={{ fontSize: '1rem' }}>User</TableCell>
+										<TableCell style={{ fontSize: '1rem' }}>Email</TableCell>
+
 										<TableCell align='right' style={{ fontSize: '1rem' }}>
 											Amount
 										</TableCell>
 										<TableCell align='right' style={{ fontSize: '1rem' }}>
 											Date
+										</TableCell>
+										<TableCell align='center' style={{ fontSize: '1rem' }}>
+											Action
 										</TableCell>
 									</TableRow>
 								</TableHead>
@@ -69,11 +148,33 @@ function Row({ row, row2, username }: any) {
 											<TableCell style={{ fontSize: '1rem' }}>
 												{username[index + 1]}
 											</TableCell>
+											<TableCell style={{ fontSize: '1rem' }}>
+												{email[index + 1]}
+											</TableCell>
 											<TableCell align='right' style={{ fontSize: '1rem' }}>
 												{bid?.amount}
 											</TableCell>
 											<TableCell align='right' style={{ fontSize: '1rem' }}>
 												{format(new Date(bid.createdAt), 'PPP')}
+											</TableCell>
+											<TableCell align='center' style={{ fontSize: '1rem' }}>
+												<button
+													onClick={() =>
+														handleOpenDialog(
+															email[index + 1],
+															bid?.amount,
+															row?.brand,
+															row?.Model,
+															ownerEmail,
+															ownerPhone,
+															carID
+														)
+													}
+													className='w-full px-4 py-2 tracking-wide text-white transition-colors duration-200 transform bg-blue-600 hover:bg-blue-700'
+													disabled={finalizedBids[carID]}
+												>
+													Go with this bid
+												</button>
 											</TableCell>
 										</TableRow>
 									))}
@@ -83,6 +184,47 @@ function Row({ row, row2, username }: any) {
 					</Collapse>
 				</TableCell>
 			</TableRow>
+			<Dialog
+				open={openDialog}
+				onClose={() => setOpenDialog(false)}
+				aria-labelledby='alert-dialog-title'
+				aria-describedby='alert-dialog-description'
+			>
+				<DialogTitle id='alert-dialog-title'>
+					{'Confirm Bid Finalization'}
+				</DialogTitle>
+				<DialogContent>
+					<DialogContentText
+						id='alert-dialog-description'
+						fontWeight={600}
+						fontSize={'20px'}
+					>
+						Are you sure you want to go with this bid of {dialogData.bidAmount}{' '}
+						on {dialogData.Model} {dialogData.brand}?<br /> By clicking OK we
+						will notify the bidder and your car will be removed from the
+						auction!
+					</DialogContentText>
+				</DialogContent>
+				<DialogActions>
+					<Button onClick={() => setOpenDialog(false)}>Cancel</Button>
+					<Button
+						onClick={() =>
+							handleSend(
+								dialogData.email,
+								dialogData.bidAmount,
+								dialogData.Model,
+								dialogData.brand,
+								dialogData.ownerEmail,
+								dialogData.ownerPhone,
+								dialogData.carID
+							)
+						}
+						autoFocus
+					>
+						OK
+					</Button>
+				</DialogActions>
+			</Dialog>
 		</>
 	)
 }
@@ -91,8 +233,12 @@ export default function CollapsibleTable() {
 	const [carDetails, setCarDetails] = useState()
 	const [bids, setBids] = useState()
 	const [carID, setcarId] = useState('')
-
+	const [ownerID, setOwnerID] = useState('')
 	const [usernames, setUsernames] = useState<string[]>([])
+	const [emails, setEmails] = useState<string[]>([])
+	const [ownerEmails, setOwnerEmails] = useState()
+	const [ownerPhone, setOwnerPhone] = useState()
+
 	const [isUserLoading, setIsUserLoading] = useState(false)
 	const userIds = ['']
 
@@ -102,7 +248,6 @@ export default function CollapsibleTable() {
 
 	useEffect(() => {
 		const parts = window.location.href.split('/')
-
 		setcarId(parts[4])
 		const fetchCarDetails = async () => {
 			try {
@@ -110,14 +255,35 @@ export default function CollapsibleTable() {
 					// Check if carID is available before fetching data
 					const response = await axios.get(`${BASE_URL}/car/${carID}`)
 					const data = response.data
-
+					console.log('data of car:', data)
 					setCarDetails(data)
+					const userid = data.user
+					console.log('userid:', userid)
+					setOwnerID(userid)
+					console.log('ownerid:', ownerID)
 				}
 			} catch (error) {
 				console.error('Error fetching car details:', error)
 			}
 		}
+		console.log('ownerid:', ownerID)
 
+		const fetchownerdetails = async () => {
+			try {
+				if (ownerID) {
+					// Check if carID is available before fetching data
+					const response = await axios.get(`${BASE_URL}/user/${ownerID}`)
+					const data = response.data
+					console.log('data of user:', data)
+					if (data) {
+						setOwnerEmails(data.email)
+						setOwnerPhone(data.phone)
+					}
+				}
+			} catch (error) {
+				console.error('Error fetching bids:', error)
+			}
+		}
 		const fetchBids = async () => {
 			try {
 				if (carID) {
@@ -127,14 +293,14 @@ export default function CollapsibleTable() {
 
 					if (data) {
 						setBids(data.bids)
-						console.log(data.bids)
+						//console.log(data.bids)
 						const userids: string[] = data.bids.map((bid: any) => bid.user)
-						console.log(userids)
-						///	console.log(userIds)
+						//console.log(userids)
+
 						userids?.forEach((id) => {
 							userIds.push(id)
 						})
-						console.log(userIds)
+						//console.log(userIds)
 					}
 				}
 			} catch (error) {
@@ -146,16 +312,17 @@ export default function CollapsibleTable() {
 				setIsUserLoading(true)
 
 				const userNames = []
-
+				const emails = []
 				for (const userId of userIds) {
 					const response = await axios.get(`${BASE_URL}/user/${userId}`)
 
 					userNames.push(response.data.name)
+					emails.push(response.data.email)
 				}
-				console.log('usernames:', userNames)
+
 				// Set the usernames in the state
 				setUsernames(userNames)
-
+				setEmails(emails)
 				setIsUserLoading(false)
 			} catch (error) {
 				console.error('Error fetching user:', error)
@@ -166,8 +333,9 @@ export default function CollapsibleTable() {
 			fetchCarDetails()
 			fetchBids()
 			fetchUserData()
+			fetchownerdetails()
 		}
-	}, [carID])
+	}, [carID, ownerID])
 
 	return (
 		<div className='flex flex-col justify-center min-h-screen overflow-hidden'>
@@ -201,7 +369,15 @@ export default function CollapsibleTable() {
 										</TableRow>
 									</TableHead>
 									<TableBody>
-										<Row row={carDetails} row2={bids} username={usernames} />
+										<Row
+											row={carDetails}
+											row2={bids}
+											username={usernames}
+											email={emails}
+											ownerEmail={ownerEmails}
+											ownerPhone={ownerPhone}
+											carID={carID}
+										/>
 									</TableBody>
 								</Table>
 							</TableContainer>

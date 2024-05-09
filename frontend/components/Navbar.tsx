@@ -44,7 +44,7 @@ const Navbar = () => {
 	}, [token, dispatch])
 	useEffect(() => {
 		socket.on('notifyUpdate', (data) => {
-			console.log('Received notification update:', data)
+			//		console.log('Received notification update:', data)
 			setNotifications((prevNotifications) => [...prevNotifications, data])
 		})
 		socket.on('bidReceived', (notification) => {
