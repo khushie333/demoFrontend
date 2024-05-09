@@ -5,12 +5,13 @@ import { RequestHandler } from 'express'
 //import { extname } from 'path'
 import { ParamsDictionary } from 'express-serve-static-core'
 import { ParsedQs } from 'qs'
-
+import { io } from '../server'
 import { carModel } from '../models/car/car.model'
 //import { upload } from '../middlewares/multer.middleware'
 import notificationmodel, {
 	notification,
 } from '../models/notification/noti.model'
+import UserModel from '../models/user/user.model'
 const storage = multer.diskStorage({
 	destination: (req, file, cb) => {
 		cb(null, 'uploads/') // Destination directory for uploaded files
@@ -103,6 +104,23 @@ class CarController {
 
 			const car = new carModel(carData)
 			const result = await car.save()
+			io.emit('NewCar', {
+				message: `New car ${car.brand} ${car.Model} added by user ${userID}`,
+				carId: result._id, // Use the saved car's ID
+				userId: userID,
+			})
+			const adminUser = await UserModel.findOne({ isAdmin: true })
+			if (!adminUser) {
+				throw new Error('Admin user not found')
+			}
+			// Create a notification for the admin
+			await notificationmodel.create({
+				car: result._id, // Use the saved car's ID
+				user: adminUser._id,
+				type: 'NewCar',
+				message: `New car ${car.brand} ${car.Model} added by user ${userID}`,
+				isRead: false,
+			})
 			res.status(201).send(result)
 		} catch (error) {
 			console.error(error)
@@ -113,7 +131,7 @@ class CarController {
 	//get All the cars
 	static getAllCars = async (req: Request, res: Response): Promise<void> => {
 		try {
-			const result = await carModel.find()
+			const result = await carModel.find({ isApproved: true })
 			res.send(result)
 		} catch (error) {
 			console.error(error)
@@ -179,7 +197,7 @@ class CarController {
 					new Date(car.bidEndDate).getTime()
 			let updatedImageData = {}
 			const files = req.files as Express.Multer.File[]
-
+			console.log(isBidEndDateUpdated)
 			// if (files) {
 			// 	const images = files.map((file) => file.originalname)
 			// 	updatedImageData = { ...req.body, images: images }
@@ -187,13 +205,13 @@ class CarController {
 			// 	updatedImageData = req.body
 			// }
 			if (files.length !== 0) {
-				console.log('car chhe')
+				//console.log('car chhe')
 				files.forEach((file) => {
 					car.images.push(file.originalname)
 				})
 				updatedImageData = { ...req.body, images: car.images }
 			} else {
-				console.log('car nthi')
+				//console.log('car nthi')
 				// If no new images are provided, retain the existing images
 				updatedImageData = { ...req.body, images: car.images }
 			}
@@ -203,10 +221,23 @@ class CarController {
 				updatedImageData,
 				{ new: true }
 			)
-			if (isBidEndDateUpdated) {
-				await notificationmodel.deleteOne({ car: car._id })
+			if (isBidEndDateUpdated === true) {
+				const deletenoti = await notificationmodel.deleteMany({
+					car: car._id,
+					type: 'bidEndDateUpdate',
+				})
+				if (!deletenoti) {
+					res.status(404).json({ message: 'Notification not found' })
+					console.log('Notification not found')
+					return
+				}
 				// Optionally, emit a message to update any live UI elements that the notification has been removed
-				//io.emit('notificationRemoved', { carId: car._id });
+				io.emit('notificationRemoved', {
+					car: car._id,
+					message: {
+						$regex: `Update Bid ending date or remove a car : ${car.brand} ${car.Model}`,
+					},
+				})
 			}
 			res.status(200).send(result)
 		} catch (error) {
@@ -215,47 +246,6 @@ class CarController {
 		}
 	}
 
-	// delete car by id
-	// static deleteCarById = async (req: Request, res: Response): Promise<void> => {
-	// 	try {
-	// 		const authorization = req.headers.authorization
-	// 		if (!authorization) {
-	// 			res.status(401).json({ message: 'Unauthorized user' })
-	// 			return
-	// 		}
-
-	// 		const token = authorization.split(' ')[1]
-	// 		if (!token) {
-	// 			res.status(401).json({ message: 'Unauthorized user' })
-	// 			return
-	// 		}
-
-	// 		const decodedToken = jwt.verify(
-	// 			token,
-	// 			process.env.JWT_SECRET_KEY
-	// 		) as Jwt & JwtPayload
-	// 		const userID = decodedToken.userID as string
-
-	// 		const car = await carModel.findById(req.params.id)
-	// 		if (!car) {
-	// 			res.status(404).json({ message: 'Car not found' })
-	// 			return
-	// 		}
-
-	// 		if (String(car.user) !== userID) {
-	// 			res.status(403).json({ message: 'Unauthorized user' })
-	// 			return
-	// 		}
-
-	// 		const result = await carModel.findByIdAndDelete(req.params.id)
-	// 		res
-	// 			.status(200)
-	// 			.json({ success: true, message: 'Car deleted successfully' })
-	// 	} catch (error) {
-	// 		console.error(error)
-	// 		res.status(500).json({ message: 'Internal Server Error' })
-	// 	}
-	// }
 	static deleteCarById = async (req: Request, res: Response): Promise<void> => {
 		try {
 			console.log('hii')
@@ -285,7 +275,7 @@ class CarController {
 				res.status(404).json({ message: 'Car not found' })
 				return
 			}
-			console.log(String(car.user))
+			//console.log(String(car.user))
 			if (String(car.user) !== userID) {
 				res.status(403).json({ message: 'Unauthorized user' })
 				return
@@ -308,31 +298,6 @@ class CarController {
 			res.status(500).json({ message: 'Internal Server Error' })
 		}
 	}
-
-	//search car by model
-	// static search = async (req: Request, res: Response): Promise<void> => {
-	// 	try {
-	// 		const search: string | undefined = req.query.search as string | undefined
-
-	// 		if (!search) {
-	// 			res.status(400).json({ error: 'Search parameter is missing' })
-	// 			return
-	// 		}
-	// 		//console.log('Search parameter:', search)
-
-	// 		const cars = await carModel.find({
-	// 			$or: [
-	// 				{ brand: { $regex: search, $options: 'i' } },
-	// 				{ Model: { $regex: search, $options: 'i' } },
-	// 			],
-	// 		})
-	// 		console.log(cars)
-	// 		res.json({ cars: cars })
-	// 	} catch (error) {
-	// 		console.error(error)
-	// 		res.status(500).json({ error: 'Internal Server Error' })
-	// 	}
-	// }
 
 	static search = async (req: Request, res: Response): Promise<void> => {
 		try {

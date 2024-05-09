@@ -31,6 +31,9 @@ const noti_routes_1 = __importDefault(require("./routes/noti.routes"));
 const errorHandling_middleware_1 = require("./middlewares/errorHandling.middleware");
 const connectDB_1 = require("./config/connectDB");
 const noti_model_1 = __importDefault(require("./models/notification/noti.model"));
+const admin_routes_1 = __importDefault(require("./routes/admin.routes"));
+const stripe_1 = __importDefault(require("stripe"));
+const stripe_routes_1 = __importDefault(require("./routes/stripe.routes"));
 const appConfig = new connectDB_1.AppConfig();
 appConfig.initialize();
 const app = (0, express_1.default)();
@@ -59,7 +62,7 @@ exports.io.on('connection', (socket) => {
     });
     console.log('User connected');
 });
-node_cron_1.default.schedule('0 * * * *', () => __awaiter(void 0, void 0, void 0, function* () {
+node_cron_1.default.schedule('0 */6 * * *', () => __awaiter(void 0, void 0, void 0, function* () {
     const bufferTime = 5 * 60 * 1000; // 5 minutes buffer
     const now = new Date();
     const oneMinutesAgo = new Date(now.getTime() - 1 * 60 * 1000);
@@ -70,9 +73,10 @@ node_cron_1.default.schedule('0 * * * *', () => __awaiter(void 0, void 0, void 0
         deleted: false,
     });
     for (const car of expiredCars) {
-        // Check if a notification already exists for this car ID
+        // Check if a notification already exists
         const existingNotification = yield noti_model_1.default.findOne({
             car: car._id,
+            type: 'bidEndDateUpdate',
         });
         if (!existingNotification) {
             // If no existing notification, emit a new one
@@ -84,6 +88,7 @@ node_cron_1.default.schedule('0 * * * *', () => __awaiter(void 0, void 0, void 0
             yield noti_model_1.default.create({
                 car: car._id,
                 user: car.user,
+                type: 'bidEndDateUpdate',
                 message: `Update or remove your car with ID: ${car.brand} ${car.Model}`,
                 isread: false,
             });
@@ -95,12 +100,15 @@ const port = process.env.PORT || appConfig.getServerPort();
 httpServer.listen(port, () => {
     console.log(`Server is running on port ${port}`);
 });
+const stripe = new stripe_1.default(process.env.STRIPE_SECRET_KEY);
 app.use('/api', user_routes_1.default);
 app.use('/api', authentication_routes_1.default);
 app.use('/api', email_routes_1.default);
 app.use('/api', car_routes_1.default);
 app.use('/api', bid_routes_1.default);
 app.use('/api', noti_routes_1.default);
+app.use('/api', admin_routes_1.default);
+app.use('/api', stripe_routes_1.default);
 app.use(errorHandling_middleware_1.errorHandler);
 app.use(errorHandling_middleware_1.handleError);
 exports.default = app;

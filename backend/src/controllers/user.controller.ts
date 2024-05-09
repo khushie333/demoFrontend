@@ -5,6 +5,8 @@ import bcrypt from 'bcrypt'
 import jwt from 'jsonwebtoken'
 import { UserModel, User } from '../models/user/user.model'
 import carModel from '../models/car/car.model'
+import mongoose from 'mongoose'
+import Stripe from 'stripe'
 interface ProcessEnv {
 	[key: string]: string
 }
@@ -12,6 +14,9 @@ interface ProcessEnv {
 declare const process: {
 	env: ProcessEnv
 }
+const stripe = new Stripe(
+	'sk_test_51PE5x3FrSZSbREzfwfNBWDhQZ7maPRruARip9VoASQ47gG28YzqTkimUflbBMzLGQfjxQNTua6CWSgpEo9gTjQBm00RlUl9qPr'
+)
 
 interface AuthenticatedRequest extends Request {
 	user?: User
@@ -40,13 +45,91 @@ export async function getUsersById(req: Request, res: Response): Promise<void> {
 		res.status(500).json({ message: 'Error fetching user', error })
 	}
 }
+// export async function userReg(req: Request, res: Response): Promise<void> {
+// 	const { name, email, phone, address, password, password_conf, active } =
+// 		req.body
+
+// 	try {
+// 		// Checking email duplication
+// 		//console.log(req.body)
+// 		const user = await UserModel.findOne({ email })
+// 		if (user) {
+// 			res
+// 				.status(400)
+// 				.json({ status: 'failed', message: 'Email already exists' })
+// 			return
+// 		}
+
+// 		if (name && email && phone && address && password && password_conf) {
+// 			if (password === password_conf) {
+// 				// Hash password
+// 				const salt = await bcrypt.genSalt(10)
+// 				const hashPassword = await bcrypt.hash(password, salt)
+
+// 				// Create new user
+// 				const newUser = new UserModel({
+// 					name,
+// 					email,
+// 					phone,
+// 					address,
+// 					password: hashPassword,
+// 					active,
+// 					stripeCustomerId: null,
+// 				})
+// 				await newUser.save()
+// 				// Get saved user
+// 				const stripeCustomer = await stripe.customers.create({
+// 					name: name,
+// 					email: email,
+// 					// Add more customer details as needed
+// 				})
+// 				console.log('st:', stripeCustomer)
+
+// 				// Get saved user
+// 				const savedUser = await UserModel.findOne({ email })
+// 				console.log(savedUser)
+// 				if (!savedUser) {
+// 					throw new Error('User not found after saving')
+// 				}
+
+// 				// Save the Stripe customer ID to the user document
+// 				savedUser.stripeCustomerId = stripeCustomer.id
+// 				await savedUser.save()
+
+// 				// Generate JWT token
+// 				const token = jwt.sign(
+// 					{ userID: savedUser._id },
+// 					process.env.JWT_SECRET_KEY || '',
+// 					{ expiresIn: '30d' }
+// 				)
+
+// 				res.status(201).json({
+// 					status: 'success',
+// 					message: 'Registered successfully',
+// 					token,
+// 				})
+// 			} else {
+// 				res
+// 					.status(400)
+// 					.json({ status: 'failed', message: 'Passwords are not matching' })
+// 			}
+// 		} else {
+// 			res
+// 				.status(400)
+// 				.json({ status: 'failed', message: 'All fields are required' })
+// 		}
+// 	} catch (error) {
+// 		res
+// 			.status(500)
+// 			.json({ status: 'failed', message: 'Unable to register', error })
+// 	}
+// }
 export async function userReg(req: Request, res: Response): Promise<void> {
 	const { name, email, phone, address, password, password_conf, active } =
 		req.body
 
 	try {
 		// Checking email duplication
-		//console.log(req.body)
 		const user = await UserModel.findOne({ email })
 		if (user) {
 			res
@@ -70,18 +153,24 @@ export async function userReg(req: Request, res: Response): Promise<void> {
 					password: hashPassword,
 					active,
 				})
-				await newUser.save()
 
 				// Get saved user
-				const savedUser = await UserModel.findOne({ email })
+				await newUser.save()
 
-				if (!savedUser) {
-					throw new Error('User not found after saving')
-				}
+				// Create Stripe customer
+				const stripeCustomer = await stripe.customers.create({
+					name: name,
+					email: email,
+					// Add more customer details as needed
+				})
+
+				// Update user with Stripe customer ID
+				newUser.stripeCustomerId = stripeCustomer.id
+				await newUser.save()
 
 				// Generate JWT token
 				const token = jwt.sign(
-					{ userID: savedUser._id },
+					{ userID: newUser._id },
 					process.env.JWT_SECRET_KEY || '',
 					{ expiresIn: '30d' }
 				)
@@ -107,6 +196,7 @@ export async function userReg(req: Request, res: Response): Promise<void> {
 			.json({ status: 'failed', message: 'Unable to register', error })
 	}
 }
+
 export async function updateUserProfile(
 	req: AuthenticatedRequest,
 	res: Response
@@ -180,5 +270,42 @@ export async function viewCarsOfUser(
 	} catch (error) {
 		console.error(error)
 		res.status(500).json({ message: 'Internal server error' })
+	}
+}
+export async function getuserdatafromid(
+	req: AuthenticatedRequest,
+	res: Response
+): Promise<void> {
+	const { authorization } = req.headers
+	const token = authorization?.split(' ')[1]
+
+	if (!token) {
+		res.status(401).json({ error: 'No token provided' })
+		return
+	}
+
+	try {
+		// Verify the token
+		const decodedToken: any = jwt.verify(token, process.env.JWT_SECRET_KEY)
+		const userId: string = decodedToken.userID
+
+		// Check if userId is a valid ObjectId
+		if (!mongoose.Types.ObjectId.isValid(userId)) {
+			res.status(400).json({ error: 'Invalid user ID' })
+			return
+		}
+
+		const user = await UserModel.findById(userId)
+
+		if (!user) {
+			res.status(404).json({ error: 'User not found' })
+			return
+		}
+
+		// Send user data in the response
+		res.json(user)
+	} catch (error) {
+		console.error('Error fetching user data:', error)
+		res.status(500).json({ error: 'Internal server error' })
 	}
 }

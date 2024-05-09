@@ -58,6 +58,13 @@ const userSchema = new mongoose_1.Schema({
         type: Boolean,
         default: true, // Set default value to false
     },
+    isAdmin: {
+        type: Boolean,
+        default: false, // Set default value to false
+    },
+    stripeCustomerId: {
+        type: String,
+    },
 });
 // Define and export user model
 exports.UserModel = mongoose_1.default.model('user', userSchema);

@@ -19,6 +19,9 @@ import {
 } from './middlewares/errorHandling.middleware'
 import { AppConfig } from './config/connectDB'
 import notificationmodel from './models/notification/noti.model'
+import adminroutes from './routes/admin.routes'
+import Stripe from 'stripe'
+import stripeRoutes from './routes/stripe.routes'
 //import bidModel from './models/bid/bid.model'
 
 interface Bid extends Document {
@@ -65,7 +68,7 @@ io.on('connection', (socket) => {
 	console.log('User connected')
 })
 
-cron.schedule('0 * * * *', async () => {
+cron.schedule('0 */6 * * *', async () => {
 	const bufferTime = 5 * 60 * 1000 // 5 minutes buffer
 
 	const now = new Date()
@@ -78,9 +81,10 @@ cron.schedule('0 * * * *', async () => {
 	})
 
 	for (const car of expiredCars) {
-		// Check if a notification already exists for this car ID
+		// Check if a notification already exists
 		const existingNotification = await notificationmodel.findOne({
 			car: car._id,
+			type: 'bidEndDateUpdate',
 		})
 
 		if (!existingNotification) {
@@ -94,25 +98,27 @@ cron.schedule('0 * * * *', async () => {
 			await notificationmodel.create({
 				car: car._id,
 				user: car.user,
+				type: 'bidEndDateUpdate',
 				message: `Update or remove your car with ID: ${car.brand} ${car.Model}`,
 				isread: false,
 			})
 		}
 	}
-
 	console.log('Cron job ran checking for expired bid end dates')
 })
 const port = process.env.PORT || appConfig.getServerPort()
 httpServer.listen(port, () => {
 	console.log(`Server is running on port ${port}`)
 })
-
+const stripe = new Stripe(process.env.STRIPE_SECRET_KEY as string)
 app.use('/api', userRoutes)
 app.use('/api', authenticateRoutes)
 app.use('/api', emailRoutes)
 app.use('/api', carRoutes)
 app.use('/api', bidRoutes)
 app.use('/api', notiRoutes)
+app.use('/api', adminroutes)
+app.use('/api', stripeRoutes)
 app.use(errorHandler)
 app.use(handleError)
 

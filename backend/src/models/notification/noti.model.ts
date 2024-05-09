@@ -3,7 +3,7 @@ import mongoose, { Schema, Document, Model } from 'mongoose'
 export interface notification extends Document {
 	car: mongoose.Types.ObjectId
 	user: mongoose.Types.ObjectId
-
+	type: string
 	message: string
 	isread: boolean
 }
@@ -20,7 +20,10 @@ const notifications: Schema<notification> = new Schema(
 			ref: 'User',
 			required: true,
 		},
-
+		type: {
+			type: String,
+			required: true,
+		},
 		message: {
 			type: String,
 			required: true,

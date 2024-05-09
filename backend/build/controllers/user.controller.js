@@ -12,11 +12,14 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.viewCarsOfUser = exports.updateUserProfile = exports.userReg = exports.getUsersById = exports.getUsers = void 0;
+exports.getuserdatafromid = exports.viewCarsOfUser = exports.updateUserProfile = exports.userReg = exports.getUsersById = exports.getUsers = void 0;
 const bcrypt_1 = __importDefault(require("bcrypt"));
 const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
 const user_model_1 = require("../models/user/user.model");
 const car_model_1 = __importDefault(require("../models/car/car.model"));
+const mongoose_1 = __importDefault(require("mongoose"));
+const stripe_1 = __importDefault(require("stripe"));
+const stripe = new stripe_1.default('sk_test_51PE5x3FrSZSbREzfwfNBWDhQZ7maPRruARip9VoASQ47gG28YzqTkimUflbBMzLGQfjxQNTua6CWSgpEo9gTjQBm00RlUl9qPr');
 function getUsers(req, res) {
     return __awaiter(this, void 0, void 0, function* () {
         try {
@@ -46,12 +49,83 @@ function getUsersById(req, res) {
     });
 }
 exports.getUsersById = getUsersById;
+// export async function userReg(req: Request, res: Response): Promise<void> {
+// 	const { name, email, phone, address, password, password_conf, active } =
+// 		req.body
+// 	try {
+// 		// Checking email duplication
+// 		//console.log(req.body)
+// 		const user = await UserModel.findOne({ email })
+// 		if (user) {
+// 			res
+// 				.status(400)
+// 				.json({ status: 'failed', message: 'Email already exists' })
+// 			return
+// 		}
+// 		if (name && email && phone && address && password && password_conf) {
+// 			if (password === password_conf) {
+// 				// Hash password
+// 				const salt = await bcrypt.genSalt(10)
+// 				const hashPassword = await bcrypt.hash(password, salt)
+// 				// Create new user
+// 				const newUser = new UserModel({
+// 					name,
+// 					email,
+// 					phone,
+// 					address,
+// 					password: hashPassword,
+// 					active,
+// 					stripeCustomerId: null,
+// 				})
+// 				await newUser.save()
+// 				// Get saved user
+// 				const stripeCustomer = await stripe.customers.create({
+// 					name: name,
+// 					email: email,
+// 					// Add more customer details as needed
+// 				})
+// 				console.log('st:', stripeCustomer)
+// 				// Get saved user
+// 				const savedUser = await UserModel.findOne({ email })
+// 				console.log(savedUser)
+// 				if (!savedUser) {
+// 					throw new Error('User not found after saving')
+// 				}
+// 				// Save the Stripe customer ID to the user document
+// 				savedUser.stripeCustomerId = stripeCustomer.id
+// 				await savedUser.save()
+// 				// Generate JWT token
+// 				const token = jwt.sign(
+// 					{ userID: savedUser._id },
+// 					process.env.JWT_SECRET_KEY || '',
+// 					{ expiresIn: '30d' }
+// 				)
+// 				res.status(201).json({
+// 					status: 'success',
+// 					message: 'Registered successfully',
+// 					token,
+// 				})
+// 			} else {
+// 				res
+// 					.status(400)
+// 					.json({ status: 'failed', message: 'Passwords are not matching' })
+// 			}
+// 		} else {
+// 			res
+// 				.status(400)
+// 				.json({ status: 'failed', message: 'All fields are required' })
+// 		}
+// 	} catch (error) {
+// 		res
+// 			.status(500)
+// 			.json({ status: 'failed', message: 'Unable to register', error })
+// 	}
+// }
 function userReg(req, res) {
     return __awaiter(this, void 0, void 0, function* () {
         const { name, email, phone, address, password, password_conf, active } = req.body;
         try {
             // Checking email duplication
-            //console.log(req.body)
             const user = yield user_model_1.UserModel.findOne({ email });
             if (user) {
                 res
@@ -73,14 +147,19 @@ function userReg(req, res) {
                         password: hashPassword,
                         active,
                     });
-                    yield newUser.save();
                     // Get saved user
-                    const savedUser = yield user_model_1.UserModel.findOne({ email });
-                    if (!savedUser) {
-                        throw new Error('User not found after saving');
-                    }
+                    yield newUser.save();
+                    // Create Stripe customer
+                    const stripeCustomer = yield stripe.customers.create({
+                        name: name,
+                        email: email,
+                        // Add more customer details as needed
+                    });
+                    // Update user with Stripe customer ID
+                    newUser.stripeCustomerId = stripeCustomer.id;
+                    yield newUser.save();
                     // Generate JWT token
-                    const token = jsonwebtoken_1.default.sign({ userID: savedUser._id }, process.env.JWT_SECRET_KEY || '', { expiresIn: '30d' });
+                    const token = jsonwebtoken_1.default.sign({ userID: newUser._id }, process.env.JWT_SECRET_KEY || '', { expiresIn: '30d' });
                     res.status(201).json({
                         status: 'success',
                         message: 'Registered successfully',
@@ -177,3 +256,35 @@ function viewCarsOfUser(req, res) {
     });
 }
 exports.viewCarsOfUser = viewCarsOfUser;
+function getuserdatafromid(req, res) {
+    return __awaiter(this, void 0, void 0, function* () {
+        const { authorization } = req.headers;
+        const token = authorization === null || authorization === void 0 ? void 0 : authorization.split(' ')[1];
+        if (!token) {
+            res.status(401).json({ error: 'No token provided' });
+            return;
+        }
+        try {
+            // Verify the token
+            const decodedToken = jsonwebtoken_1.default.verify(token, process.env.JWT_SECRET_KEY);
+            const userId = decodedToken.userID;
+            // Check if userId is a valid ObjectId
+            if (!mongoose_1.default.Types.ObjectId.isValid(userId)) {
+                res.status(400).json({ error: 'Invalid user ID' });
+                return;
+            }
+            const user = yield user_model_1.UserModel.findById(userId);
+            if (!user) {
+                res.status(404).json({ error: 'User not found' });
+                return;
+            }
+            // Send user data in the response
+            res.json(user);
+        }
+        catch (error) {
+            console.error('Error fetching user data:', error);
+            res.status(500).json({ error: 'Internal server error' });
+        }
+    });
+}
+exports.getuserdatafromid = getuserdatafromid;

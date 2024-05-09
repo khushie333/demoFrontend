@@ -63,6 +63,10 @@ const carSchema = new mongoose_1.Schema({
         type: Boolean,
         default: false, // Initially, cars are not deleted
     },
+    isApproved: {
+        type: Boolean,
+        default: false, // Initially, cars are not approved
+    },
 });
 exports.carModel = mongoose_1.default.model('car', carSchema);
 exports.default = exports.carModel;

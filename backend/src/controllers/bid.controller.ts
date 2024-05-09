@@ -6,6 +6,9 @@ import notificationmodel from '../models/notification/noti.model'
 import { Server as SocketIOServer } from 'socket.io'
 import { io } from '../server'
 import UserModel from '../models/user/user.model'
+import transporter from '../config/emailConf'
+import userModel, { User } from '../models/user/user.model'
+
 interface ProcessEnv {
 	[key: string]: string
 }
@@ -19,7 +22,12 @@ class bidController {
 		try {
 			const { authorization } = req.headers as { authorization: string }
 			const token: string = authorization.split(' ')[1]
-
+			console.log(token)
+			if (token === 'undefined') {
+				res.status(500).send({ error: 'Not signed in' })
+				console.log('Not signed in')
+				return
+			}
 			if (token.length !== 0) {
 				const { userID } = jwt.verify(token, process.env.JWT_SECRET_KEY) as {
 					userID: string
@@ -50,8 +58,9 @@ class bidController {
 						})
 
 						await notificationmodel.create({
-							user: car.user,
 							car: carId,
+							user: car.user,
+							type: 'NewBid',
 							message: `New bid of ${amount} on your car ${car.brand} ${car.Model}`,
 							isRead: false,
 						})
@@ -182,6 +191,71 @@ class bidController {
 		} catch (error) {
 			console.error(error)
 			res.status(500).json({ error: 'Internal Server Error' })
+		}
+	}
+	static bidFinalization = async (
+		req: Request,
+		res: Response
+	): Promise<void> => {
+		try {
+			console.log('hiii')
+			const { bidAmount, brand, Model, email, ownerEmail, ownerPhone, carID } =
+				req.body
+			console.log(req.body)
+			if (email) {
+				const user: User | null = await userModel.findOne({ email: email })
+				const car = await carModel.findById(carID)
+				if (user && car) {
+					const secret: string = user._id + process.env.JWT_SECRET_KEY
+					const token: string = jwt.sign({ userID: user._id }, secret, {
+						expiresIn: 86400,
+					})
+
+					//const link: string = `http://localhost:3000/`
+
+					// Send email
+					const info = await transporter.sendMail({
+						from: process.env.EMAIL_FROM,
+						to: user.email,
+						subject: 'Bid has accepted',
+						html: `
+                <h2>Bid Acceptance Notification</h2>
+                <p>Your bid of ${bidAmount} has been accepted for the following car:</p>
+                <ul>
+                  <li>Brand: ${brand}</li>
+                  <li>Model: ${Model}</li>
+
+                </ul>
+                <br/>
+                <p>Contact details of the owner:</p>
+                  <ul>
+                  <li>Contact: ${ownerEmail}</li>
+                  <li>Email: ${ownerPhone}</li>
+
+                </ul>
+                <p>Congrats! Thank you for your bid!</p>
+              `,
+					})
+					car.deleted = true
+					await car.save()
+
+					res.status(201).send({
+						status: 'success',
+						message: 'Please check your email',
+						info: info,
+					})
+				} else {
+					res.send({ status: 'failed', message: 'Email does not exist' })
+				}
+			} else {
+				res.send({ status: 'failed', message: 'Email is required' })
+			}
+		} catch (error) {
+			console.error(error)
+			res.status(500).send({
+				status: 'failed',
+				message: 'Unable to send email',
+			})
 		}
 	}
 }

@@ -11,6 +11,7 @@ export interface ICar extends Document {
 	bidStartDate: Date
 	bidEndDate: Date
 	deleted: boolean
+	isApproved: boolean
 }
 
 const carSchema: Schema<ICar> = new Schema<ICar>({
@@ -52,6 +53,10 @@ const carSchema: Schema<ICar> = new Schema<ICar>({
 	deleted: {
 		type: Boolean,
 		default: false, // Initially, cars are not deleted
+	},
+	isApproved: {
+		type: Boolean,
+		default: false, // Initially, cars are not approved
 	},
 })
 

@@ -18,6 +18,8 @@ const bid_model_1 = require("../models/bid/bid.model");
 const car_model_1 = __importDefault(require("../models/car/car.model"));
 const noti_model_1 = __importDefault(require("../models/notification/noti.model"));
 const server_1 = require("../server");
+const emailConf_1 = __importDefault(require("../config/emailConf"));
+const user_model_1 = __importDefault(require("../models/user/user.model"));
 class bidController {
 }
 _a = bidController;
@@ -26,6 +28,12 @@ bidController.addBid = (req, res) => __awaiter(void 0, void 0, void 0, function*
     try {
         const { authorization } = req.headers;
         const token = authorization.split(' ')[1];
+        console.log(token);
+        if (token === 'undefined') {
+            res.status(500).send({ error: 'Not signed in' });
+            console.log('Not signed in');
+            return;
+        }
         if (token.length !== 0) {
             const { userID } = jsonwebtoken_1.default.verify(token, process.env.JWT_SECRET_KEY);
             const { carId } = req.params;
@@ -48,8 +56,9 @@ bidController.addBid = (req, res) => __awaiter(void 0, void 0, void 0, function*
                         bidderId: userID,
                     });
                     yield noti_model_1.default.create({
-                        user: car.user,
                         car: carId,
+                        user: car.user,
+                        type: 'NewBid',
                         message: `New bid of ${amount} on your car ${car.brand} ${car.Model}`,
                         isRead: false,
                     });
@@ -164,6 +173,67 @@ bidController.userBidHistory = (req, res) => __awaiter(void 0, void 0, void 0, f
     catch (error) {
         console.error(error);
         res.status(500).json({ error: 'Internal Server Error' });
+    }
+});
+bidController.bidFinalization = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        console.log('hiii');
+        const { bidAmount, brand, Model, email, ownerEmail, ownerPhone, carID } = req.body;
+        console.log(req.body);
+        if (email) {
+            const user = yield user_model_1.default.findOne({ email: email });
+            const car = yield car_model_1.default.findById(carID);
+            if (user && car) {
+                const secret = user._id + process.env.JWT_SECRET_KEY;
+                const token = jsonwebtoken_1.default.sign({ userID: user._id }, secret, {
+                    expiresIn: 86400,
+                });
+                //const link: string = `http://localhost:3000/`
+                // Send email
+                const info = yield emailConf_1.default.sendMail({
+                    from: process.env.EMAIL_FROM,
+                    to: user.email,
+                    subject: 'Bid has accepted',
+                    html: `
+                <h2>Bid Acceptance Notification</h2>
+                <p>Your bid of ${bidAmount} has been accepted for the following car:</p>
+                <ul>
+                  <li>Brand: ${brand}</li>
+                  <li>Model: ${Model}</li>
+
+                </ul>
+                <br/>
+                <p>Contact details of the owner:</p>
+                  <ul>
+                  <li>Contact: ${ownerEmail}</li>
+                  <li>Email: ${ownerPhone}</li>
+
+                </ul>
+                <p>Congrats! Thank you for your bid!</p>
+              `,
+                });
+                car.deleted = true;
+                yield car.save();
+                res.status(201).send({
+                    status: 'success',
+                    message: 'Please check your email',
+                    info: info,
+                });
+            }
+            else {
+                res.send({ status: 'failed', message: 'Email does not exist' });
+            }
+        }
+        else {
+            res.send({ status: 'failed', message: 'Email is required' });
+        }
+    }
+    catch (error) {
+        console.error(error);
+        res.status(500).send({
+            status: 'failed',
+            message: 'Unable to send email',
+        });
     }
 });
 exports.default = bidController;

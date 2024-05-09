@@ -6,8 +6,10 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = __importDefault(require("express"));
 const user_controller_1 = require("../controllers/user.controller");
 const bookmark_controller_1 = require("../controllers/bookmark.controller");
+//import { viewCarsbyUserId } from '../controllers/admin.controller'
 const router = express_1.default.Router();
 // Define routes
+router.get('/user/getUserDatafromid', user_controller_1.getuserdatafromid);
 router.get('/user', user_controller_1.getUsers);
 router.post('/user', user_controller_1.userReg);
 router.put('/user/profile', user_controller_1.updateUserProfile);

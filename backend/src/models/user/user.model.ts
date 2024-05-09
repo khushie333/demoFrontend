@@ -7,6 +7,8 @@ export interface User extends Document {
 	address: string
 	password: string
 	active: boolean // Optional field
+	isAdmin: boolean // Optional field
+	stripeCustomerId: string
 }
 
 const userSchema: Schema<User> = new Schema<User>({
@@ -41,6 +43,13 @@ const userSchema: Schema<User> = new Schema<User>({
 	active: {
 		type: Boolean,
 		default: true, // Set default value to false
+	},
+	isAdmin: {
+		type: Boolean,
+		default: false, // Set default value to false
+	},
+	stripeCustomerId: {
+		type: String,
 	},
 })
 

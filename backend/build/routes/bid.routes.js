@@ -6,6 +6,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = __importDefault(require("express"));
 const bid_controller_1 = __importDefault(require("../controllers/bid.controller"));
 const router = express_1.default.Router();
+router.post('/bids/sendBidFinalizeEmail', bid_controller_1.default.bidFinalization);
 router.post('/bids/:carId', bid_controller_1.default.addBid);
 router.get('/bids/:carId', bid_controller_1.default.getAllBids);
 router.get('/bids/getMaxBid/:carId', bid_controller_1.default.getMaxBid);

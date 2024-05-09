@@ -5,6 +5,7 @@ import {
 	updateUserProfile,
 	viewCarsOfUser,
 	getUsersById,
+	getuserdatafromid,
 } from '../controllers/user.controller'
 import {
 	bookmarkCar,
@@ -12,15 +13,18 @@ import {
 	removeBookmark,
 	getBookmarks,
 } from '../controllers/bookmark.controller'
+//import { viewCarsbyUserId } from '../controllers/admin.controller'
 
 const router = express.Router()
 
 // Define routes
+router.get('/user/getUserDatafromid', getuserdatafromid)
 router.get('/user', getUsers)
 router.post('/user', userReg)
 router.put('/user/profile', updateUserProfile)
 router.get('/user/viewCarsOfUser', viewCarsOfUser)
 router.get('/user/:userId', getUsersById)
+
 //user operations
 //bookmark car
 router.post('/bookmarks/:carId', bookmarkCar)
