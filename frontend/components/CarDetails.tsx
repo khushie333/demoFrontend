@@ -24,6 +24,8 @@ const CarDetails = ({ isOpen, closeModel, car }: CarDetailsProps) => {
 	const BASE_URL = process.env.NEXT_PUBLIC_BACKEND_URL
 
 	let [isOpenDialog, setIsOpenDialog] = useState(true)
+	const [mainImageIndex, setMainImageIndex] = useState(0)
+
 	const [isConfirmationOpen, setIsConfirmationOpen] = useState(false)
 	const [maxBid, setMaxBid] = useState<number | null>(null)
 	const [maxBidchange, setMaxBidAmountchange] = useState<number | null>(
@@ -55,6 +57,9 @@ const CarDetails = ({ isOpen, closeModel, car }: CarDetailsProps) => {
 	}, [car, maxBid])
 	function openModal() {
 		setIsOpenDialog(true)
+	}
+	const handleImageClick = (index: any) => {
+		setMainImageIndex(index)
 	}
 
 	const {
@@ -167,11 +172,12 @@ const CarDetails = ({ isOpen, closeModel, car }: CarDetailsProps) => {
 									<div className='flex-1 flex flex-col gap-3'>
 										<div className='relative w-full h-40 bg-pattern bg-cover bg-center rounded-lg'>
 											<Image
-												src={`http://localhost:5000/${images[0]}`}
+												src={`http://localhost:5000/${images[mainImageIndex]}`}
 												alt='car model'
 												fill
 												priority
-												className='object-contain'
+												className='object-contain cursor-pointer'
+												onClick={() => handleImageClick(0)}
 											/>
 										</div>
 
@@ -186,7 +192,8 @@ const CarDetails = ({ isOpen, closeModel, car }: CarDetailsProps) => {
 														alt='car model'
 														fill
 														priority
-														className='object-contain'
+														className='object-contain cursor-pointer'
+														onClick={() => handleImageClick(index)}
 													/>
 												</div>
 											))}
@@ -242,8 +249,8 @@ const CarDetails = ({ isOpen, closeModel, car }: CarDetailsProps) => {
 										<Disclosure>
 											{({ open }) => (
 												<>
-													<Disclosure.Button className='flex w-full items-center justify-between rounded-lg bg-blue-700 px-4 py-2 font-bold text-lg text-white hover:bg-indigo-600 focus:outline-none focus-visible:ring focus-visible:ring-blue-500/75'>
-														<span>Add bid</span>
+													<Disclosure.Button className='flex w-full items-center justify-between rounded-lg bg-blue-600 px-4 py-2 font-bold text-lg text-white hover:bg-indigo-600 focus:outline-none focus-visible:ring focus-visible:ring-blue-500/75'>
+														<span>Add bid </span>
 														<ChevronDownIcon
 															className={`${
 																open ? 'rotate-180 transform' : ''
@@ -268,9 +275,9 @@ const CarDetails = ({ isOpen, closeModel, car }: CarDetailsProps) => {
 															<button
 																type='submit'
 																onClick={openModal}
-																className='mt-2 w-full bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded'
+																className='mt-2 w-full bg-blue-400 hover:bg-green-600 text-white font-bold py-2 px-4 rounded'
 															>
-																Submit Bid
+																Submit Bid ✅
 															</button>
 														</form>
 													</Disclosure.Panel>

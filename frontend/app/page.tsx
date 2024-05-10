@@ -79,7 +79,7 @@ export default function Home({ searchParams }: HomeProps) {
 	}
 	const showMoreCars = async () => {
 		const remainingCars = allCars.slice(displayedCars.length)
-		const nextCars = remainingCars.slice(0, 8)
+		const nextCars = remainingCars.slice(0, 4)
 		setDisplayedCars((prevCars) => [...prevCars, ...nextCars])
 	}
 	const filteredCars = displayedCars.filter((car) => !car.deleted)

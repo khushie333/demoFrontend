@@ -7,6 +7,7 @@ const ResetPassword = () => {
 	const BASE_URL = process.env.NEXT_PUBLIC_BACKEND_URL
 
 	const parts = window.location.href.split('/')
+
 	const id = parts[4]
 	const token = parts[5]
 

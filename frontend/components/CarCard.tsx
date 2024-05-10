@@ -9,6 +9,9 @@ import BookmarkBorderIcon from '@mui/icons-material/BookmarkBorder'
 import BookmarkIcon from '@mui/icons-material/Bookmark'
 import { getCookie } from 'cookies-next'
 import { fetchMaxBid } from '@/utils'
+import { format } from 'date-fns'
+
+import { motion, AnimatePresence } from 'framer-motion'
 interface CarCardProps {
 	car: CarProps
 }
@@ -26,24 +29,7 @@ const CarCard = ({ car }: CarCardProps) => {
 			Authorization: `Bearer ${token}`,
 		},
 	}
-	// const handleClick = () => {
-	// 	setIsClicked(!isClicked)
-	// }
-	// useEffect(() => {
-	// 	const interval = setInterval(() => {
-	// 		fetchMaxBid({ car }).then((data) => {
-	// 			if (data && data.data.maxBidAmount !== maxBid) {
-	// 				setMaxBid(data.data.maxBidAmount)
-	// 			}
-	// 		})
-	// 		if (token) {
-	// 			checkIsBookmarked()
-	// 		} else {
-	// 			console.log('no token')
-	// 		}
-	// 		return () => clearInterval(interval)
-	// 	}, 2000) // Poll every 5000 milliseconds (5 seconds)
-	// }, [car])
+
 	useEffect(() => {
 		const fetchData = async () => {
 			try {
@@ -68,7 +54,7 @@ const CarCard = ({ car }: CarCardProps) => {
 		const interval = setInterval(fetchData, 5000)
 		// Cleanup function to clear the interval when the component unmounts
 		return () => clearInterval(interval)
-	}, [car, maxBid])
+	}, [maxBid])
 
 	const checkIsBookmarked = async () => {
 		try {
@@ -143,27 +129,42 @@ const CarCard = ({ car }: CarCardProps) => {
 					)}
 				</button>
 			</div>
-			<p className='flex mt-6 text-[32px] font-semibold'>
-				<span className='self-start text-[14px] font-semibold'>
+			<p className='flex gap-1 mt-6 text-[25px] font-semibold'>
+				<div className='self-start text-[18px] font-semibold text-blue-600'>
 					Initial bid
-				</span>
-				{baseAmount}
-				<span className='self-end text-[14px] font-medium'> rs</span>
+				</div>
+				<div className=' font-semibold text-black'>{baseAmount}</div>
+
+				<span className='self-end text-[20px] font-medium'> ₹</span>
 			</p>
 			<div className='relative my-3 object-cont'>
-				<Image
-					src={`http://localhost:5000/${images[0]}`}
-					height={200}
-					width={200}
-					priority
-					className='object-contain'
-					alt='car image'
-				/>
+				<motion.div
+					className='card'
+					whileHover={{
+						position: 'relative',
+						zIndex: 1,
+						background: 'white',
+						scale: 1.2,
+						transition: {
+							duration: 0.2,
+						},
+					}}
+				>
+					<Image
+						src={`http://localhost:5000/${images[0]}`}
+						height={280}
+						width={280}
+						priority
+						className='object-contain'
+						alt='car image'
+					/>
+				</motion.div>
 			</div>
 			<p className='flex mt-6 text-[32px] font-semibold border-gray-400'>
 				{maxBid ? (
-					<span className='self-start text-[18px] font-semibold'>
-						Max Bid: {maxBid} rs
+					<span className='flex flex-row self-start text-[18px] font-semibold'>
+						<p className='text-blue-500'> Max Bid: </p>
+						{maxBid} ₹
 					</span>
 				) : (
 					<span className='self-start text-[18px] font-semibold'>
@@ -173,11 +174,15 @@ const CarCard = ({ car }: CarCardProps) => {
 				)}
 			</p>
 			<p className='flex mt-6 text-[32px] font-semibold border-gray-400'>
-				<span className='self-start text-[18px] font-semibold'>
-					Bid end date:{formatDate(bidEndDate)}
+				<span className='flex flex-row self-start text-[18px] font-semibold'>
+					<div className='self-start text-[18px] font-semibold text-blue-600'>
+						{' '}
+						Bid end date:
+					</div>
+					{format(new Date(bidEndDate), 'PPP')} ⏳
 				</span>
 			</p>
-			<div className='relative flex w-full  mt-2'>
+			<div className='relative flex w-full  mt-2 items-center align-middle '>
 				<div className='flex group-hover:invisible w-full m-5 justify-between items-center text-gray-600'>
 					<div className='flex flex-col justify-center items-center gap-2'>
 						<Image
@@ -190,8 +195,8 @@ const CarCard = ({ car }: CarCardProps) => {
 					</div>
 				</div>
 
-				<div className='relative flex w-full  mt-2'>
-					<div className='flex group-hover:invisible w-full justify-between items-center text-gray-600 '>
+				<div className='relative flex w-full  mt-2 items-center'>
+					<div className='flex group-hover:invisible w-full m-5 justify-between items-center text-gray-600 '>
 						<div className='flex flex-col justify-center items-center gap-2'>
 							<Image src='/tire.svg' width={20} height={20} alt='tire' />
 							<p className='text-[14px] leading-[17px]'>{owner}</p>
@@ -201,7 +206,7 @@ const CarCard = ({ car }: CarCardProps) => {
 				<div className='car-card__btn-container'>
 					<Custombutton
 						title='View More'
-						containerStyles='w-full py-[16px] rounded-full bg-primary-blue'
+						containerStyles='w-full py-[16px] rounded-full hover:bg-orange-500'
 						textStyles='text-white text-[16px] leading-[17px] font-bold'
 						rightIcon='/right-arrow.svg'
 						handleClick={() => setIsOpen(true)}

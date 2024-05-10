@@ -3,6 +3,8 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+@import '~slick-carousel/slick/slick.css';
+@import '~slick-carousel/slick/slick-theme.css';
 
 * {
 	margin: 0;
@@ -10,7 +12,10 @@
 	box-sizing: border-box;
 	font-family: 'Manrope', sans-serif;
 }
-
+.slider-container {
+	width: 100%;
+	margin: auto;
+}
 /* START: General styles */
 .max-width {
 	@apply max-w-[1440px] mx-auto;
@@ -88,7 +93,7 @@
 
 /* START: Car Card styles */
 .car-card {
-	@apply flex flex-col border-2 p-6 justify-between items-center text-black-100 bg-primary-blue-100 hover:bg-white hover:shadow-md rounded-3xl;
+	@apply flex flex-col w-80 border-2 p-6 justify-between items-center text-black-100 bg-white hover:bg-white hover:shadow-md rounded-3xl;
 }
 
 .car-card__content {
@@ -96,7 +101,7 @@
 }
 
 .car-card__content-title {
-	@apply text-[22px] leading-[26px] font-bold capitalize;
+	@apply text-[22px] leading-[26px] font-bold capitalize text-center text-black;
 }
 
 .car-card__price {
@@ -112,7 +117,7 @@
 }
 
 .car-card__image {
-	@apply relative w-full h-80 my-3 object-cover rounded-lg;
+	@apply relative w-full h-full my-3 object-cover rounded-lg;
 }
 
 .car-card__icon-container {
@@ -128,7 +133,7 @@
 }
 
 .car-card__btn-container {
-	@apply hidden group-hover:flex absolute bottom-0 w-full z-10;
+	@apply hidden group-hover:flex absolute bottom-0 w-full z-10 bg-blue-600 rounded-full;
 }
 
 /* END: Car Card styles */

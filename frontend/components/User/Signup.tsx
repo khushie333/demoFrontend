@@ -8,7 +8,6 @@ import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import userRegisterValidation from '@/utils/UserValidation'
 import { ThunkDispatch } from '@reduxjs/toolkit'
-
 interface FormValues {
 	name: string
 	email: string
@@ -56,7 +55,7 @@ export const Signup = () => {
 
 	return (
 		<div className=' flex flex-col justify-center min-h-screen overflow-hidden'>
-			<div className='w-full p-6 m-auto bg-white rounded-md shadow-xl mb-10 shadow-blue-300 ring-2 ring-blue-700 lg:max-w-xl'>
+			<div className='w-full p-6 m-auto bg-white rounded-md shadow-xl mt-20 shadow-blue-300 ring-2 ring-blue-700 lg:max-w-xl'>
 				<h1 className='text-3xl font-semibold text-center text-blue-700  underline uppercase '>
 					Sign UP
 				</h1>
@@ -66,7 +65,7 @@ export const Signup = () => {
 							htmlFor='name'
 							className='block text-sm font-semibold text-gray-800'
 						>
-							name
+							Name
 						</label>
 						<input
 							name='name'
@@ -209,6 +208,9 @@ export const Signup = () => {
 						Sign in
 					</Link>
 				</p>
+			</div>
+			<div className='hero__image-container'>
+				<div className='hero__image-overlay' />
 			</div>
 		</div>
 	)

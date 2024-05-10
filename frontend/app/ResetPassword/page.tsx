@@ -24,7 +24,7 @@ const RequestReset = () => {
 
 	return (
 		<div className='relative flex flex-col justify-center min-h-screen overflow-hidden'>
-			<div className='w-full p-6 m-auto bg-white rounded-md shadow-xl shadow-blue-300 ring-2 ring-blue-700 lg:max-w-xl'>
+			<div className='w-full p-6 m-auto mt-56 bg-white rounded-md shadow-xl shadow-blue-300 ring-2 ring-blue-700 lg:max-w-xl'>
 				<h1 className='text-2xl font-semibold text-center text-blue-700 underline uppercase'>
 					Request Password Reset
 				</h1>
@@ -55,6 +55,9 @@ const RequestReset = () => {
 					</p>
 				</form>
 				{message && <p>{message}</p>}
+			</div>
+			<div className='hero__image-container'>
+				<div className='hero__image-overlay' />
 			</div>
 		</div>
 	)

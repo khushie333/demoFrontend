@@ -116,13 +116,16 @@ const Navbar = () => {
 	return (
 		<header className='w-full absolute z-10 '>
 			<nav className='max-w-[1440px] mx-auto flex justify-between items-center sm:px-16 '>
-				<Link href='/' className='flex justify-center items-center'>
+				<Link
+					href='/'
+					className='flex justify-center items-center bg-transparent'
+				>
 					<Image
 						src='/car1.svg'
 						alt='car logo'
-						width={150}
-						height={25}
-						className='object-contain'
+						width={125}
+						height={20}
+						className='object-contain rounded-full mt-5'
 					></Image>
 				</Link>
 				{isLoggedIn ? <LogoutButton /> : <LoginButton />}

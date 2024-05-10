@@ -9,6 +9,7 @@ import { ToastContainer } from 'react-toastify'
 import { useRouter } from 'next/navigation'
 import { getCookie } from 'cookies-next'
 import { ThunkDispatch } from '@reduxjs/toolkit'
+import { motion } from 'framer-motion'
 
 interface formValue {
 	email: string
@@ -62,10 +63,11 @@ const SignIn = () => {
 			console.error('Login error:', error.message)
 		}
 	}
+	const MotionDiv = motion.div
 
 	return (
-		<div className='relative flex flex-col justify-center min-h-screen overflow-hidden'>
-			<div className='w-full p-6 m-auto bg-white rounded-md shadow-xl shadow-blue-300 ring-2 ring-blue-700 lg:max-w-xl'>
+		<div className='relative flex flex-col justify-center min-h-screen '>
+			<div className='w-full p-6 m-auto bg-white rounded-md shadow-xl mt-56 shadow-blue-300 ring-2 ring-blue-700 lg:max-w-xl'>
 				<h1 className='text-3xl font-semibold text-center text-blue-700 underline uppercase'>
 					Sign In
 				</h1>
@@ -121,6 +123,9 @@ const SignIn = () => {
 						Forgot password?
 					</Link>
 				</p>
+			</div>
+			<div className='hero__image-container'>
+				<div className='hero__image-overlay' />
 			</div>
 		</div>
 	)

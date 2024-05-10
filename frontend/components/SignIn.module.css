@@ -1,0 +1,29 @@
+.parent {
+	background-image: url('https://img.freepik.com/premium-photo/colorful-parked-cars-parking_564714-6762.jpg');
+	background-repeat: no-repeat;
+	background-size: cover;
+}
+.signInContainer {
+	display: flex;
+	flex-direction: row;
+	min-height: 100vh;
+	background: rgba(0, 0, 0, 0.5);
+}
+
+.imageContainer {
+	background-color: #f0f2f5; /* Adjust as needed */
+	display: flex; /* Center image vertically */
+	justify-content: center;
+	align-items: center;
+	background: rgba(0, 0, 0, 0.8);
+	background-image: url('https://img.freepik.com/premium-photo/colorful-parked-cars-parking_564714-6762.jpg');
+	background-repeat: no-repeat;
+	background-size: cover;
+	height: fit-content;
+}
+
+.imageContainer img {
+	max-width: 100%; /* Adjust image size as needed */
+	max-height: 100%; /* Adjust image size as needed */
+	object-fit: fill; /* Maintain image aspect ratio */
+}
