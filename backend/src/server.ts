@@ -30,7 +30,7 @@ interface Bid extends Document {
 		_id: mongoose.Types.ObjectId
 		brand: string
 		model: string
-		user: mongoose.Types.ObjectId // Specify the type here
+		user: mongoose.Types.ObjectId
 	}
 	createdAt: Date
 }

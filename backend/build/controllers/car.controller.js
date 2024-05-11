@@ -29,13 +29,14 @@ const storage = multer_1.default.diskStorage({
         callback(null, file.originalname);
     },
 });
-exports.upload = (0, multer_1.default)({ storage }).array('images', 5);
+exports.upload = (0, multer_1.default)({ storage }).array('images[]', 5);
 class CarController {
 }
 _a = CarController;
 //createCar
 CarController.createCar = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
+        console.log('call');
         const authorization = req.headers.authorization;
         if (!authorization) {
             res.status(401).send({ error: 'Unauthorized' });
@@ -50,6 +51,7 @@ CarController.createCar = (req, res) => __awaiter(void 0, void 0, void 0, functi
         const decodedToken = jsonwebtoken_1.default.verify(token, process.env.JWT_SECRET_KEY);
         const userID = decodedToken.userID;
         const { brand, Model, desc, owner, baseAmount, bidStartDate, bidEndDate, } = req.body;
+        console.log(req.body);
         try {
             const startDate = new Date(bidStartDate);
             const endDate = new Date(bidEndDate);
@@ -65,6 +67,7 @@ CarController.createCar = (req, res) => __awaiter(void 0, void 0, void 0, functi
             res.status(500).json({ error: 'Internal Server Error' });
         }
         const files = req.files;
+        console.log(files);
         const images = files.map((file) => file.originalname);
         const carData = new car_model_1.carModel({
             user: userID,
@@ -272,37 +275,22 @@ CarController.search = (req, res) => __awaiter(void 0, void 0, void 0, function*
             [brandSearch, modelSearch, descSearch] = searchParam;
         }
         const cars = yield car_model_1.carModel.find({
-            $or: [
-                { brand: { $regex: brandSearch, $options: 'i' } },
-                { Model: { $regex: modelSearch, $options: 'i' } },
-                { desc: { $regex: descSearch, $options: 'i' } },
+            $and: [
+                {
+                    $or: [
+                        { brand: { $regex: brandSearch, $options: 'i' } },
+                        { Model: { $regex: modelSearch, $options: 'i' } },
+                        { desc: { $regex: descSearch, $options: 'i' } },
+                    ],
+                },
+                { deleted: false },
+                { isApproved: true },
             ],
         });
         res.json({ cars });
     }
     catch (error) {
         console.error(error);
-        res.status(500).json({ error: 'Internal Server Error' });
-    }
-});
-CarController.globalSearch = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    try {
-        const { query } = req.body;
-        // Define search criteria
-        const searchCriteria = {
-            $or: [
-                { brand: { $regex: new RegExp(query, 'i') } }, // Case-insensitive brand matching
-                { Model: { $regex: new RegExp(query, 'i') } },
-                { desc: { $regex: new RegExp(query, 'i') } }, // Case-insensitive model matching
-            ],
-            deleted: false, // Ensure only non-deleted cars are included in search results
-        };
-        // Perform search query
-        const searchResults = yield car_model_1.carModel.find(searchCriteria);
-        res.json(searchResults);
-    }
-    catch (error) {
-        console.error('Error searching for cars:', error);
         res.status(500).json({ error: 'Internal Server Error' });
     }
 });

@@ -27,7 +27,7 @@ export const upload: RequestHandler<
 	any,
 	ParsedQs,
 	Record<string, any>
-> = multer({ storage }).array('images', 5)
+> = multer({ storage }).array('images[]', 5)
 
 interface ProcessEnv {
 	[key: string]: string
@@ -42,6 +42,8 @@ class CarController {
 
 	static createCar = async (req: Request, res: Response): Promise<void> => {
 		try {
+			console.log('call')
+
 			const authorization = req.headers.authorization
 
 			if (!authorization) {
@@ -72,6 +74,7 @@ class CarController {
 				bidStartDate,
 				bidEndDate,
 			} = req.body
+			console.log(req.body)
 
 			try {
 				const startDate = new Date(bidStartDate)
@@ -88,8 +91,9 @@ class CarController {
 				res.status(500).json({ error: 'Internal Server Error' })
 			}
 			const files = req.files as Express.Multer.File[]
-
+			console.log(files)
 			const images = files.map((file) => file.originalname)
+
 			const carData = new carModel({
 				user: userID,
 				brand,
@@ -321,10 +325,16 @@ class CarController {
 			}
 
 			const cars = await carModel.find({
-				$or: [
-					{ brand: { $regex: brandSearch, $options: 'i' } },
-					{ Model: { $regex: modelSearch, $options: 'i' } },
-					{ desc: { $regex: descSearch, $options: 'i' } },
+				$and: [
+					{
+						$or: [
+							{ brand: { $regex: brandSearch, $options: 'i' } },
+							{ Model: { $regex: modelSearch, $options: 'i' } },
+							{ desc: { $regex: descSearch, $options: 'i' } },
+						],
+					},
+					{ deleted: false },
+					{ isApproved: true },
 				],
 			})
 
@@ -334,29 +344,7 @@ class CarController {
 			res.status(500).json({ error: 'Internal Server Error' })
 		}
 	}
-	static globalSearch = async (req: Request, res: Response): Promise<void> => {
-		try {
-			const { query } = req.body
 
-			// Define search criteria
-			const searchCriteria = {
-				$or: [
-					{ brand: { $regex: new RegExp(query, 'i') } }, // Case-insensitive brand matching
-					{ Model: { $regex: new RegExp(query, 'i') } },
-					{ desc: { $regex: new RegExp(query, 'i') } }, // Case-insensitive model matching
-				],
-				deleted: false, // Ensure only non-deleted cars are included in search results
-			}
-
-			// Perform search query
-			const searchResults = await carModel.find(searchCriteria)
-
-			res.json(searchResults)
-		} catch (error) {
-			console.error('Error searching for cars:', error)
-			res.status(500).json({ error: 'Internal Server Error' })
-		}
-	}
 	//filter cars by baseAmount
 	static filterByBaseAmount = async (
 		req: Request,

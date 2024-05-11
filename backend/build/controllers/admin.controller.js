@@ -109,11 +109,18 @@ class AdminController {
                     car: car._id,
                     type: 'NewCar',
                 });
+                yield car_model_1.default.findByIdAndDelete(carId);
                 if (!deletenoti) {
                     res.status(404).json({ message: 'Notification not found' });
                     console.log('Notification not found');
                     return;
                 }
+                yield noti_model_1.default.create({
+                    user: car.user,
+                    car: car._id,
+                    type: 'CarRejection',
+                    message: 'Your car submission has been rejected because of insuffcient data for auction.',
+                });
                 res.status(200).json({ message: 'Car approved successfully', car });
             }
             catch (error) {

@@ -118,11 +118,19 @@ class AdminController {
 				car: car._id,
 				type: 'NewCar',
 			})
+			await carModel.findByIdAndDelete(carId)
 			if (!deletenoti) {
 				res.status(404).json({ message: 'Notification not found' })
 				console.log('Notification not found')
 				return
 			}
+			await notificationmodel.create({
+				user: car.user,
+				car: car._id,
+				type: 'CarRejection',
+				message:
+					'Your car submission has been rejected because of insuffcient data for auction.',
+			})
 			res.status(200).json({ message: 'Car approved successfully', car })
 		} catch (error) {
 			console.error('Approve Car Error:', error)

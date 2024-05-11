@@ -17,6 +17,7 @@ export const handleError = (
 	next: NextFunction
 ): void => {
 	const statusCode: number = res.statusCode === 200 ? 500 : res.statusCode
+
 	res.status(statusCode)
 	res.json({
 		message: error.message,
