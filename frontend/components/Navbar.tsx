@@ -162,14 +162,15 @@ const Navbar = () => {
 								onClose={handleClose}
 								anchorOrigin={{
 									vertical: 'bottom',
-									horizontal: 'left',
+									horizontal: 'right',
 								}}
-								sx={{ width: '95%' }}
+								sx={{ margin: 2, width: '300px' }}
 							>
 								<Typography sx={{ p: 2 }}>
 									<Box
 										sx={{
-											width: '100%',
+											width: '300px',
+
 											maxWidth: 360,
 											bgcolor: 'background.paper',
 										}}

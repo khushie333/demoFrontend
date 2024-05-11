@@ -101,7 +101,7 @@ const UpdateUserProfile = () => {
 						formik.handleChange(val)
 					}}
 					value={formik.values.name}
-					className='block w-full px-4 py-2 mt-2 text-indigo-700 bg-white border rounded-md focus:border-indigo-400 focus:ring-indigo-300 focus:outline-none focus:ring focus:ring-opacity-40'
+					className='block w-96 px-4 py-2 mt-2 text-indigo-700 bg-white border rounded-md focus:border-indigo-400 focus:ring-indigo-300 focus:outline-none focus:ring focus:ring-opacity-40'
 				/>
 				{formik.touched.name && formik.errors.name && (
 					<p className='mt-2 text-sm text-red-600 dark:text-red-500'>

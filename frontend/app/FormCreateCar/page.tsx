@@ -14,7 +14,7 @@ interface FormValues {
 	Model: string
 	desc: string
 	owner: string
-	images: File
+	images: File[]
 	baseAmount: number
 	bidStartDate: Date
 	bidEndDate: Date
@@ -23,7 +23,6 @@ interface FormValues {
 const FormCreateCar = (event: React.FormEvent<HTMLFormElement>) => {
 	const dispatch = useDispatch<ThunkDispatch<any, any, any>>()
 	const router = useRouter()
-	const [files, setFiles] = useState<File | null>(null)
 	const [jwt, setjwt] = useState('')
 
 	useEffect(() => {
@@ -40,16 +39,12 @@ const FormCreateCar = (event: React.FormEvent<HTMLFormElement>) => {
 
 		const formData = new FormData(event.currentTarget) // Get form data from event
 
-		if (files) {
-			formData.append('images', files) // Append the file if it exists
-		}
-
 		const val: FormValues = {
 			brand: formData.get('brand') as string,
 			Model: formData.get('Model') as string,
 			desc: formData.get('desc') as string,
 			owner: formData.get('owner') as string,
-			images: files as File,
+			images: formData.getAll('images') as File[],
 			baseAmount: parseInt(formData.get('baseAmount') as string), // Parse phone as number
 			bidStartDate: new Date(formData.get('bidStartDate') as string),
 			bidEndDate: new Date(formData.get('bidEndDate') as string),
@@ -70,14 +65,7 @@ const FormCreateCar = (event: React.FormEvent<HTMLFormElement>) => {
 			console.error('Login error:', error.message)
 		}
 	}
-	const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-		// const uploadedFiles = e.target.files?.[0]
-		const uploadedFiles = e.currentTarget.files?.[0]
 
-		if (uploadedFiles) {
-			setFiles(uploadedFiles)
-		}
-	}
 	return (
 		<>
 			{jwt?.length !== 0 && (
@@ -165,7 +153,6 @@ const FormCreateCar = (event: React.FormEvent<HTMLFormElement>) => {
 											<input
 												type='file'
 												name='images'
-												onChange={handleFileChange}
 												className='block w-full px-4 py-2 mt-2 text-indigo-700 bg-white border rounded-md focus:border-indigo-400 focus:ring-indigo-300 focus:outline-none focus:ring focus:ring-opacity-40'
 												multiple
 												required

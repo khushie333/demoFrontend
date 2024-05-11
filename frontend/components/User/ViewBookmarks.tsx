@@ -13,7 +13,7 @@ import axios from 'axios'
 import { getCookie } from 'cookies-next'
 import { CarProps } from '@/types'
 import CarDetails from '../CarDetails'
-
+import { useRouter } from 'next/navigation'
 function generate(element: React.ReactElement) {
 	return [0, 1, 2].map((value) =>
 		React.cloneElement(element, {
@@ -33,6 +33,7 @@ const ViewBookmarks = ({ setOpen }: any) => {
 	const [dense, setDense] = React.useState(false)
 	const [isOpen, setIsOpen] = useState(false)
 	const token = getCookie('token')
+	const router = useRouter()
 
 	useEffect(() => {
 		if (token) {
@@ -77,10 +78,8 @@ const ViewBookmarks = ({ setOpen }: any) => {
 			console.error('Error deleting bookmark:', error)
 		}
 	}
-	const handleCarClick = (car: CarProps) => {
-		setSelectedCar(car)
-		setOpen(false)
-		setIsOpen(true) // Open the modal when car is clicked
+	const handleCarClick = () => {
+		router.replace('/')
 	}
 
 	const handleCloseCarDetails = () => {
@@ -106,7 +105,7 @@ const ViewBookmarks = ({ setOpen }: any) => {
 								</IconButton>
 							}
 						>
-							<IconButton onClick={() => handleCarClick(car)}>
+							<IconButton onClick={() => handleCarClick()}>
 								<Avatar
 									src={`http://localhost:5000/${car.images[0]}`}
 									alt='Car'
@@ -126,13 +125,6 @@ const ViewBookmarks = ({ setOpen }: any) => {
 					))}
 				</List>
 			</Demo>
-			{isOpen && selectedCar && (
-				<CarDetails
-					isOpen={isOpen}
-					closeModel={() => setIsOpen(false)}
-					car={selectedCar}
-				/>
-			)}
 		</Grid>
 	)
 }

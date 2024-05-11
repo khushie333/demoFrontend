@@ -61,7 +61,6 @@ const CarDetails = ({ isOpen, closeModel, car }: CarDetailsProps) => {
 	const handleImageClick = (index: any) => {
 		setMainImageIndex(index)
 	}
-
 	const {
 		user,
 		brand,

@@ -1,7 +1,8 @@
 {
+  "/not-found": "app/not-found.js",
   "/page": "app/page.js",
-  "/Signup/page": "app/Signup/page.js",
-  "/FormCreateCar/page": "app/FormCreateCar/page.js",
-  "/SignIn/page": "app/SignIn/page.js",
-  "/ResetPassword/page": "app/ResetPassword/page.js"
+  "/Admin/ViewNewCars/page": "app/Admin/ViewNewCars/page.js",
+  "/UserHome/page": "app/UserHome/page.js",
+  "/ViewCars/page": "app/ViewCars/page.js",
+  "/CheckoutPage/[userId]/[token]/page": "app/CheckoutPage/[userId]/[token]/page.js"
 }

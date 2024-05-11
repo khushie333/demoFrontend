@@ -101,7 +101,7 @@
 }
 
 .car-card__content-title {
-	@apply text-[22px] leading-[26px] font-bold capitalize text-center text-black;
+	@apply text-[22px] leading-[26px] font-bold capitalize text-center text-blue-950;
 }
 
 .car-card__price {

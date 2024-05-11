@@ -1,5 +1,4 @@
 'use client'
-import { useRouter } from 'next/navigation'
 import React from 'react'
 import GooglePayButton from '@google-pay/button-react'
 import { ToastSuccess } from '@/components/ToastContainer'
@@ -35,8 +34,8 @@ const CheckoutPage: React.FC = () => {
 
 	return (
 		<div className='flex flex-col justify-center min-h-screen overflow-hidden'>
-			<div className='w-full p-6 m-auto bg-white rounded-md shadow-xl shadow-blue-300 ring-2 ring-blue-700 lg:max-w-xl'>
-				<div className='bg-white rounded-lg shadow-lg p-8'>
+			<div className='w-full p-6 m-auto items-center bg-white rounded-md shadow-xl shadow-blue-300 ring-2 ring-blue-700 lg:max-w-xl'>
+				<div className='bg-white rounded-lg items-center shadow-lg p-8'>
 					<h2 className='text-lg font-semibold mb-4'>Your Bid Summary</h2>
 					<div className='flex justify-between mb-2'>
 						<span>Car Name:</span>
@@ -49,6 +48,7 @@ const CheckoutPage: React.FC = () => {
 						<span>Total Amount:</span>
 						<span>{amount}</span>
 					</div>
+
 					<GooglePayButton
 						environment='TEST'
 						paymentRequest={{

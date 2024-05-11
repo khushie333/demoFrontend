@@ -129,7 +129,7 @@ const CarCard = ({ car }: CarCardProps) => {
 					)}
 				</button>
 			</div>
-			<p className='flex gap-1 mt-6 text-[25px] font-semibold'>
+			<p className='flex gap-1 mt-6 text-[23px] font-semibold'>
 				<div className='self-start text-[18px] font-semibold text-blue-600'>
 					Initial bid
 				</div>

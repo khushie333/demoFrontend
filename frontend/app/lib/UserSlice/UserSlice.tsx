@@ -57,12 +57,17 @@ export const addCar = createAsyncThunk(
 	async (payload: { data: object; token: string }) => {
 		try {
 			const { data, token } = payload
-			const createCar = await axios.post(`${BASE_URL}/car`, data, {
-				headers: {
-					Authorization: `Bearer ${token}`,
-					'Content-Type': 'multipart/form-data',
-				},
-			})
+			console.log('data======', data)
+			const createCar = await axios.post(
+				`http://localhost:5000/api/car`,
+				data,
+				{
+					headers: {
+						Authorization: `Bearer ${token}`,
+						'Content-Type': 'multipart/form-data',
+					},
+				}
+			)
 			ToastSuccess('Your car has been added for Auction')
 			return createCar.data
 		} catch (error: any) {

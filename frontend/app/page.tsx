@@ -39,7 +39,7 @@ export default function Home({ searchParams }: HomeProps) {
 			)
 			setTimeout(() => {
 				setAllCars(allCars)
-				setDisplayedCars(allCars.slice(0, 8))
+				setDisplayedCars(allCars.slice(0, 15))
 				setIsDataEmpty(!Array.isArray(allCars) || allCars.length < 1)
 				setIsLoading(false)
 			}, 1000)
@@ -71,14 +71,18 @@ export default function Home({ searchParams }: HomeProps) {
 				(car) => car.baseAmount <= parseFloat(maxPriceFromFilter)
 			)
 		}
-		setDisplayedCars(filteredCars.slice(0, 8))
+		setDisplayedCars(filteredCars.slice(0, 15))
 	}
 	const handlePriceChange = (minPrice: string, maxPrice: string) => {
 		setMinPriceFromFilter(minPrice)
 		setMaxPriceFromFilter(maxPrice)
 	}
+
 	const showMoreCars = async () => {
 		const remainingCars = allCars.slice(displayedCars.length)
+		console.log(displayedCars)
+
+		console.log(remainingCars)
 		const nextCars = remainingCars.slice(0, 4)
 		setDisplayedCars((prevCars) => [...prevCars, ...nextCars])
 	}
