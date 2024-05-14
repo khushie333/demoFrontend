@@ -14,6 +14,7 @@ declare const process: {
 	env: ProcessEnv
 }
 class AdminController {
+	//view new user
 	static async ViewNewCar(req: Request, res: Response): Promise<void> {
 		try {
 			// Fetch newly added cars from the database
@@ -28,6 +29,7 @@ class AdminController {
 		}
 	}
 
+	//approve cars of users
 	static async approveCar(req: Request, res: Response): Promise<void> {
 		try {
 			const { Authorization } = req.body.headers
@@ -79,6 +81,8 @@ class AdminController {
 			res.status(500).json({ message: 'Internal server error' })
 		}
 	}
+
+	//Reject cars of a user
 	static async disapproveCar(req: Request, res: Response): Promise<void> {
 		try {
 			const { Authorization } = req.body.headers
@@ -137,6 +141,8 @@ class AdminController {
 			res.status(500).json({ message: 'Internal server error' })
 		}
 	}
+
+	//view cars by userId
 	static async viewCarsbyUserId(req: Request, res: Response): Promise<void> {
 		const { authorization } = req.headers
 		const token = authorization?.split(' ')[1]
@@ -172,6 +178,8 @@ class AdminController {
 			res.status(500).json({ message: 'Internal server error' })
 		}
 	}
+
+	//Block user
 	static async deactivateUserHandler(
 		req: Request,
 		res: Response
@@ -194,6 +202,8 @@ class AdminController {
 				.json({ success: false, message: 'Failed to deactivate user' })
 		}
 	}
+
+	//Activate a user
 	static async activateUserHandler(req: Request, res: Response): Promise<void> {
 		try {
 			const userId = req.params.userId
@@ -214,6 +224,7 @@ class AdminController {
 		}
 	}
 
+	//delete cars
 	static async deleteCarsByUserId(userId: string): Promise<void> {
 		try {
 			// Delete cars associated with the user

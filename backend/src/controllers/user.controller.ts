@@ -21,6 +21,8 @@ const stripe = new Stripe(
 interface AuthenticatedRequest extends Request {
 	user?: User
 }
+
+//get all users
 export async function getUsers(req: Request, res: Response): Promise<void> {
 	try {
 		const users = await UserModel.find()
@@ -29,6 +31,8 @@ export async function getUsers(req: Request, res: Response): Promise<void> {
 		res.status(500).json({ message: 'Error fetching users', error })
 	}
 }
+
+//get users by id
 export async function getUsersById(req: Request, res: Response): Promise<void> {
 	const userId = req.params.userId
 
@@ -45,85 +49,8 @@ export async function getUsersById(req: Request, res: Response): Promise<void> {
 		res.status(500).json({ message: 'Error fetching user', error })
 	}
 }
-// export async function userReg(req: Request, res: Response): Promise<void> {
-// 	const { name, email, phone, address, password, password_conf, active } =
-// 		req.body
 
-// 	try {
-// 		// Checking email duplication
-// 		//console.log(req.body)
-// 		const user = await UserModel.findOne({ email })
-// 		if (user) {
-// 			res
-// 				.status(400)
-// 				.json({ status: 'failed', message: 'Email already exists' })
-// 			return
-// 		}
-
-// 		if (name && email && phone && address && password && password_conf) {
-// 			if (password === password_conf) {
-// 				// Hash password
-// 				const salt = await bcrypt.genSalt(10)
-// 				const hashPassword = await bcrypt.hash(password, salt)
-
-// 				// Create new user
-// 				const newUser = new UserModel({
-// 					name,
-// 					email,
-// 					phone,
-// 					address,
-// 					password: hashPassword,
-// 					active,
-// 					stripeCustomerId: null,
-// 				})
-// 				await newUser.save()
-// 				// Get saved user
-// 				const stripeCustomer = await stripe.customers.create({
-// 					name: name,
-// 					email: email,
-// 					// Add more customer details as needed
-// 				})
-// 				console.log('st:', stripeCustomer)
-
-// 				// Get saved user
-// 				const savedUser = await UserModel.findOne({ email })
-// 				console.log(savedUser)
-// 				if (!savedUser) {
-// 					throw new Error('User not found after saving')
-// 				}
-
-// 				// Save the Stripe customer ID to the user document
-// 				savedUser.stripeCustomerId = stripeCustomer.id
-// 				await savedUser.save()
-
-// 				// Generate JWT token
-// 				const token = jwt.sign(
-// 					{ userID: savedUser._id },
-// 					process.env.JWT_SECRET_KEY || '',
-// 					{ expiresIn: '30d' }
-// 				)
-
-// 				res.status(201).json({
-// 					status: 'success',
-// 					message: 'Registered successfully',
-// 					token,
-// 				})
-// 			} else {
-// 				res
-// 					.status(400)
-// 					.json({ status: 'failed', message: 'Passwords are not matching' })
-// 			}
-// 		} else {
-// 			res
-// 				.status(400)
-// 				.json({ status: 'failed', message: 'All fields are required' })
-// 		}
-// 	} catch (error) {
-// 		res
-// 			.status(500)
-// 			.json({ status: 'failed', message: 'Unable to register', error })
-// 	}
-// }
+//Register a user
 export async function userReg(req: Request, res: Response): Promise<void> {
 	const { name, email, phone, address, password, password_conf, active } =
 		req.body
@@ -197,6 +124,7 @@ export async function userReg(req: Request, res: Response): Promise<void> {
 	}
 }
 
+//update user profile
 export async function updateUserProfile(
 	req: AuthenticatedRequest,
 	res: Response
@@ -251,6 +179,7 @@ export async function updateUserProfile(
 	}
 }
 
+//view cars of user
 export async function viewCarsOfUser(
 	req: AuthenticatedRequest,
 	res: Response
@@ -272,6 +201,8 @@ export async function viewCarsOfUser(
 		res.status(500).json({ message: 'Internal server error' })
 	}
 }
+
+//get user data
 export async function getuserdatafromid(
 	req: AuthenticatedRequest,
 	res: Response

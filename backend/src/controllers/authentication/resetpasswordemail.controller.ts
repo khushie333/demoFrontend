@@ -9,7 +9,7 @@ interface ResetParams {
 	id: string
 	token: string
 }
-
+//sending email
 class ResetPasswordEmail {
 	public static sendUserPassResetEmail = async (
 		req: Request,
@@ -55,7 +55,7 @@ class ResetPasswordEmail {
 			})
 		}
 	}
-
+	//resetting the password
 	public static userPassReset = async (
 		req: Request,
 		res: Response

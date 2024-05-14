@@ -11,6 +11,7 @@ declare const process: {
 	env: ProcessEnv
 }
 
+//get notfication by userid
 export async function getnotificationByUserId(
 	req: Request,
 	res: Response
@@ -44,6 +45,8 @@ export async function getnotificationByUserId(
 			.json({ message: 'Error fetching notifications for user', error })
 	}
 }
+
+//Delete notification by id
 export async function deleteNotificationById(
 	req: Request,
 	res: Response
@@ -67,7 +70,3 @@ export async function deleteNotificationById(
 		res.status(500).json({ message: 'Error deleting notification', error })
 	}
 }
-export async function getnotificationByUserIdl(
-	req: Request,
-	res: Response
-): Promise<void> {}

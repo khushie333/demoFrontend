@@ -17,6 +17,7 @@ const user_model_1 = __importDefault(require("../../models/user/user.model")); /
 const bcrypt_1 = __importDefault(require("bcrypt"));
 const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
 const emailConf_1 = __importDefault(require("../../config/emailConf"));
+//sending email
 class ResetPasswordEmail {
 }
 _a = ResetPasswordEmail;
@@ -60,6 +61,7 @@ ResetPasswordEmail.sendUserPassResetEmail = (req, res) => __awaiter(void 0, void
         });
     }
 });
+//resetting the password
 ResetPasswordEmail.userPassReset = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const { password, password_conf, } = req.body;

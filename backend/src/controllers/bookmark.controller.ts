@@ -52,7 +52,6 @@ export const bookmarkCar = async (
 		await bookmark.save()
 		res.status(201).json(bookmark)
 	} catch (error) {
-		console.error(error)
 		res.status(500).json({ error: 'Internal Server Error' })
 	}
 }
@@ -86,7 +85,6 @@ export const getBookmarkedCarsByUser = async (
 			return
 		}
 
-		// Expecting "Bearer [token]"
 		const parts = authorization.split(' ')
 		if (parts.length !== 2 || parts[0] !== 'Bearer') {
 			res.status(401).json({ error: 'Unauthorized: Invalid token format' })

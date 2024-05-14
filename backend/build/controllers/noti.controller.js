@@ -12,9 +12,10 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getnotificationByUserIdl = exports.deleteNotificationById = exports.getnotificationByUserId = void 0;
+exports.deleteNotificationById = exports.getnotificationByUserId = void 0;
 const noti_model_1 = __importDefault(require("../models/notification/noti.model"));
 const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
+//get notfication by userid
 function getnotificationByUserId(req, res) {
     return __awaiter(this, void 0, void 0, function* () {
         try {
@@ -42,6 +43,7 @@ function getnotificationByUserId(req, res) {
     });
 }
 exports.getnotificationByUserId = getnotificationByUserId;
+//Delete notification by id
 function deleteNotificationById(req, res) {
     return __awaiter(this, void 0, void 0, function* () {
         try {
@@ -62,7 +64,3 @@ function deleteNotificationById(req, res) {
     });
 }
 exports.deleteNotificationById = deleteNotificationById;
-function getnotificationByUserIdl(req, res) {
-    return __awaiter(this, void 0, void 0, function* () { });
-}
-exports.getnotificationByUserIdl = getnotificationByUserIdl;

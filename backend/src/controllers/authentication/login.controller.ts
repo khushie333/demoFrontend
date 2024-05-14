@@ -119,8 +119,8 @@ class loginController {
 			password,
 			password_conf,
 		}: { password: string; password_conf: string } = req.body
-		console.log('password', password)
-		console.log('password_conf', password_conf)
+		// console.log('password', password)
+		// console.log('password_conf', password_conf)
 		if (password && password_conf) {
 			if (password !== password_conf) {
 				res.send({
@@ -130,13 +130,7 @@ class loginController {
 			} else {
 				const salt: string = await bcrypt.genSalt(10)
 				const newhashPassword: string = await bcrypt.hash(password, salt)
-				// console.log(req.body) // Check if the request body contains password and password_conf fields
-				// console.log(req.user?._id) // Check if the user ID is correctly set
 
-				// // Mongoose findByIdAndUpdate method call
-				// console.log(`Updating password for user with ID: ${req.user?._id}`)
-
-				// find by id and update the password
 				const result = await userModel.findByIdAndUpdate(req.user?._id, {
 					$set: {
 						password: newhashPassword,

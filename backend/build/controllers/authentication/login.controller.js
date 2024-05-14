@@ -114,8 +114,8 @@ loginController.logoutUser = (req, res) => __awaiter(void 0, void 0, void 0, fun
 loginController.changePassword = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     var _c;
     const { password, password_conf, } = req.body;
-    console.log('password', password);
-    console.log('password_conf', password_conf);
+    // console.log('password', password)
+    // console.log('password_conf', password_conf)
     if (password && password_conf) {
         if (password !== password_conf) {
             res.send({
@@ -126,11 +126,6 @@ loginController.changePassword = (req, res) => __awaiter(void 0, void 0, void 0,
         else {
             const salt = yield bcrypt_1.default.genSalt(10);
             const newhashPassword = yield bcrypt_1.default.hash(password, salt);
-            // console.log(req.body) // Check if the request body contains password and password_conf fields
-            // console.log(req.user?._id) // Check if the user ID is correctly set
-            // // Mongoose findByIdAndUpdate method call
-            // console.log(`Updating password for user with ID: ${req.user?._id}`)
-            // find by id and update the password
             const result = yield user_model_1.default.findByIdAndUpdate((_c = req.user) === null || _c === void 0 ? void 0 : _c._id, {
                 $set: {
                     password: newhashPassword,

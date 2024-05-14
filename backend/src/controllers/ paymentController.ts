@@ -1,6 +1,8 @@
 import { Request, Response } from 'express'
 
 import createPaymentIntent from './stripeService'
+
+//create  payment
 async function createpayment(req: Request, res: Response) {
 	try {
 		const { amount, customerId } = req.body // Assume amount and customerId are sent in the body of the request

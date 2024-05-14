@@ -45,7 +45,6 @@ const bookmarkCar = (req, res) => __awaiter(void 0, void 0, void 0, function* ()
         res.status(201).json(bookmark);
     }
     catch (error) {
-        console.error(error);
         res.status(500).json({ error: 'Internal Server Error' });
     }
 });
@@ -73,7 +72,6 @@ const getBookmarkedCarsByUser = (req, res) => __awaiter(void 0, void 0, void 0, 
             res.status(401).json({ error: 'Unauthorized' });
             return;
         }
-        // Expecting "Bearer [token]"
         const parts = authorization.split(' ');
         if (parts.length !== 2 || parts[0] !== 'Bearer') {
             res.status(401).json({ error: 'Unauthorized: Invalid token format' });

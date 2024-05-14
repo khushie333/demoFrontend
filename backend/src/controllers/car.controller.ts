@@ -161,6 +161,27 @@ class CarController {
 		}
 	}
 
+	static getSingleCarByIdForBid = async (
+		req: Request,
+		res: Response
+	): Promise<void> => {
+		try {
+			const result = await carModel.find({
+				_id: req.params.id,
+				deleted: false,
+			})
+			console.log('result:', result)
+			if (!result) {
+				return
+			}
+
+			res.send(result)
+		} catch (error) {
+			console.error(error)
+			res.status(500).send({ error: 'Internal Server Error' })
+		}
+	}
+
 	//update car by id
 	static updateCarById = async (req: Request, res: Response): Promise<void> => {
 		try {
@@ -250,9 +271,9 @@ class CarController {
 		}
 	}
 
+	//delete a car
 	static deleteCarById = async (req: Request, res: Response): Promise<void> => {
 		try {
-			console.log('hii')
 			const authorization = req.headers.authorization
 			console.log(authorization)
 			if (!authorization) {
@@ -303,6 +324,7 @@ class CarController {
 		}
 	}
 
+	//search a car
 	static search = async (req: Request, res: Response): Promise<void> => {
 		try {
 			const searchParam = req.query.search as string | string[] | undefined

@@ -48,7 +48,7 @@ mongoose_1.default
     .connect(mongoUrl)
     .then(() => console.log('MongoDB connected successfully!!!'))
     .catch((error) => console.error('oops, Error connecting to MongoDB:', error));
-// Replace the normal listen with http server for socket.io
+// listening with http server for socket.io
 const httpServer = new http_1.default.Server(app);
 exports.io = new socket_io_1.Server(httpServer, {
     cors: {
@@ -62,7 +62,7 @@ exports.io.on('connection', (socket) => {
     });
     console.log('User connected');
 });
-node_cron_1.default.schedule('0 */6 * * *', () => __awaiter(void 0, void 0, void 0, function* () {
+node_cron_1.default.schedule('* * * * *', () => __awaiter(void 0, void 0, void 0, function* () {
     const bufferTime = 5 * 60 * 1000; // 5 minutes buffer
     const now = new Date();
     const oneMinutesAgo = new Date(now.getTime() - 1 * 60 * 1000);

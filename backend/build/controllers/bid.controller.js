@@ -98,6 +98,7 @@ bidController.getAllBids = (req, res) => __awaiter(void 0, void 0, void 0, funct
         res.status(500).json({ error: 'Internal Server Error' });
     }
 });
+//Delete a bid
 bidController.deleteBid = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const { authorization } = req.headers;
@@ -175,11 +176,10 @@ bidController.userBidHistory = (req, res) => __awaiter(void 0, void 0, void 0, f
         res.status(500).json({ error: 'Internal Server Error' });
     }
 });
+//Finalize the bid by sending an email
 bidController.bidFinalization = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        console.log('hiii');
         const { bidAmount, brand, Model, email, ownerEmail, ownerPhone, carID } = req.body;
-        console.log(req.body);
         if (email) {
             const user = yield user_model_1.default.findOne({ email: email });
             const car = yield car_model_1.default.findById(carID);
@@ -188,7 +188,7 @@ bidController.bidFinalization = (req, res) => __awaiter(void 0, void 0, void 0, 
                 const token = jsonwebtoken_1.default.sign({ userID: user._id }, secret, {
                     expiresIn: 86400,
                 });
-                //const link: string = `http://localhost:3000/`
+                const link = `http://localhost:3000/CheckoutPage/${user._id}/${token}?brand=${encodeURIComponent(brand)}&model=${encodeURIComponent(Model)}&amount=${encodeURIComponent(bidAmount)}`;
                 // Send email
                 const info = yield emailConf_1.default.sendMail({
                     from: process.env.EMAIL_FROM,
@@ -207,7 +207,7 @@ bidController.bidFinalization = (req, res) => __awaiter(void 0, void 0, void 0, 
                   <ul>
                   <li>Contact: ${ownerEmail}</li>
                   <li>Email: ${ownerPhone}</li>
-
+                  <a href="${link}"> Click here for checkout </a>
                 </ul>
                 <p>Congrats! Thank you for your bid!</p>
               `,

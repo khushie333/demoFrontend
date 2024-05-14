@@ -7,6 +7,8 @@ const router = express.Router()
 router.post('/car', upload, carRoutes.createCar)
 router.get('/car', carRoutes.getAllCars)
 router.get('/car/:id', carRoutes.getSingleCarById)
+router.get('/carforbid/:id', carRoutes.getSingleCarByIdForBid)
+
 router.patch('/car/:id', carRoutes.deleteCarById)
 router.put('/car/:id', upload, carRoutes.updateCarById)
 router.get('/cars', carRoutes.search)

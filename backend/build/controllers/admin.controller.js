@@ -17,6 +17,7 @@ const car_model_1 = __importDefault(require("../models/car/car.model"));
 const noti_model_1 = __importDefault(require("../models/notification/noti.model"));
 const user_model_1 = __importDefault(require("../models/user/user.model"));
 class AdminController {
+    //view new user
     static ViewNewCar(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
@@ -32,6 +33,7 @@ class AdminController {
             }
         });
     }
+    //approve cars of users
     static approveCar(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
@@ -77,6 +79,7 @@ class AdminController {
             }
         });
     }
+    //Reject cars of a user
     static disapproveCar(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
@@ -129,6 +132,7 @@ class AdminController {
             }
         });
     }
+    //view cars by userId
     static viewCarsbyUserId(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
             const { authorization } = req.headers;
@@ -162,6 +166,7 @@ class AdminController {
             }
         });
     }
+    //Block user
     static deactivateUserHandler(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
@@ -182,6 +187,7 @@ class AdminController {
             }
         });
     }
+    //Activate a user
     static activateUserHandler(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
@@ -202,6 +208,7 @@ class AdminController {
             }
         });
     }
+    //delete cars
     static deleteCarsByUserId(userId) {
         return __awaiter(this, void 0, void 0, function* () {
             try {

@@ -132,6 +132,23 @@ CarController.getSingleCarById = (req, res) => __awaiter(void 0, void 0, void 0,
         res.status(500).send({ error: 'Internal Server Error' });
     }
 });
+CarController.getSingleCarByIdForBid = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const result = yield car_model_1.carModel.find({
+            _id: req.params.id,
+            deleted: false,
+        });
+        console.log('result:', result);
+        if (!result) {
+            return;
+        }
+        res.send(result);
+    }
+    catch (error) {
+        console.error(error);
+        res.status(500).send({ error: 'Internal Server Error' });
+    }
+});
 //update car by id
 CarController.updateCarById = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
@@ -209,9 +226,9 @@ CarController.updateCarById = (req, res) => __awaiter(void 0, void 0, void 0, fu
         res.status(500).json({ message: 'Internal Server Error' });
     }
 });
+//delete a car
 CarController.deleteCarById = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        console.log('hii');
         const authorization = req.headers.authorization;
         console.log(authorization);
         if (!authorization) {
@@ -255,6 +272,7 @@ CarController.deleteCarById = (req, res) => __awaiter(void 0, void 0, void 0, fu
         res.status(500).json({ message: 'Internal Server Error' });
     }
 });
+//search a car
 CarController.search = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const searchParam = req.query.search;

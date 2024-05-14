@@ -98,6 +98,7 @@ class bidController {
 		}
 	}
 
+	//Delete a bid
 	static deleteBid = async (req: Request, res: Response): Promise<void> => {
 		try {
 			const { authorization } = req.headers as { authorization: string }
@@ -193,15 +194,16 @@ class bidController {
 			res.status(500).json({ error: 'Internal Server Error' })
 		}
 	}
+
+	//Finalize the bid by sending an email
 	static bidFinalization = async (
 		req: Request,
 		res: Response
 	): Promise<void> => {
 		try {
-			console.log('hiii')
 			const { bidAmount, brand, Model, email, ownerEmail, ownerPhone, carID } =
 				req.body
-			console.log(req.body)
+
 			if (email) {
 				const user: User | null = await userModel.findOne({ email: email })
 				const car = await carModel.findById(carID)
@@ -211,7 +213,13 @@ class bidController {
 						expiresIn: 86400,
 					})
 
-					//const link: string = `http://localhost:3000/`
+					const link: string = `http://localhost:3000/CheckoutPage/${
+						user._id
+					}/${token}?brand=${encodeURIComponent(
+						brand
+					)}&model=${encodeURIComponent(Model)}&amount=${encodeURIComponent(
+						bidAmount
+					)}`
 
 					// Send email
 					const info = await transporter.sendMail({
@@ -231,7 +239,7 @@ class bidController {
                   <ul>
                   <li>Contact: ${ownerEmail}</li>
                   <li>Email: ${ownerPhone}</li>
-
+                  <a href="${link}"> Click here for checkout </a>
                 </ul>
                 <p>Congrats! Thank you for your bid!</p>
               `,
