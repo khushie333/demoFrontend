@@ -1,5 +1,5 @@
 This project is having node.js [https://nodejs.org/] with typescript as backend and
-[Next.js](https://nextjs.org/) as frontend bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+[Next.js](https://nextjs.org/) with typescript as frontend bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
 
 ## Getting Started
 
