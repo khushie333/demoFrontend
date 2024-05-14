@@ -43,21 +43,35 @@ const Page = () => {
 					`${BASE_URL}/bids/userBidHistory/${userID}`,
 					config
 				)
+				// console.log('resp:', response)
 
-				const bidData = response.data.bids
+				const bidData = response?.data?.bids
+
+				// console.log('bidData====', bidData)
 				const bidsWithCarData = await Promise.all(
 					bidData.map(async (bid: any) => {
 						// Make API request to fetch car details using car ID
-						const carResponse = await axios.get(`${BASE_URL}/car/${bid.car}`)
-						const carData = carResponse.data
 
-						// Combine car data with bid data
-						return {
-							...bid,
-							carData: carData, // Assuming carData is the field where you store car details
+						const carResponse = await axios.get(
+							`${BASE_URL}/carforbid/${bid.car}`
+						)
+
+						if (carResponse.data.length > 0) {
+							const carData = carResponse?.data[0]
+
+							if (carData) {
+								console.log(carData)
+							}
+
+							return {
+								...bid,
+								carData: carData ? carData : null,
+							}
 						}
 					})
 				)
+
+				// console.log('bidata', bidData)
 
 				setBidHistory(bidsWithCarData)
 			}
@@ -94,6 +108,7 @@ const Page = () => {
 			console.error('Error deleting car:', error)
 		}
 	}
+
 	return (
 		<>
 			<div className=' flex flex-col justify-center min-h-screen overflow-hidden'>
@@ -129,32 +144,35 @@ const Page = () => {
 								</TableHead>
 
 								<TableBody>
-									{bidHistory.map((bid: any) => (
-										<TableRow key={bid._id}>
-											<TableCell align='right' style={{ fontSize: '1rem' }}>
-												{bid.carData.brand}
-											</TableCell>
+									{bidHistory.length > 0 &&
+										bidHistory
+											?.filter((bid: any) => bid !== undefined)
+											?.map((bid: any) => (
+												<TableRow key={bid?._id}>
+													<TableCell align='right' style={{ fontSize: '1rem' }}>
+														{bid?.carData?.brand}
+													</TableCell>
 
-											<TableCell align='right' style={{ fontSize: '1rem' }}>
-												{bid.carData.Model}
-											</TableCell>
-											<TableCell align='right' style={{ fontSize: '1rem' }}>
-												{bid.amount}
-											</TableCell>
+													<TableCell align='right' style={{ fontSize: '1rem' }}>
+														{bid?.carData?.Model}
+													</TableCell>
+													<TableCell align='right' style={{ fontSize: '1rem' }}>
+														{bid?.amount}
+													</TableCell>
 
-											<TableCell align='right' style={{ fontSize: '1rem' }}>
-												{format(new Date(bid.createdAt), 'PPP')}
-											</TableCell>
-											<TableCell align='right'>
-												<button
-													onClick={() => handleDelete(bid._id)}
-													className='w-full px-4 py-2 tracking-wide text-red-500 transition-colors duration-200 transhtmlForm rounded-md hover:bg-zinc-400 focus:outline-none'
-												>
-													<DeleteForeverIcon />
-												</button>
-											</TableCell>
-										</TableRow>
-									))}
+													<TableCell align='right' style={{ fontSize: '1rem' }}>
+														{format(new Date(bid?.createdAt), 'PPP')}
+													</TableCell>
+													<TableCell align='right'>
+														<button
+															onClick={() => handleDelete(bid?._id)}
+															className='w-full px-4 py-2 tracking-wide text-red-500 transition-colors duration-200 transhtmlForm rounded-md hover:bg-zinc-400 focus:outline-none'
+														>
+															<DeleteForeverIcon />
+														</button>
+													</TableCell>
+												</TableRow>
+											))}
 								</TableBody>
 							</Table>
 						</TableContainer>

@@ -8,23 +8,23 @@ import TableHead from '@mui/material/TableHead'
 import TableRow from '@mui/material/TableRow'
 import Paper from '@mui/material/Paper'
 import BlockIcon from '@mui/icons-material/Block'
-
 import axios from 'axios'
 import { IoEye } from 'react-icons/io5'
 import Link from 'next/link'
 
 const page = () => {
-	const [users, setUsers] = useState([])
+	const [users, setUsers] = useState<any[]>([])
+
+	const [currentPage, setCurrentPage] = useState(1)
+	const usersPerPage = 5
 	const BASE_URL = process.env.NEXT_PUBLIC_BACKEND_URL
 
 	useEffect(() => {
-		// Fetch user data from your API
 		const fetchUsers = async () => {
 			try {
 				const response = await axios.get(`${BASE_URL}/user`)
-				const activeUsers = response.data.filter((user: any) => user.active) // Filter active users
+				const activeUsers = response.data.filter((user: any) => user.active)
 				setUsers(activeUsers)
-				// setUsers(response.data) // Assuming response.data is an array of user objects
 			} catch (error) {
 				console.error('Error fetching users:', error)
 			}
@@ -32,7 +32,16 @@ const page = () => {
 
 		fetchUsers()
 	}, [])
-	const deactivateUser = async (userId: any) => {
+
+	// Logic to slice users based on current page and users per page
+	const indexOfLastUser = currentPage * usersPerPage
+	const indexOfFirstUser = indexOfLastUser - usersPerPage
+	const currentUsers = users.slice(indexOfFirstUser, indexOfLastUser)
+
+	// Function to handle pagination
+	const paginate = (pageNumber: number) => setCurrentPage(pageNumber)
+
+	const deactivateUser = async (userId: string) => {
 		try {
 			const response = await axios.put(`${BASE_URL}/admin/${userId}`)
 			if (response.data.success) {
@@ -46,13 +55,14 @@ const page = () => {
 			alert('Error deactivating user')
 		}
 	}
+
 	return (
-		<div className=' flex flex-col justify-center min-h-screen overflow-hidden'>
+		<div className='flex flex-col justify-center min-h-screen overflow-hidden'>
 			<br />
 			<br />
 
-			<div className='w-full p-6 m-auto bg-white rounded-md shadow-xl mt-36  shadow-blue-300 ring-2 ring-blue-700 lg:max-w-fit'>
-				<h1 className='text-2xl font-bold text-center text-blue-700 uppercase '>
+			<div className='w-full p-6 m-auto bg-white rounded-md shadow-xl mt-24  shadow-blue-300 ring-2 ring-blue-700 lg:max-w-fit'>
+				<h1 className='text-2xl font-bold text-center text-blue-700 uppercase'>
 					View Users
 				</h1>
 				<TableContainer component={Paper}>
@@ -101,7 +111,7 @@ const page = () => {
 							</TableRow>
 						</TableHead>
 						<TableBody>
-							{users.map((user: any) => (
+							{currentUsers.map((user) => (
 								<TableRow key={user?._id}>
 									<TableCell component='th' scope='row'>
 										{user?._id}
@@ -138,6 +148,25 @@ const page = () => {
 						</TableBody>
 					</Table>
 				</TableContainer>
+				<div
+					className='pagination'
+					style={{
+						marginLeft: '800px',
+						textAlign: 'center',
+						fontSize: '20px',
+						textDecorationColor: 'blue',
+					}}
+				>
+					{[...Array(Math.ceil(users.length / usersPerPage)).keys()].map(
+						(number) => (
+							<button key={number + 1} onClick={() => paginate(number + 1)}>
+								<p className='text-blue-700'>
+									<b> {number + 1}...</b>
+								</p>
+							</button>
+						)
+					)}
+				</div>
 				<Link href={'/Admin/ViewBlockedUsers'}>
 					<h6 className='pt-10 font-semibold text-center text-blue-700 underline uppercase'>
 						View blocked users
@@ -147,4 +176,5 @@ const page = () => {
 		</div>
 	)
 }
+
 export default page

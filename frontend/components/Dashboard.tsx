@@ -45,7 +45,7 @@ const Dashboard = () => {
 				<Link href='#'>
 					<Custombutton
 						title='Explore cars'
-						containerStyles='bg-primary-blue text-white text-lg font-medium rounded-full mt-10'
+						containerStyles='bg-primary-blue text-white text-lg font-medium rounded-full mt-10 hover:bg-indigo-600'
 						handleClick={handleExploreCarsClick}
 					/>
 				</Link>

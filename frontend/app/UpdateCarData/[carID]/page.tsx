@@ -111,138 +111,144 @@ const UpdateCarData = () => {
 					Update car
 				</h1>
 				<form
-					className='mt-6'
+					className='mt-6 flex flex-col'
 					method='post'
 					onSubmit={formik.handleSubmit}
 					encType='multipart/form-data'
 				>
-					<div className='mb-2'>
-						<label
-							htmlFor='brand'
-							className='block text-sm font-semibold text-gray-800'
-						>
-							brand
-						</label>
-						<input
-							required
-							name='brand'
-							type='text'
-							onChange={formik.handleChange}
-							value={formik.values.brand}
-							className='block w-full px-4 py-2 mt-2 text-indigo-700 bg-white border rounded-md focus:border-indigo-400 focus:ring-indigo-300 focus:outline-none focus:ring focus:ring-opacity-40'
-						/>
-					</div>
+					<div className='flex flex-row gap-5'>
+						<div>
+							<div className='mb-2'>
+								<label
+									htmlFor='brand'
+									className='block text-sm font-semibold text-gray-800'
+								>
+									brand
+								</label>
+								<input
+									required
+									name='brand'
+									type='text'
+									onChange={formik.handleChange}
+									value={formik.values.brand}
+									className='block w-full px-4 py-2 mt-2 text-indigo-700 bg-white border rounded-md focus:border-indigo-400 focus:ring-indigo-300 focus:outline-none focus:ring focus:ring-opacity-40'
+								/>
+							</div>
 
-					<div className='mb-2'>
-						<label
-							htmlFor='Model'
-							className='block text-sm font-semibold text-gray-800'
-						>
-							Model
-						</label>
-						<input
-							required
-							name='Model'
-							type='text'
-							onChange={formik.handleChange}
-							value={formik.values.Model}
-							className='block w-full px-4 py-2 mt-2 text-indigo-700 bg-white border rounded-md focus:border-indigo-400 focus:ring-indigo-300 focus:outline-none focus:ring focus:ring-opacity-40'
-						/>
-					</div>
-					<div className='mb-2'>
-						<label
-							htmlFor='desc'
-							className='block text-sm font-semibold text-gray-800'
-						>
-							Discription
-						</label>
-						<input
-							required
-							type='text'
-							name='desc'
-							onChange={formik.handleChange}
-							value={formik.values.desc}
-							className='block w-full px-4 py-2 mt-2 text-indigo-700 bg-white border rounded-md focus:border-indigo-400 focus:ring-indigo-300 focus:outline-none focus:ring focus:ring-opacity-40'
-						/>
-					</div>
-					<div className='mb-2'>
-						<label
-							htmlFor='owner'
-							className='block text-sm font-semibold text-gray-800'
-						>
-							owner
-						</label>
-						<input
-							required
-							type='text'
-							name='owner'
-							onChange={formik.handleChange}
-							value={formik.values.owner}
-							className='block w-full px-4 py-2 mt-2 text-indigo-700 bg-white border rounded-md focus:border-indigo-400 focus:ring-indigo-300 focus:outline-none focus:ring focus:ring-opacity-40'
-						/>
-					</div>
-					<div className='mb-2'>
-						<label
-							htmlFor='images'
-							className='block text-sm font-semibold text-gray-800'
-						>
-							images
-						</label>
-						<input
-							type='file'
-							name='images'
-							onChange={handleFileChange}
-							className='block w-full px-4 py-2 mt-2 text-indigo-700 bg-white border rounded-md focus:border-indigo-400 focus:ring-indigo-300 focus:outline-none focus:ring focus:ring-opacity-40'
-							multiple
-						/>
-					</div>
-					<div className='mb-2'>
-						<label
-							htmlFor='baseAmount'
-							className='block text-sm font-semibold text-gray-800'
-						>
-							baseAmount
-						</label>
-						<input
-							required
-							type='number'
-							name='baseAmount'
-							onChange={formik.handleChange}
-							value={formik.values.baseAmount}
-							className='block w-full px-4 py-2 mt-2 text-indigo-700 bg-white border rounded-md focus:border-indigo-400 focus:ring-indigo-300 focus:outline-none focus:ring focus:ring-opacity-40'
-						/>
-					</div>
-					<div className='mb-2'>
-						<label
-							htmlFor='bidStartDate'
-							className='block text-sm font-semibold text-gray-800'
-						>
-							bid Start Date
-						</label>
-						<input
-							required
-							type='date'
-							name='bidStartDate'
-							onChange={formik.handleChange}
-							value={formik.values.bidStartDate}
-							className='block w-full px-4 py-2 mt-2 text-indigo-700 bg-white border rounded-md focus:border-indigo-400 focus:ring-indigo-300 focus:outline-none focus:ring focus:ring-opacity-40'
-						/>
-					</div>
-					<div className='mb-2'>
-						<label
-							htmlFor='bidEndDate'
-							className='block text-sm font-semibold text-gray-800'
-						>
-							bid End Date
-						</label>
-						<input
-							required
-							type='date'
-							name='bidEndDate'
-							onChange={formik.handleChange}
-							value={formik.values.bidEndDate}
-							className='block w-full px-4 py-2 mt-2 text-indigo-700 bg-white border rounded-md focus:border-indigo-400 focus:ring-indigo-300 focus:outline-none focus:ring focus:ring-opacity-40'
-						/>
+							<div className='mb-2'>
+								<label
+									htmlFor='Model'
+									className='block text-sm font-semibold text-gray-800'
+								>
+									Model
+								</label>
+								<input
+									required
+									name='Model'
+									type='text'
+									onChange={formik.handleChange}
+									value={formik.values.Model}
+									className='block w-full px-4 py-2 mt-2 text-indigo-700 bg-white border rounded-md focus:border-indigo-400 focus:ring-indigo-300 focus:outline-none focus:ring focus:ring-opacity-40'
+								/>
+							</div>
+							<div className='mb-2'>
+								<label
+									htmlFor='desc'
+									className='block text-sm font-semibold text-gray-800'
+								>
+									Discription
+								</label>
+								<input
+									required
+									type='text'
+									name='desc'
+									onChange={formik.handleChange}
+									value={formik.values.desc}
+									className='block w-full px-4 py-2 mt-2 text-indigo-700 bg-white border rounded-md focus:border-indigo-400 focus:ring-indigo-300 focus:outline-none focus:ring focus:ring-opacity-40'
+								/>
+							</div>
+							<div className='mb-2'>
+								<label
+									htmlFor='owner'
+									className='block text-sm font-semibold text-gray-800'
+								>
+									owner
+								</label>
+								<input
+									required
+									type='text'
+									name='owner'
+									onChange={formik.handleChange}
+									value={formik.values.owner}
+									className='block w-full px-4 py-2 mt-2 text-indigo-700 bg-white border rounded-md focus:border-indigo-400 focus:ring-indigo-300 focus:outline-none focus:ring focus:ring-opacity-40'
+								/>
+							</div>
+						</div>
+						<div>
+							<div className='mb-2'>
+								<label
+									htmlFor='images'
+									className='block text-sm font-semibold text-gray-800'
+								>
+									images
+								</label>
+								<input
+									type='file'
+									name='images'
+									onChange={handleFileChange}
+									className='block w-full px-4 py-2 mt-2 text-indigo-700 bg-white border rounded-md focus:border-indigo-400 focus:ring-indigo-300 focus:outline-none focus:ring focus:ring-opacity-40'
+									multiple
+								/>
+							</div>
+							<div className='mb-2'>
+								<label
+									htmlFor='baseAmount'
+									className='block text-sm font-semibold text-gray-800'
+								>
+									baseAmount
+								</label>
+								<input
+									required
+									type='number'
+									name='baseAmount'
+									onChange={formik.handleChange}
+									value={formik.values.baseAmount}
+									className='block w-full px-4 py-2 mt-2 text-indigo-700 bg-white border rounded-md focus:border-indigo-400 focus:ring-indigo-300 focus:outline-none focus:ring focus:ring-opacity-40'
+								/>
+							</div>
+							<div className='mb-2'>
+								<label
+									htmlFor='bidStartDate'
+									className='block text-sm font-semibold text-gray-800'
+								>
+									bid Start Date
+								</label>
+								<input
+									required
+									type='date'
+									name='bidStartDate'
+									onChange={formik.handleChange}
+									value={formik.values.bidStartDate}
+									className='block w-full px-4 py-2 mt-2 text-indigo-700 bg-white border rounded-md focus:border-indigo-400 focus:ring-indigo-300 focus:outline-none focus:ring focus:ring-opacity-40'
+								/>
+							</div>
+							<div className='mb-2'>
+								<label
+									htmlFor='bidEndDate'
+									className='block text-sm font-semibold text-gray-800'
+								>
+									bid End Date
+								</label>
+								<input
+									required
+									type='date'
+									name='bidEndDate'
+									onChange={formik.handleChange}
+									value={formik.values.bidEndDate}
+									className='block w-full px-4 py-2 mt-2 text-indigo-700 bg-white border rounded-md focus:border-indigo-400 focus:ring-indigo-300 focus:outline-none focus:ring focus:ring-opacity-40'
+								/>
+							</div>
+						</div>
 					</div>
 					<div className='mt-6'>
 						<button
@@ -253,6 +259,9 @@ const UpdateCarData = () => {
 						</button>
 					</div>
 				</form>
+			</div>
+			<div className='hero__image-container'>
+				<div className='hero__image-overlay' />
 			</div>
 		</div>
 	)

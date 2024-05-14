@@ -56,7 +56,7 @@ const Navbar = () => {
 		})
 
 		return () => {
-			socket.off('newBid') // Cleanup listener on component unmount
+			socket.off('newBid') // Cleanup listener
 		}
 	}, [socket])
 
@@ -128,96 +128,100 @@ const Navbar = () => {
 						className='object-contain rounded-full mt-5'
 					></Image>
 				</Link>
-				{isLoggedIn ? <LogoutButton /> : <LoginButton />}
-
-				{isLoggedIn && (
-					<div
-						className='flex flex-row gap-1 mr-2 '
-						style={{ alignItems: 'center' }}
-					>
-						<Link
-							href={'/UserHome'}
-							className='flex justify-center items-center'
-							passHref
-						>
-							<Custombutton
-								title='👤MyProfile'
-								btnType='button'
-								containerStyles='text-primary-blue rounded-full bg-white min-w-[130px]'
-							/>
-						</Link>
-						<Badge
-							badgeContent={
-								notifications.length !== 0 ? notifications.length - 1 : '0'
-							}
-							color='error'
-							onClick={handleClick}
-						>
-							<NotificationsIcon className='text-yellow-400' />
-
-							<Popover
-								id={id}
-								open={open}
-								anchorEl={anchorEl}
-								onClose={handleClose}
-								anchorOrigin={{
-									vertical: 'bottom',
-									horizontal: 'right',
-								}}
-								sx={{ margin: 2, width: '300px' }}
+				<div
+					className='flex flex-row gap-1 mr-2 '
+					style={{ alignItems: 'center' }}
+				>
+					{isLoggedIn && (
+						<>
+							<Link
+								href={'/UserHome'}
+								className='flex justify-center items-center'
+								passHref
 							>
-								<Typography sx={{ p: 2 }}>
-									<Box
-										sx={{
-											width: '300px',
+								<Custombutton
+									title='👤MyProfile'
+									btnType='button'
+									containerStyles='text-primary-blue rounded-full bg-white min-w-[130px]'
+								/>
+							</Link>
+							<Badge
+								badgeContent={
+									notifications.length !== 0 ? notifications.length - 1 : '0'
+								}
+								color='error'
+								onClick={handleClick}
+							>
+								<NotificationsIcon className='text-yellow-400' />
 
-											maxWidth: 360,
-											bgcolor: 'background.paper',
-										}}
-									>
-										<List component='nav' aria-label='secondary mailbox folder'>
-											{notifications &&
-												notifications.map((notification) => (
-													<div className='flex flex-row'>
-														<Link
-															href='/ViewCars'
-															className='text-blue-700 hover:text-indigo-700 hover:outline-2 hover:border-2'
-														>
-															<ListItemText
-																key={notification._id}
-																primary={notification.message}
-															/>
-														</Link>
+								<Popover
+									id={id}
+									open={open}
+									anchorEl={anchorEl}
+									onClose={handleClose}
+									anchorOrigin={{
+										vertical: 'bottom',
+										horizontal: 'right',
+									}}
+									sx={{ margin: 2 }}
+								>
+									<Typography sx={{ p: 2 }}>
+										<Box
+											sx={{
+												width: '200px',
 
-														<button
-															onClick={handlemarkAsRead(notification._id)}
-															className='hover:border-2'
-														>
-															<CheckCircleOutlineIcon
-																style={{
-																	height: '30',
-																	width: '30',
-																	color: green[500],
-																}}
-															/>
-														</button>
-													</div>
-												))}
-											{notifications.length === 0 && (
-												<Typography variant='h3'>
-													<div className='flex flex-row'>
-														<ListItemText primary='No Notifications yet' />
-													</div>
-												</Typography>
-											)}
-											<Divider />
-										</List>
-									</Box>
-								</Typography>
-							</Popover>
-						</Badge>
-					</div>
-				)}
+												maxWidth: 200,
+												bgcolor: 'background.paper',
+											}}
+										>
+											<List
+												component='nav'
+												aria-label='secondary mailbox folder'
+											>
+												{notifications &&
+													notifications.map((notification) => (
+														<div className='flex flex-row'>
+															<Link
+																href='/ViewCars'
+																className='text-blue-700 hover:text-indigo-700 hover:outline-2 hover:border-2'
+															>
+																<ListItemText
+																	key={notification._id}
+																	primary={notification.message}
+																/>
+															</Link>
+
+															<button
+																onClick={handlemarkAsRead(notification._id)}
+																className='hover:border-2'
+															>
+																<CheckCircleOutlineIcon
+																	style={{
+																		height: '30',
+																		width: '30',
+																		color: green[500],
+																	}}
+																/>
+															</button>
+														</div>
+													))}
+												{notifications.length === 0 && (
+													<Typography variant='h3'>
+														<div className='flex flex-row'>
+															<ListItemText primary='No Notifications yet' />
+														</div>
+													</Typography>
+												)}
+												<Divider />
+											</List>
+										</Box>
+									</Typography>
+								</Popover>
+							</Badge>
+						</>
+					)}
+					{isLoggedIn ? <LogoutButton /> : <LoginButton />}
+				</div>
 			</nav>
 		</header>
 	)

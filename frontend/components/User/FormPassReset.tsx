@@ -22,8 +22,7 @@ const FormPassReset = () => {
 	) => {
 		event.preventDefault()
 		const token = getCookie('token') as string
-		const formData = new FormData(event.currentTarget) // Get form data from event
-
+		const formData = new FormData(event.currentTarget)
 		const val: FormValues = {
 			password: formData.get('password') as string,
 			password_conf: formData.get('password_conf') as string,

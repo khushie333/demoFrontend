@@ -25,16 +25,13 @@ const CheckoutPage: React.FC = () => {
 		}
 	}
 
-	console.log('Brand:', brand)
-	console.log('Model:', model)
-
 	const handlePaymentData = (payment: any) => {
 		ToastSuccess('Payment successful')
 	}
 
 	return (
 		<div className='flex flex-col justify-center min-h-screen overflow-hidden'>
-			<div className='w-full p-6 m-auto items-center bg-white rounded-md shadow-xl shadow-blue-300 ring-2 ring-blue-700 lg:max-w-xl'>
+			<div className='w-full p-6 m-auto mt-56 items-center bg-white rounded-md shadow-xl shadow-blue-300 ring-2 ring-blue-700 lg:max-w-xl'>
 				<div className='bg-white rounded-lg items-center shadow-lg p-8'>
 					<h2 className='text-lg font-semibold mb-4'>Your Bid Summary</h2>
 					<div className='flex justify-between mb-2'>
@@ -85,6 +82,9 @@ const CheckoutPage: React.FC = () => {
 						buttonType='pay'
 					/>
 				</div>
+			</div>
+			<div className='hero__image-container'>
+				<div className='hero__image-overlay' />
 			</div>
 		</div>
 	)

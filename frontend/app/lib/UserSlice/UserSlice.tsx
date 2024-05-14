@@ -58,16 +58,12 @@ export const addCar = createAsyncThunk(
 		try {
 			const { data, token } = payload
 			console.log('data======', data)
-			const createCar = await axios.post(
-				`http://localhost:5000/api/car`,
-				data,
-				{
-					headers: {
-						Authorization: `Bearer ${token}`,
-						'Content-Type': 'multipart/form-data',
-					},
-				}
-			)
+			const createCar = await axios.post(`${BASE_URL}/car`, data, {
+				headers: {
+					Authorization: `Bearer ${token}`,
+					'Content-Type': 'multipart/form-data',
+				},
+			})
 			ToastSuccess('Your car has been added for Auction')
 			return createCar.data
 		} catch (error: any) {
@@ -81,7 +77,7 @@ export const updateUserPassword = createAsyncThunk(
 	'updateUserPassword',
 	async (payload: { data: object; token: string }) => {
 		try {
-			const { data, token } = payload // Assuming you pass both the data and the token in the payload
+			const { data, token } = payload
 			const response = await api.post('/changepassword', data, {
 				headers: {
 					Authorization: `Bearer ${token}`,

@@ -1,19 +1,16 @@
 'use client'
+
+import React from 'react'
+import axios from 'axios'
 import { CarProps } from '@/types'
 import { Fragment, useEffect, useState } from 'react'
 import Image from 'next/image'
 import { ChevronDownIcon } from '@heroicons/react/20/solid'
 import { Dialog, Transition, Disclosure } from '@headlessui/react'
-
-import React from 'react'
-import Custombutton from './Custombutton'
-
-import Link from 'next/link'
-import axios from 'axios'
 import { getCookie } from 'cookies-next'
 import { ToastError, ToastSuccess } from './ToastContainer'
 import { fetchMaxBid } from '@/utils'
-
+import { motion } from 'framer-motion'
 interface CarDetailsProps {
 	isOpen: boolean
 	closeModel: () => void
@@ -153,7 +150,10 @@ const CarDetails = ({ isOpen, closeModel, car }: CarDetailsProps) => {
 								leaveFrom='opacity-100 scale-100'
 								leaveTo='opacity-0 scale-95'
 							>
-								<Dialog.Panel className='relative w-full max-w-lg max-h-fit overflow-y-auto transform rounded-2xl bg-white p-6 text-left shadow-xl transition-all flex flex-col gap-5'>
+								<Dialog.Panel
+									className='relative w-full max-w-lg overflow-y-auto transform rounded-2xl bg-white p-6 text-left shadow-xl transition-all flex flex-col gap-5'
+									style={{ maxHeight: '790px' }}
+								>
 									<button
 										type='button'
 										className='absolute top-2 right-2 z-10 w-fit p-2 bg-primary-blue-100 rounded-full'
@@ -169,15 +169,24 @@ const CarDetails = ({ isOpen, closeModel, car }: CarDetailsProps) => {
 									</button>
 
 									<div className='flex-1 flex flex-col gap-3'>
-										<div className='relative w-full h-40 bg-pattern bg-cover bg-center rounded-lg'>
-											<Image
-												src={`http://localhost:5000/${images[mainImageIndex]}`}
-												alt='car model'
-												fill
-												priority
-												className='object-contain cursor-pointer'
-												onClick={() => handleImageClick(0)}
-											/>
+										<div className='relative w-full h-44 bg-pattern bg-cover bg-center rounded-lg'>
+											<motion.div
+												whileHover={{
+													scale: 1.1,
+													z: 1,
+													transition: { duration: 0.5 },
+												}}
+												className='w-full h-full'
+											>
+												<Image
+													src={`http://localhost:5000/${images[mainImageIndex]}`}
+													alt='car model'
+													fill
+													priority
+													className='object-contain cursor-pointer'
+													onClick={() => handleImageClick(0)}
+												/>
+											</motion.div>
 										</div>
 
 										<div className='flex gap-3'>
@@ -257,7 +266,7 @@ const CarDetails = ({ isOpen, closeModel, car }: CarDetailsProps) => {
 														/>
 													</Disclosure.Button>
 													<Disclosure.Panel className='px-4 pb-2 pt-4 text-black-100 font-bold text-lg'>
-														<form className='mt-1' onSubmit={handleSubmit}>
+														<form onSubmit={handleSubmit}>
 															<input
 																type='number'
 																value={

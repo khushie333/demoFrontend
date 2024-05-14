@@ -17,6 +17,7 @@
     "@mui/icons-material": "^5.15.15",
     "@mui/joy": "^5.0.0-beta.36",
     "@mui/material": "^5.15.17",
+    "@react-three/fiber": "^8.16.6",
     "@reduxjs/toolkit": "^2.2.3",
     "@splidejs/splide": "^4.1.4",
     "@stripe/react-stripe-js": "^2.7.1",
@@ -27,8 +28,10 @@
     "dotenv": "^16.4.5",
     "formik": "^2.4.5",
     "framer-motion": "^11.1.9",
+    "framer-motion-3d": "^11.1.9",
     "ldrs": "^1.0.1",
     "next": "^14.1.4",
+    "rc-slider": "^10.6.2",
     "react": "^18",
     "react-dom": "^18",
     "react-icons": "^5.1.0",
@@ -43,6 +46,7 @@
     "socket.io-client": "^4.7.5",
     "stripe": "^15.5.0",
     "swiper": "^11.1.1",
+    "three": "^0.164.1",
     "yup": "^1.4.0"
   },
   "devDependencies": {

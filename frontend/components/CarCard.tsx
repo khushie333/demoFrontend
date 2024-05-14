@@ -2,7 +2,7 @@
 import { CarProps } from '@/types'
 import Image from 'next/image'
 import Custombutton from './Custombutton'
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useMemo } from 'react'
 import CarDetails from './CarDetails'
 import axios from 'axios'
 import BookmarkBorderIcon from '@mui/icons-material/BookmarkBorder'
@@ -12,6 +12,7 @@ import { fetchMaxBid } from '@/utils'
 import { format } from 'date-fns'
 
 import { motion, AnimatePresence } from 'framer-motion'
+import { ToastError } from './ToastContainer'
 interface CarCardProps {
 	car: CarProps
 }
@@ -19,8 +20,6 @@ interface CarCardProps {
 const CarCard = ({ car }: CarCardProps) => {
 	const BASE_URL = process.env.NEXT_PUBLIC_BACKEND_URL
 	const [maxBid, setMaxBid] = useState(null)
-	const [cars, setCars] = useState<CarProps[]>([])
-	const [bookmarkedcar, setbookmarkedcar] = useState([])
 	const [isBookmarked, setIsBookmarked] = useState(false)
 
 	const token = getCookie('token')
@@ -35,6 +34,7 @@ const CarCard = ({ car }: CarCardProps) => {
 			try {
 				// Fetch max bid
 				const maxBidData = await fetchMaxBid({ car })
+
 				if (maxBidData && maxBidData.data.maxBidAmount !== maxBid) {
 					setMaxBid(maxBidData.data.maxBidAmount)
 				}
@@ -76,18 +76,22 @@ const CarCard = ({ car }: CarCardProps) => {
 	}
 	const handleBookmark = async () => {
 		try {
-			// Send a request to toggle the bookmark status
 			if (isBookmarked) {
 				await axios.delete(`${BASE_URL}/bookmarks/${car._id}`, config)
 				setIsBookmarked(false)
 			} else {
-				await axios.post(`${BASE_URL}/bookmarks/${car._id}`, {}, config)
-				setIsBookmarked(true)
+				if (token) {
+					await axios.post(`${BASE_URL}/bookmarks/${car._id}`, {}, config)
+					setIsBookmarked(true)
+				} else {
+					ToastError('You must be signed in to bookmark a car.')
+				}
 			}
-		} catch (error) {
+		} catch (error: any) {
 			console.error('Error toggling bookmark:', error)
 		}
 	}
+
 	const [isOpen, setIsOpen] = useState(false)
 	const {
 		user,

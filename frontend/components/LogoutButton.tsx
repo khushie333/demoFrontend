@@ -5,6 +5,8 @@ import { useDispatch } from 'react-redux'
 import { logout } from '@/app/lib/UserSlice/UserSlice'
 import { ThunkDispatch } from '@reduxjs/toolkit'
 import { useRouter } from 'next/navigation'
+import LogoutIcon from '@mui/icons-material/Logout'
+import { Tooltip } from '@mui/material'
 
 const LogoutButton = () => {
 	const router = useRouter()
@@ -16,12 +18,14 @@ const LogoutButton = () => {
 		router.replace('/')
 	}
 	return (
-		<Custombutton
-			title='Logout'
-			btnType='button'
-			handleClick={handleLogout}
-			containerStyles='text-primary-blue rounded-full bg-gray-200 min-w-[130px]'
-		/>
+		<button
+			onClick={handleLogout}
+			className='ml-8 text-white hover:text-orange-600 '
+		>
+			<Tooltip title='Logout'>
+				<LogoutIcon />
+			</Tooltip>
+		</button>
 	)
 }
 
