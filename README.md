@@ -4,8 +4,9 @@ This project is having node.js [https://nodejs.org/] with typescript as backend 
 ## Getting Started
 
 First, run the development server:
-cd/backend
+
 ```bash
+cd/backend
 npm start
 
 Run the Client:
