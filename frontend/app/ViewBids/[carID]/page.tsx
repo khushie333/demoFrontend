@@ -255,18 +255,18 @@ export default function CollapsibleTable() {
 					// Check if carID is available before fetching data
 					const response = await axios.get(`${BASE_URL}/car/${carID}`)
 					const data = response.data
-					console.log('data of car:', data)
+					// console.log('data of car:', data)
 					setCarDetails(data)
 					const userid = data.user
-					console.log('userid:', userid)
+					// console.log('userid:', userid)
 					setOwnerID(userid)
-					console.log('ownerid:', ownerID)
+					// console.log('ownerid:', ownerID)
 				}
 			} catch (error) {
 				console.error('Error fetching car details:', error)
 			}
 		}
-		console.log('ownerid:', ownerID)
+		// console.log('ownerid:', ownerID)
 
 		const fetchownerdetails = async () => {
 			try {

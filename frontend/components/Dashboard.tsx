@@ -34,21 +34,20 @@ const Dashboard = () => {
 						},
 					}}
 				>
-					<h2 className='hero__title'>
+					<h6 className='hero__title'>
 						Find ,Bid and Buy a car quickly and easily!
-					</h2>
+					</h6>
 				</motion.div>
 				<p className='hero__subtitle'>
 					Streamline your car buying experience with our effortless auction
 					process.
 				</p>
-				<Link href='#'>
-					<Custombutton
-						title='Explore cars'
-						containerStyles='bg-primary-blue text-white text-lg font-medium rounded-full mt-10 hover:bg-indigo-600'
-						handleClick={handleExploreCarsClick}
-					/>
-				</Link>
+
+				<Custombutton
+					title='Explore cars'
+					containerStyles='bg-primary-blue text-white text-lg font-medium rounded-full mt-10 hover:bg-indigo-600'
+					handleClick={handleExploreCarsClick}
+				/>
 			</div>
 			<div className='hero__image-container'>
 				<MotionDiv

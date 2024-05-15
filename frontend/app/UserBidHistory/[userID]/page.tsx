@@ -14,7 +14,6 @@ import { format } from 'date-fns'
 import { ToastSuccess } from '@/components/ToastContainer'
 
 const Page = () => {
-	// State to store bid history data
 	const BASE_URL = process.env.NEXT_PUBLIC_BACKEND_URL
 	const [bidHistory, setBidHistory] = useState<any>([])
 	const [userID, setuserID] = useState<any>()
@@ -29,13 +28,13 @@ const Page = () => {
 				fetchBidHistory()
 			}
 		}
-	}, [userID])
+	}, [userID, bidHistory])
 	const config = {
 		headers: {
 			Authorization: `Bearer ${token}`,
 		},
 	}
-	// Function to fetch bid history data from the API
+
 	const fetchBidHistory = async () => {
 		try {
 			if (userID) {
@@ -43,15 +42,11 @@ const Page = () => {
 					`${BASE_URL}/bids/userBidHistory/${userID}`,
 					config
 				)
-				// console.log('resp:', response)
 
 				const bidData = response?.data?.bids
 
-				// console.log('bidData====', bidData)
 				const bidsWithCarData = await Promise.all(
 					bidData.map(async (bid: any) => {
-						// Make API request to fetch car details using car ID
-
 						const carResponse = await axios.get(
 							`${BASE_URL}/carforbid/${bid.car}`
 						)
@@ -71,12 +66,8 @@ const Page = () => {
 					})
 				)
 
-				// console.log('bidata', bidData)
-
 				setBidHistory(bidsWithCarData)
 			}
-			//console.log(bidsWithCarData)
-			//setBidHistory(response.data.bids)
 		} catch (error) {
 			console.error('Error fetching bid history:', error)
 		}
@@ -95,7 +86,7 @@ const Page = () => {
 					Authorization: `Bearer ${token}`,
 				},
 			})
-			if (response) {
+			if (response.status === 200) {
 				// If successful, update the local state to reflect the deletion
 				setBidHistory(bidHistory.filter((bid: any) => bid._id !== bidId))
 				ToastSuccess(response.data.message)

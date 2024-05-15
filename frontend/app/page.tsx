@@ -34,7 +34,7 @@ export default function Home({ searchParams }: HomeProps) {
 					maxPrice: searchParams.maxPrice,
 				},
 				{
-					limit: '',
+					limit: '30',
 				}
 			)
 			setTimeout(() => {
