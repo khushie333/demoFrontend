@@ -147,7 +147,7 @@ const Navbar = () => {
 							</Link>
 							<Badge
 								badgeContent={
-									notifications.length !== 0 ? notifications.length - 1 : '0'
+									notifications.length !== 0 ? notifications.length : '0'
 								}
 								color='error'
 								onClick={handleClick}

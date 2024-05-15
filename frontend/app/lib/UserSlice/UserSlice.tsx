@@ -57,7 +57,7 @@ export const addCar = createAsyncThunk(
 	async (payload: { data: object; token: string }) => {
 		try {
 			const { data, token } = payload
-			console.log('data======', data)
+			// console.log('data======', data)
 			const createCar = await axios.post(`${BASE_URL}/car`, data, {
 				headers: {
 					Authorization: `Bearer ${token}`,
