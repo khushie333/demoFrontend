@@ -17,7 +17,7 @@ const stripeService_1 = __importDefault(require("./stripeService"));
 function createpayment(req, res) {
     return __awaiter(this, void 0, void 0, function* () {
         try {
-            const { amount, customerId } = req.body; // Assume amount and customerId are sent in the body of the request
+            const { amount, customerId } = req.body;
             if (!amount || !customerId) {
                 return res
                     .status(400)

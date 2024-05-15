@@ -135,7 +135,11 @@ class CarController {
 	//get All the cars
 	static getAllCars = async (req: Request, res: Response): Promise<void> => {
 		try {
-			const result = await carModel.find({ isApproved: true })
+			const currentDate = new Date()
+			const result = await carModel.find({
+				isApproved: true,
+				bidEndDate: { $gt: currentDate },
+			})
 			res.send(result)
 		} catch (error) {
 			console.error(error)

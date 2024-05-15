@@ -109,7 +109,11 @@ CarController.createCar = (req, res) => __awaiter(void 0, void 0, void 0, functi
 //get All the cars
 CarController.getAllCars = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const result = yield car_model_1.carModel.find({ isApproved: true });
+        const currentDate = new Date();
+        const result = yield car_model_1.carModel.find({
+            isApproved: true,
+            bidEndDate: { $gt: currentDate },
+        });
         res.send(result);
     }
     catch (error) {
