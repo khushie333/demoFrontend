@@ -1,8 +1,8 @@
 {
+  "/not-found": "app/not-found.js",
   "/page": "app/page.js",
-  "/UserHome/page": "app/UserHome/page.js",
-  "/ViewCars/page": "app/ViewCars/page.js",
-  "/UserBidHistory/[userID]/page": "app/UserBidHistory/[userID]/page.js",
-  "/SignIn/page": "app/SignIn/page.js",
-  "/favicon.ico/route": "app/favicon.ico/route.js"
+  "/favicon.ico/route": "app/favicon.ico/route.js",
+  "/FormCreateCar/page": "app/FormCreateCar/page.js",
+  "/Admin/page": "app/Admin/page.js",
+  "/Admin/ViewNewCars/page": "app/Admin/ViewNewCars/page.js"
 }
