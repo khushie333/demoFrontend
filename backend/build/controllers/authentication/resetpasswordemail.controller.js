@@ -37,7 +37,7 @@ ResetPasswordEmail.sendUserPassResetEmail = (req, res) => __awaiter(void 0, void
                     from: process.env.EMAIL_FROM,
                     to: user.email,
                     subject: 'Password reset link',
-                    html: `<h2><a>${link}</a></h2>`,
+                    html: `<h2><a href="${link}">Click here to change your password</a></h2>`,
                 });
                 res.status(201).send({
                     status: 'success',

@@ -24,17 +24,6 @@ import Stripe from 'stripe'
 import stripeRoutes from './routes/stripe.routes'
 //import bidModel from './models/bid/bid.model'
 
-interface Bid extends Document {
-	amount: number
-	car: {
-		_id: mongoose.Types.ObjectId
-		brand: string
-		model: string
-		user: mongoose.Types.ObjectId
-	}
-	createdAt: Date
-}
-
 const appConfig = new AppConfig()
 appConfig.initialize()
 
@@ -63,7 +52,7 @@ export const io = new SocketIOServer(httpServer, {
 
 io.on('connection', (socket) => {
 	socket.on('register', (userId) => {
-		socket.join(userId.toString()) // Users join a room based on their user ID
+		socket.join(userId.toString())
 	})
 	console.log('User connected')
 })

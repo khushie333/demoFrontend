@@ -34,6 +34,7 @@ const noti_model_1 = __importDefault(require("./models/notification/noti.model")
 const admin_routes_1 = __importDefault(require("./routes/admin.routes"));
 const stripe_1 = __importDefault(require("stripe"));
 const stripe_routes_1 = __importDefault(require("./routes/stripe.routes"));
+//import bidModel from './models/bid/bid.model'
 const appConfig = new connectDB_1.AppConfig();
 appConfig.initialize();
 const app = (0, express_1.default)();
@@ -58,7 +59,7 @@ exports.io = new socket_io_1.Server(httpServer, {
 });
 exports.io.on('connection', (socket) => {
     socket.on('register', (userId) => {
-        socket.join(userId.toString()); // Users join a room based on their user ID
+        socket.join(userId.toString());
     });
     console.log('User connected');
 });
