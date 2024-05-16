@@ -12,32 +12,17 @@
       "static/css/app/layout.css",
       "static/chunks/app/layout.js"
     ],
-    "/UserHome/page": [
-      "static/chunks/webpack.js",
-      "static/chunks/main-app.js",
-      "static/css/app/UserHome/page.css",
-      "static/chunks/app/UserHome/page.js"
-    ],
     "/FormCreateCar/page": [
       "static/chunks/webpack.js",
       "static/chunks/main-app.js",
       "static/css/app/FormCreateCar/page.css",
       "static/chunks/app/FormCreateCar/page.js"
     ],
-    "/Admin/page": [
+    "/ViewBids/[carID]/page": [
       "static/chunks/webpack.js",
       "static/chunks/main-app.js",
-      "static/chunks/app/Admin/page.js"
-    ],
-    "/Admin/ViewNewCars/page": [
-      "static/chunks/webpack.js",
-      "static/chunks/main-app.js",
-      "static/chunks/app/Admin/ViewNewCars/page.js"
-    ],
-    "/ViewCars/page": [
-      "static/chunks/webpack.js",
-      "static/chunks/main-app.js",
-      "static/chunks/app/ViewCars/page.js"
+      "static/css/app/ViewBids/[carID]/page.css",
+      "static/chunks/app/ViewBids/[carID]/page.js"
     ],
     "/SignIn/page": [
       "static/chunks/webpack.js",
@@ -45,10 +30,32 @@
       "static/css/app/SignIn/page.css",
       "static/chunks/app/SignIn/page.js"
     ],
-    "/ViewBids/[carID]/page": [
+    "/UserHome/page": [
       "static/chunks/webpack.js",
       "static/chunks/main-app.js",
-      "static/chunks/app/ViewBids/[carID]/page.js"
+      "static/css/app/UserHome/page.css",
+      "static/chunks/app/UserHome/page.js"
+    ],
+    "/UserBidHistory/[userID]/page": [
+      "static/chunks/webpack.js",
+      "static/chunks/main-app.js",
+      "static/css/app/UserBidHistory/[userID]/page.css",
+      "static/chunks/app/UserBidHistory/[userID]/page.js"
+    ],
+    "/ViewCars/page": [
+      "static/chunks/webpack.js",
+      "static/chunks/main-app.js",
+      "static/chunks/app/ViewCars/page.js"
+    ],
+    "/Admin/ViewNewCars/page": [
+      "static/chunks/webpack.js",
+      "static/chunks/main-app.js",
+      "static/chunks/app/Admin/ViewNewCars/page.js"
+    ],
+    "/not-found": [
+      "static/chunks/webpack.js",
+      "static/chunks/main-app.js",
+      "static/chunks/app/not-found.js"
     ]
   }
 }

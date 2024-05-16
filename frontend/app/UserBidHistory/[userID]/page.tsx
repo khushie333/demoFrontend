@@ -12,12 +12,14 @@ import axios from 'axios'
 import { getCookie } from 'cookies-next'
 import { format } from 'date-fns'
 import { ToastSuccess } from '@/components/ToastContainer'
+import { HandleNotLoggedIn } from '@/components'
 
 const Page = () => {
 	const BASE_URL = process.env.NEXT_PUBLIC_BACKEND_URL
 	const [bidHistory, setBidHistory] = useState<any>([])
 	const [userID, setuserID] = useState<any>()
 	const token = getCookie('token')
+	const role = getCookie('role')
 
 	useEffect(() => {
 		const parts = window.location.href.split('/')
@@ -102,76 +104,91 @@ const Page = () => {
 
 	return (
 		<>
-			<div className=' flex flex-col justify-center min-h-screen overflow-hidden'>
-				<br />
-				<br />
+			{role === 'user' && (
+				<div className=' flex flex-col justify-center min-h-screen overflow-hidden'>
+					<br />
+					<br />
 
-				<div className='w-full p-6 m-auto bg-white rounded-md shadow-xl mt-36  shadow-blue-300 ring-2 ring-blue-700 lg:max-w-fit'>
-					<h1 className='text-2xl font-bold text-center text-blue-700 uppercase '>
-						view bid history
-					</h1>
-					<div style={{ fontSize: '2rem' }}>
-						<TableContainer component={Paper}>
-							<Table aria-label='collapsible table'>
-								<TableHead>
-									<TableRow>
-										<TableCell align='right' style={{ fontSize: '1rem' }}>
-											Brand
-										</TableCell>
-										<TableCell align='right' style={{ fontSize: '1rem' }}>
-											Model
-										</TableCell>
+					<div className='w-full p-6 m-auto bg-white rounded-md shadow-xl mt-36  shadow-blue-300 ring-2 ring-blue-700 lg:max-w-fit'>
+						<h1 className='text-2xl font-bold text-center text-blue-700 uppercase '>
+							view bid history
+						</h1>
+						<div style={{ fontSize: '2rem' }}>
+							<TableContainer component={Paper}>
+								<Table aria-label='collapsible table'>
+									<TableHead>
+										<TableRow>
+											<TableCell align='right' style={{ fontSize: '1rem' }}>
+												Brand
+											</TableCell>
+											<TableCell align='right' style={{ fontSize: '1rem' }}>
+												Model
+											</TableCell>
 
-										<TableCell align='right' style={{ fontSize: '1rem' }}>
-											bidAmount&nbsp;
-										</TableCell>
-										<TableCell align='right' style={{ fontSize: '1rem' }}>
-											Created date&nbsp;
-										</TableCell>
-										<TableCell align='right' style={{ fontSize: '1rem' }}>
-											DELETE&nbsp;
-										</TableCell>
-									</TableRow>
-								</TableHead>
+											<TableCell align='right' style={{ fontSize: '1rem' }}>
+												bidAmount&nbsp;
+											</TableCell>
+											<TableCell align='right' style={{ fontSize: '1rem' }}>
+												Created date&nbsp;
+											</TableCell>
+											<TableCell align='right' style={{ fontSize: '1rem' }}>
+												DELETE&nbsp;
+											</TableCell>
+										</TableRow>
+									</TableHead>
 
-								<TableBody>
-									{bidHistory.length > 0 &&
-										bidHistory
-											?.filter((bid: any) => bid !== undefined)
-											?.map((bid: any) => (
-												<TableRow key={bid?._id}>
-													<TableCell align='right' style={{ fontSize: '1rem' }}>
-														{bid?.carData?.brand}
-													</TableCell>
-
-													<TableCell align='right' style={{ fontSize: '1rem' }}>
-														{bid?.carData?.Model}
-													</TableCell>
-													<TableCell align='right' style={{ fontSize: '1rem' }}>
-														{bid?.amount}
-													</TableCell>
-
-													<TableCell align='right' style={{ fontSize: '1rem' }}>
-														{format(new Date(bid?.createdAt), 'PPP')}
-													</TableCell>
-													<TableCell align='right'>
-														<button
-															onClick={() => handleDelete(bid?._id)}
-															className='w-full px-4 py-2 tracking-wide text-red-500 transition-colors duration-200 transhtmlForm rounded-md hover:bg-zinc-400 focus:outline-none'
+									<TableBody>
+										{bidHistory.length > 0 &&
+											bidHistory
+												?.filter((bid: any) => bid !== undefined)
+												?.map((bid: any) => (
+													<TableRow key={bid?._id}>
+														<TableCell
+															align='right'
+															style={{ fontSize: '1rem' }}
 														>
-															<DeleteForeverIcon />
-														</button>
-													</TableCell>
-												</TableRow>
-											))}
-								</TableBody>
-							</Table>
-						</TableContainer>
+															{bid?.carData?.brand}
+														</TableCell>
+
+														<TableCell
+															align='right'
+															style={{ fontSize: '1rem' }}
+														>
+															{bid?.carData?.Model}
+														</TableCell>
+														<TableCell
+															align='right'
+															style={{ fontSize: '1rem' }}
+														>
+															{bid?.amount}
+														</TableCell>
+
+														<TableCell
+															align='right'
+															style={{ fontSize: '1rem' }}
+														>
+															{format(new Date(bid?.createdAt), 'PPP')}
+														</TableCell>
+														<TableCell align='right'>
+															<button
+																onClick={() => handleDelete(bid?._id)}
+																className='w-full px-4 py-2 tracking-wide text-red-500 transition-colors duration-200 transhtmlForm rounded-md hover:bg-zinc-400 focus:outline-none'
+															>
+																<DeleteForeverIcon />
+															</button>
+														</TableCell>
+													</TableRow>
+												))}
+									</TableBody>
+								</Table>
+							</TableContainer>
+						</div>
 					</div>
+					<br />
+					<br />
 				</div>
-				<br />
-				<br />
-			</div>
+			)}
+			{role === '' && <HandleNotLoggedIn />}
 		</>
 	)
 }

@@ -80,15 +80,13 @@ export default function Home({ searchParams }: HomeProps) {
 
 	const showMoreCars = async () => {
 		const remainingCars = allCars.slice(displayedCars.length)
-		console.log(displayedCars)
 
 		console.log(remainingCars)
 		const nextCars = remainingCars.slice(0, 4)
 		setDisplayedCars((prevCars) => [...prevCars, ...nextCars])
 	}
 	const filteredCars = displayedCars.filter((car) => !car.deleted)
-	console.log(displayedCars.length)
-	console.log(allCars.length)
+
 	return (
 		<main className='overflow-hidden'>
 			{isClient && isLoading ? (

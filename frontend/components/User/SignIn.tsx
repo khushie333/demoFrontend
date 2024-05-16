@@ -7,7 +7,7 @@ import { useDispatch } from 'react-redux'
 import { useFormik } from 'formik'
 import { ToastContainer } from 'react-toastify'
 import { useRouter } from 'next/navigation'
-import { getCookie } from 'cookies-next'
+import { getCookie, setCookie } from 'cookies-next'
 import { ThunkDispatch } from '@reduxjs/toolkit'
 import { motion } from 'framer-motion'
 
@@ -49,9 +49,11 @@ const SignIn = () => {
 					if (userData?.isAdmin) {
 						// Redirect to admin dashboard
 						router.replace('/Admin')
+						setCookie('role', 'admin')
 					} else {
 						// Redirect to regular user dashboard
 						router.replace('/')
+						setCookie('role', 'user')
 					}
 				} else {
 					console.error('Failed to fetch user data')
@@ -83,6 +85,7 @@ const SignIn = () => {
 							type='email'
 							name='email'
 							className='block w-full px-4 py-2 mt-2 text-indigo-700 bg-white border rounded-md focus:border-indigo-400 focus:ring-indigo-300 focus:outline-none focus:ring focus:ring-opacity-40'
+							required
 						/>
 					</div>
 					<div className='mb-4'>
@@ -96,6 +99,7 @@ const SignIn = () => {
 							type='password'
 							name='password'
 							className='block w-full px-4 py-2 mt-2 text-indigo-700 bg-white border rounded-md focus:border-indigo-400 focus:ring-indigo-300 focus:outline-none focus:ring focus:ring-opacity-40'
+							required
 						/>
 					</div>
 					<div className='mt-6'>

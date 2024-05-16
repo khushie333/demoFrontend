@@ -161,6 +161,7 @@ const UserSlice: any = createSlice({
 			deleteCookie('token')
 			deleteCookie('status')
 			deleteCookie('message')
+			deleteCookie('role')
 			state.isLoggedIn = false
 		},
 	},

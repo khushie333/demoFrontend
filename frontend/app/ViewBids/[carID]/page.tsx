@@ -22,6 +22,8 @@ import Button from '@mui/material/Button'
 import axios from 'axios'
 import { format } from 'date-fns'
 import { toast } from 'react-toastify'
+import { getCookie } from 'cookies-next'
+import { HandleNotLoggedIn } from '@/components'
 interface FinalizedBids {
 	[carID: string]: boolean
 }
@@ -35,7 +37,7 @@ function Row({
 	carID,
 }: any) {
 	const BASE_URL = process.env.NEXT_PUBLIC_BACKEND_URL
-	console.log(ownerEmail, ownerPhone)
+
 	const [open, setOpen] = React.useState(false)
 	const [openDialog, setOpenDialog] = React.useState(false)
 	const [finalizedBids, setFinalizedBids] = React.useState<FinalizedBids>({})
@@ -238,6 +240,7 @@ export default function CollapsibleTable() {
 	const [emails, setEmails] = useState<string[]>([])
 	const [ownerEmails, setOwnerEmails] = useState()
 	const [ownerPhone, setOwnerPhone] = useState()
+	const role = getCookie('role')
 
 	const [isUserLoading, setIsUserLoading] = useState(false)
 	const userIds = ['']
@@ -274,7 +277,7 @@ export default function CollapsibleTable() {
 					// Check if carID is available before fetching data
 					const response = await axios.get(`${BASE_URL}/user/${ownerID}`)
 					const data = response.data
-					console.log('data of user:', data)
+
 					if (data) {
 						setOwnerEmails(data.email)
 						setOwnerPhone(data.phone)
@@ -338,55 +341,64 @@ export default function CollapsibleTable() {
 	}, [carID, ownerID])
 
 	return (
-		<div className='flex flex-col justify-center min-h-screen overflow-hidden'>
-			{isLoading ? (
-				<p>Loading car details and bids...</p>
-			) : (
-				<>
-					<br />
-					<br />
+		<>
+			{role === 'user' && (
+				<div className='flex flex-col justify-center min-h-screen overflow-hidden'>
+					{isLoading ? (
+						<p>Loading car details and bids...</p>
+					) : (
+						<>
+							<br />
+							<br />
 
-					<div className='w-full p-6 m-auto bg-white rounded-md shadow-xl mt-36 shadow-blue-300 ring-2 ring-blue-700 lg:max-w-screen-lg'>
-						<h1 className='text-2xl font-bold text-center text-blue-700 uppercase'>
-							View Bids
-						</h1>
-						<div style={{ fontSize: '2rem' }}>
-							<TableContainer component={Paper}>
-								<Table aria-label='collapsible table'>
-									<TableHead>
-										<TableRow>
-											<TableCell style={{ fontSize: '1rem' }}>Bids</TableCell>
-											<TableCell style={{ fontSize: '1rem' }}>brand</TableCell>
-											<TableCell align='right' style={{ fontSize: '1rem' }}>
-												Model
-											</TableCell>
-											<TableCell align='right' style={{ fontSize: '1rem' }}>
-												Amount
-											</TableCell>
-											<TableCell align='right' style={{ fontSize: '1rem' }}>
-												Discription
-											</TableCell>
-										</TableRow>
-									</TableHead>
-									<TableBody>
-										<Row
-											row={carDetails}
-											row2={bids}
-											username={usernames}
-											email={emails}
-											ownerEmail={ownerEmails}
-											ownerPhone={ownerPhone}
-											carID={carID}
-										/>
-									</TableBody>
-								</Table>
-							</TableContainer>
-						</div>
-					</div>
-					<br />
-					<br />
-				</>
+							<div className='w-full p-6 m-auto bg-white rounded-md shadow-xl mt-36 shadow-blue-300 ring-2 ring-blue-700 lg:max-w-screen-lg'>
+								<h1 className='text-2xl font-bold text-center text-blue-700 uppercase'>
+									View Bids
+								</h1>
+								<div style={{ fontSize: '2rem' }}>
+									<TableContainer component={Paper}>
+										<Table aria-label='collapsible table'>
+											<TableHead>
+												<TableRow>
+													<TableCell style={{ fontSize: '1rem' }}>
+														Bids
+													</TableCell>
+													<TableCell style={{ fontSize: '1rem' }}>
+														brand
+													</TableCell>
+													<TableCell align='right' style={{ fontSize: '1rem' }}>
+														Model
+													</TableCell>
+													<TableCell align='right' style={{ fontSize: '1rem' }}>
+														Amount
+													</TableCell>
+													<TableCell align='right' style={{ fontSize: '1rem' }}>
+														Discription
+													</TableCell>
+												</TableRow>
+											</TableHead>
+											<TableBody>
+												<Row
+													row={carDetails}
+													row2={bids}
+													username={usernames}
+													email={emails}
+													ownerEmail={ownerEmails}
+													ownerPhone={ownerPhone}
+													carID={carID}
+												/>
+											</TableBody>
+										</Table>
+									</TableContainer>
+								</div>
+							</div>
+							<br />
+							<br />
+						</>
+					)}
+				</div>
 			)}
-		</div>
+			{role === '' && <HandleNotLoggedIn />}
+		</>
 	)
 }
