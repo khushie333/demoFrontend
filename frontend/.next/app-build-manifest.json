@@ -1,28 +1,15 @@
 {
   "pages": {
-    "/page": [
-      "static/chunks/webpack.js",
-      "static/chunks/main-app.js",
-      "static/css/app/page.css",
-      "static/chunks/app/page.js"
-    ],
     "/layout": [
       "static/chunks/webpack.js",
       "static/chunks/main-app.js",
       "static/css/app/layout.css",
       "static/chunks/app/layout.js"
     ],
-    "/FormCreateCar/page": [
+    "/ViewCars/page": [
       "static/chunks/webpack.js",
       "static/chunks/main-app.js",
-      "static/css/app/FormCreateCar/page.css",
-      "static/chunks/app/FormCreateCar/page.js"
-    ],
-    "/ViewBids/[carID]/page": [
-      "static/chunks/webpack.js",
-      "static/chunks/main-app.js",
-      "static/css/app/ViewBids/[carID]/page.css",
-      "static/chunks/app/ViewBids/[carID]/page.js"
+      "static/chunks/app/ViewCars/page.js"
     ],
     "/SignIn/page": [
       "static/chunks/webpack.js",
@@ -30,27 +17,17 @@
       "static/css/app/SignIn/page.css",
       "static/chunks/app/SignIn/page.js"
     ],
+    "/page": [
+      "static/chunks/webpack.js",
+      "static/chunks/main-app.js",
+      "static/css/app/page.css",
+      "static/chunks/app/page.js"
+    ],
     "/UserHome/page": [
       "static/chunks/webpack.js",
       "static/chunks/main-app.js",
       "static/css/app/UserHome/page.css",
       "static/chunks/app/UserHome/page.js"
-    ],
-    "/UserBidHistory/[userID]/page": [
-      "static/chunks/webpack.js",
-      "static/chunks/main-app.js",
-      "static/css/app/UserBidHistory/[userID]/page.css",
-      "static/chunks/app/UserBidHistory/[userID]/page.js"
-    ],
-    "/ViewCars/page": [
-      "static/chunks/webpack.js",
-      "static/chunks/main-app.js",
-      "static/chunks/app/ViewCars/page.js"
-    ],
-    "/Admin/ViewNewCars/page": [
-      "static/chunks/webpack.js",
-      "static/chunks/main-app.js",
-      "static/chunks/app/Admin/ViewNewCars/page.js"
     ],
     "/UpdateCarData/[carID]/page": [
       "static/chunks/webpack.js",
@@ -58,43 +35,21 @@
       "static/css/app/UpdateCarData/[carID]/page.css",
       "static/chunks/app/UpdateCarData/[carID]/page.js"
     ],
-    "/Admin/page": [
+    "/FormCreateCar/page": [
       "static/chunks/webpack.js",
       "static/chunks/main-app.js",
-      "static/chunks/app/Admin/page.js"
+      "static/css/app/FormCreateCar/page.css",
+      "static/chunks/app/FormCreateCar/page.js"
     ],
-    "/Admin/ViewUsers/page": [
+    "/Admin/ViewNewCars/page": [
       "static/chunks/webpack.js",
       "static/chunks/main-app.js",
-      "static/chunks/app/Admin/ViewUsers/page.js"
+      "static/chunks/app/Admin/ViewNewCars/page.js"
     ],
-    "/Admin/ViewBlockedUsers/page": [
+    "/not-found": [
       "static/chunks/webpack.js",
       "static/chunks/main-app.js",
-      "static/chunks/app/Admin/ViewBlockedUsers/page.js"
-    ],
-    "/reset/[id]/[token]/page": [
-      "static/chunks/webpack.js",
-      "static/chunks/main-app.js",
-      "static/chunks/app/reset/[id]/[token]/page.js"
-    ],
-    "/Signup/page": [
-      "static/chunks/webpack.js",
-      "static/chunks/main-app.js",
-      "static/css/app/Signup/page.css",
-      "static/chunks/app/Signup/page.js"
-    ],
-    "/ResetPassword/page": [
-      "static/chunks/webpack.js",
-      "static/chunks/main-app.js",
-      "static/css/app/ResetPassword/page.css",
-      "static/chunks/app/ResetPassword/page.js"
-    ],
-    "/CheckoutPage/[userId]/[token]/page": [
-      "static/chunks/webpack.js",
-      "static/chunks/main-app.js",
-      "static/css/app/CheckoutPage/[userId]/[token]/page.css",
-      "static/chunks/app/CheckoutPage/[userId]/[token]/page.js"
+      "static/chunks/app/not-found.js"
     ]
   }
 }

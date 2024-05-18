@@ -39,7 +39,7 @@ export default function Home({ searchParams }: HomeProps) {
 			)
 			setTimeout(() => {
 				setAllCars(allCars)
-				setDisplayedCars(allCars.slice(0, 6))
+				setDisplayedCars(allCars.slice(0, 4))
 				setIsDataEmpty(!Array.isArray(allCars) || allCars.length < 1)
 				setIsLoading(false)
 			}, 1000)
@@ -71,7 +71,7 @@ export default function Home({ searchParams }: HomeProps) {
 				(car) => car.baseAmount <= parseFloat(maxPriceFromFilter)
 			)
 		}
-		setDisplayedCars(filteredCars.slice(0, 6))
+		setDisplayedCars(filteredCars.slice(0, 4))
 	}
 	const handlePriceChange = (minPrice: string, maxPrice: string) => {
 		setMinPriceFromFilter(minPrice)
@@ -86,7 +86,8 @@ export default function Home({ searchParams }: HomeProps) {
 		setDisplayedCars((prevCars) => [...prevCars, ...nextCars])
 	}
 	const filteredCars = displayedCars.filter((car) => !car.deleted)
-
+	console.log('allcars:', allCars)
+	console.log('displayed:', displayedCars)
 	return (
 		<main className='overflow-hidden'>
 			{isClient && isLoading ? (
