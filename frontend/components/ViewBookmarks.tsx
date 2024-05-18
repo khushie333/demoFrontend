@@ -12,7 +12,7 @@ import Avatar from '@mui/material/Avatar'
 import axios from 'axios'
 import { getCookie } from 'cookies-next'
 import { CarProps } from '@/types'
-import CarDetails from '../CarDetails'
+import CarDetails from './CarDetails'
 
 function generate(element: React.ReactElement) {
 	return [0, 1, 2].map((value) =>
@@ -30,6 +30,8 @@ const ViewBookmarks = () => {
 	const [selectedCar, setSelectedCar] = useState<CarProps | null>(null)
 	const [dense, setDense] = React.useState(false)
 	const [isOpen, setIsOpen] = useState(false)
+	const BASE_URL = process.env.NEXT_PUBLIC_BACKEND_URL
+
 	const token = getCookie('token')
 	useEffect(() => {
 		fetchBookmarkedCars()
@@ -41,15 +43,10 @@ const ViewBookmarks = () => {
 	}
 	const fetchBookmarkedCars = async () => {
 		try {
-			const allCarsResponse = await axios.get<CarProps[]>(
-				`http://localhost:5000/api/car`
-			)
+			const allCarsResponse = await axios.get<CarProps[]>(`${BASE_URL}/car`)
 			const allCars: CarProps[] = allCarsResponse.data
 
-			const response = await axios.get(
-				`http://localhost:5000/api/bookmarks/user`,
-				config
-			)
+			const response = await axios.get(`${BASE_URL}/bookmarks/user`, config)
 			const bookmarks = response.data
 
 			const bookmarkArray = bookmarks.bookmarks
@@ -69,10 +66,7 @@ const ViewBookmarks = () => {
 	}
 	const handleDeleteBookmark = async (bookmarkId: string) => {
 		try {
-			await axios.delete(
-				`http://localhost:5000/api/bookmarks/${bookmarkId}`,
-				config
-			)
+			await axios.delete(`${BASE_URL}/bookmarks/${bookmarkId}`, config)
 			setBookmarkedCars((prevBookmarkedCars) =>
 				prevBookmarkedCars.filter((car) => car._id !== bookmarkId)
 			)

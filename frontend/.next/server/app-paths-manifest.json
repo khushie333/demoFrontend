@@ -1,9 +1,11 @@
 {
-  "/not-found": "app/not-found.js",
   "/page": "app/page.js",
+  "/Admin/page": "app/Admin/page.js",
+  "/reset/[id]/[token]/page": "app/reset/[id]/[token]/page.js",
   "/ViewBids/[carID]/page": "app/ViewBids/[carID]/page.js",
-  "/SignIn/page": "app/SignIn/page.js",
-  "/UserHome/page": "app/UserHome/page.js",
-  "/ViewCars/page": "app/ViewCars/page.js",
-  "/Admin/ViewNewCars/page": "app/Admin/ViewNewCars/page.js"
+  "/CheckoutPage/[userId]/[token]/page": "app/CheckoutPage/[userId]/[token]/page.js",
+  "/Admin/ViewUsers/page": "app/Admin/ViewUsers/page.js",
+  "/favicon.ico/route": "app/favicon.ico/route.js",
+  "/Admin/ViewNewCars/page": "app/Admin/ViewNewCars/page.js",
+  "/UserHome/page": "app/UserHome/page.js"
 }

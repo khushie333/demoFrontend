@@ -34,6 +34,7 @@ const UpdateCarData = () => {
 	const [cars, setCars] = useState<Car[]>([])
 	const token = getCookie('token')
 	const role = getCookie('role')
+	const BASE_URL = process.env.NEXT_PUBLIC_BACKEND_URL
 
 	useEffect(() => {
 		if (token) {
@@ -43,14 +44,11 @@ const UpdateCarData = () => {
 	useEffect(() => {
 		const fetchCars = async () => {
 			try {
-				const response = await axios.get(
-					'http://localhost:5000/api/user/viewCarsOfUser',
-					{
-						headers: {
-							Authorization: `Bearer ${token}`,
-						},
-					}
-				)
+				const response = await axios.get(`${BASE_URL}/user/viewCarsOfUser`, {
+					headers: {
+						Authorization: `Bearer ${token}`,
+					},
+				})
 				setCars(response.data)
 			} catch (error) {
 				console.error('Error fetching cars', error)

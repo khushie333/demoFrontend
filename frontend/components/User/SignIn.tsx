@@ -25,7 +25,7 @@ const SignIn = () => {
 		event
 	) => {
 		event.preventDefault()
-		const formData = new FormData(event.currentTarget) // Get form data from event
+		const formData = new FormData(event.currentTarget)
 		const val: formValue = {
 			email: formData.get('email') as string,
 			password: formData.get('password') as string,

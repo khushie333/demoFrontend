@@ -85,7 +85,7 @@ const page = () => {
 		<>
 			{isAdmin && (
 				<div className='relative flex flex-col justify-center min-h-screen overflow-hidden'>
-					<div className='w-full p-6 m-auto bg-white rounded-md shadow-xl shadow-blue-300 ring-2 ring-blue-700 lg:max-w-xl'>
+					<div className='w-full p-6 m-auto bg-white rounded-md  ring-2 ring-blue-700 lg:max-w-xl'>
 						<h3 className='text-3xl font-semibold text-center text-blue-700 underline uppercase'>
 							Welcome Admin!
 						</h3>
@@ -119,6 +119,9 @@ const page = () => {
 					</div>
 				</div>
 			)}
+			<div className='hero__image-container'>
+				<div className='hero__image-overlay' />
+			</div>
 		</>
 	)
 }
