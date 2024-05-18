@@ -139,6 +139,7 @@ class CarController {
 			const result = await carModel.find({
 				isApproved: true,
 				bidEndDate: { $gt: currentDate },
+				deleted: false,
 			})
 			res.send(result)
 		} catch (error) {

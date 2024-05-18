@@ -113,6 +113,7 @@ CarController.getAllCars = (req, res) => __awaiter(void 0, void 0, void 0, funct
         const result = yield car_model_1.carModel.find({
             isApproved: true,
             bidEndDate: { $gt: currentDate },
+            deleted: false,
         });
         res.send(result);
     }
