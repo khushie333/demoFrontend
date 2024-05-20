@@ -47,7 +47,6 @@ CarController.createCar = (req, res) => __awaiter(void 0, void 0, void 0, functi
             res.status(401).send({ error: 'Unauthorized' });
             return;
         }
-        //	console.log('JWT_SECRET_KEY:', process.env.JWT_SECRET_KEY)
         const decodedToken = jsonwebtoken_1.default.verify(token, process.env.JWT_SECRET_KEY);
         const userID = decodedToken.userID;
         const { brand, Model, desc, owner, baseAmount, bidStartDate, bidEndDate, } = req.body;

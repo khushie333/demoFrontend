@@ -57,7 +57,6 @@ class CarController {
 				res.status(401).send({ error: 'Unauthorized' })
 				return
 			}
-			//	console.log('JWT_SECRET_KEY:', process.env.JWT_SECRET_KEY)
 			const decodedToken = jwt.verify(
 				token,
 				process.env.JWT_SECRET_KEY
