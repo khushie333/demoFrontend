@@ -69,9 +69,6 @@ const page = () => {
 					<Table sx={{ minWidth: 650 }} size='small' aria-label='user table'>
 						<TableHead>
 							<TableRow>
-								<TableCell style={{ fontSize: '1rem', fontWeight: 600 }}>
-									User ID
-								</TableCell>
 								<TableCell
 									align='right'
 									style={{ fontSize: '1rem', fontWeight: 600 }}
@@ -113,9 +110,6 @@ const page = () => {
 						<TableBody>
 							{currentUsers.map((user) => (
 								<TableRow key={user?._id}>
-									<TableCell component='th' scope='row'>
-										{user?._id}
-									</TableCell>
 									<TableCell align='right' style={{ fontSize: '1rem' }}>
 										{user?.name}
 									</TableCell>
@@ -159,10 +153,14 @@ const page = () => {
 				>
 					{[...Array(Math.ceil(users.length / usersPerPage)).keys()].map(
 						(number) => (
-							<button key={number + 1} onClick={() => paginate(number + 1)}>
-								<p className='text-blue-700'>
-									<b> {number + 1}...</b>
-								</p>
+							<button
+								key={number + 1}
+								onClick={() => paginate(number + 1)}
+								className={`${
+									currentPage === number + 1 ? 'active' : ''
+								} text-blue-700`}
+							>
+								<b> {number + 1}-</b>
 							</button>
 						)
 					)}

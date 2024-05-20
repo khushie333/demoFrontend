@@ -1258,7 +1258,10 @@ video {
     padding-right: 4rem;
   }
 }
-
+.pagination button.active {
+	border: 2px solid blue;
+	background-color: rgb(245, 249, 250);
+}
 .padding-y{
   padding-top: 1rem;
   padding-bottom: 1rem;

@@ -46,7 +46,10 @@
 .padding-x {
 	@apply sm:px-16 px-6;
 }
-
+.pagination button.active {
+	border: 2px solid blue;
+	background-color: rgb(245, 249, 250);
+}
 .padding-y {
 	@apply py-4;
 }
