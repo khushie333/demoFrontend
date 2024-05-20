@@ -1,8 +1,8 @@
 {
   "/page": "app/page.js",
-  "/SignIn/page": "app/SignIn/page.js",
   "/Admin/page": "app/Admin/page.js",
   "/Admin/ViewNewCars/page": "app/Admin/ViewNewCars/page.js",
   "/Admin/ViewUsers/page": "app/Admin/ViewUsers/page.js",
-  "/favicon.ico/route": "app/favicon.ico/route.js"
+  "/ViewCars/page": "app/ViewCars/page.js",
+  "/SignIn/page": "app/SignIn/page.js"
 }

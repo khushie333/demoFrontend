@@ -32,6 +32,17 @@
       "static/chunks/webpack.js",
       "static/chunks/main-app.js",
       "static/chunks/app/Admin/ViewUsers/page.js"
+    ],
+    "/UserHome/page": [
+      "static/chunks/webpack.js",
+      "static/chunks/main-app.js",
+      "static/css/app/UserHome/page.css",
+      "static/chunks/app/UserHome/page.js"
+    ],
+    "/ViewCars/page": [
+      "static/chunks/webpack.js",
+      "static/chunks/main-app.js",
+      "static/chunks/app/ViewCars/page.js"
     ]
   }
 }

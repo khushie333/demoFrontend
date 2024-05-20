@@ -107,7 +107,12 @@ const page = () => {
 								<Link href={'/Admin/ViewNewCars'}>
 									<ListItemButton>
 										<ListItemIcon>
-											<Badge badgeContent={notificationLength} color='error'>
+											<Badge
+												badgeContent={
+													notificationLength !== 0 ? notificationLength : '0'
+												}
+												color='error'
+											>
 												<StarIcon />
 											</Badge>
 										</ListItemIcon>
