@@ -53,8 +53,8 @@ export const io = new SocketIOServer(httpServer, {
 io.on('connection', (socket) => {
 	socket.on('register', (userId) => {
 		socket.join(userId.toString())
+		console.log(`User with ID ${userId} connected and joined room`)
 	})
-	console.log('User connected')
 })
 
 cron.schedule('* * * * *', async () => {
@@ -78,7 +78,7 @@ cron.schedule('* * * * *', async () => {
 
 		if (!existingNotification) {
 			// If no existing notification, emit a new one
-			io.emit('notifyUpdate', {
+			io.to(car.user.toString()).emit('notifyUpdate', {
 				message: `Update Bid ending date or remove a car : ${car.brand} ${car.Model}`,
 				carId: car._id,
 			})

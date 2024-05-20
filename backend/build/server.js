@@ -60,8 +60,8 @@ exports.io = new socket_io_1.Server(httpServer, {
 exports.io.on('connection', (socket) => {
     socket.on('register', (userId) => {
         socket.join(userId.toString());
+        console.log(`User with ID ${userId} connected and joined room`);
     });
-    console.log('User connected');
 });
 node_cron_1.default.schedule('* * * * *', () => __awaiter(void 0, void 0, void 0, function* () {
     const bufferTime = 5 * 60 * 1000; // 5 minutes buffer
@@ -81,7 +81,7 @@ node_cron_1.default.schedule('* * * * *', () => __awaiter(void 0, void 0, void 0
         });
         if (!existingNotification) {
             // If no existing notification, emit a new one
-            exports.io.emit('notifyUpdate', {
+            exports.io.to(car.user.toString()).emit('notifyUpdate', {
                 message: `Update Bid ending date or remove a car : ${car.brand} ${car.Model}`,
                 carId: car._id,
             });
